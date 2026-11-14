@@ -2087,21 +2087,21 @@
                 <span class="text-xl">⚽</span>
                 <div>
                   <div class="text-xs font-extrabold text-slate-900">Soccer 7v7</div>
-                  <div class="text-[11px] text-slate-500">7 on field • 2×25m</div>
+                  <div class="text-[11px] text-slate-500">7 on field • 4×10m</div>
                 </div>
               </button>
               <button onclick="applySportPreset('soccer9')" data-preset="soccer9" class="preset-btn p-2.5 rounded-xl border-2 border-slate-200 hover:border-slate-300 text-left transition flex items-center gap-2.5">
                 <span class="text-xl">⚽</span>
                 <div>
                   <div class="text-xs font-extrabold text-slate-900">Soccer 9v9</div>
-                  <div class="text-[11px] text-slate-500">9 on field • 2×30m</div>
+                  <div class="text-[11px] text-slate-500">9 on field • 4×12m</div>
                 </div>
               </button>
-              <button onclick="applySportPreset('hockey')" data-preset="hockey" class="preset-btn p-2.5 rounded-xl border-2 border-slate-200 hover:border-slate-300 text-left transition flex items-center gap-2.5">
-                <span class="text-xl">🏒</span>
+              <button onclick="applySportPreset('soccer11')" data-preset="soccer11" class="preset-btn p-2.5 rounded-xl border-2 border-slate-200 hover:border-slate-300 text-left transition flex items-center gap-2.5">
+                <span class="text-xl">⚽</span>
                 <div>
-                  <div class="text-xs font-extrabold text-slate-900">Hockey / Lax</div>
-                  <div class="text-[11px] text-slate-500">6 active • 3×15m</div>
+                  <div class="text-xs font-extrabold text-slate-900">Soccer 11v11</div>
+                  <div class="text-[11px] text-slate-500">11 on field • 4×12m</div>
                 </div>
               </button>
             </div>
@@ -2277,9 +2277,9 @@
         icon: '⚽',
         zoneLabel: 'On Field',
         activeCount: 7,
-        periodDurationSec: 25 * 60,
-        numPeriods: 2,
-        periodPrefix: 'H'
+        periodDurationSec: 10 * 60,
+        numPeriods: 4,
+        periodPrefix: 'Q'
       },
       soccer9: {
         id: 'soccer9',
@@ -2287,19 +2287,19 @@
         icon: '⚽',
         zoneLabel: 'On Field',
         activeCount: 9,
-        periodDurationSec: 30 * 60,
-        numPeriods: 2,
-        periodPrefix: 'H'
+        periodDurationSec: 12 * 60,
+        numPeriods: 4,
+        periodPrefix: 'Q'
       },
-      hockey: {
-        id: 'hockey',
-        name: 'Hockey / Lax',
-        icon: '🏒',
-        zoneLabel: 'On Ice/Field',
-        activeCount: 6,
-        periodDurationSec: 15 * 60,
-        numPeriods: 3,
-        periodPrefix: 'P'
+      soccer11: {
+        id: 'soccer11',
+        name: 'Soccer 11v11',
+        icon: '⚽',
+        zoneLabel: 'On Field',
+        activeCount: 11,
+        periodDurationSec: 12 * 60,
+        numPeriods: 4,
+        periodPrefix: 'Q'
       }
     };
 

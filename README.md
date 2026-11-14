@@ -7,9 +7,9 @@ Playing time and substitution tracker for youth sports, built for a coach holdin
 | Game | Periods | Active spots |
 | --- | --- | --- |
 | Basketball | 4 x 8 min | 5 |
-| Soccer 7v7 | 2 x 25 min | 7 |
-| Soccer 9v9 | 2 x 30 min | 9 |
-| Hockey / Lax | 3 x 15 min | 6 |
+| Soccer 7v7 | 4 x 10 min | 7 |
+| Soccer 9v9 | 4 x 12 min | 9 |
+| Soccer 11v11 | 4 x 12 min | 11 |
 
 Active spots, minutes per period and number of periods can be edited on the Roster & Setup tab.
 
