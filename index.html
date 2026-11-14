@@ -1852,6 +1852,7 @@
     /* Summary table */
     #view-summary thead tr { background:linear-gradient(135deg, #12423f, #0f2a2f) !important; }
     #view-summary [id^="sum-"] { letter-spacing:-0.03em; }
+    @media (max-width:480px) { #view-summary th, #view-summary td { padding-left:.375rem; padding-right:.375rem; } #view-summary th:first-child, #view-summary td:first-child { padding-left:.75rem; } }
 
     /* Modal + toasts */
     #confirm-modal > div { border-radius:22px; box-shadow:0 30px 60px -20px rgba(8,22,26,.5); }
@@ -2260,9 +2261,9 @@
                 <th class="py-3 px-4 font-bold">Player</th>
                 <th class="py-3 px-4 font-bold">Status</th>
                 <th class="py-3 px-4 font-bold">Total Time</th>
+                <th class="py-3 px-4 font-bold">Fair Share</th>
                 <th class="py-3 px-4 font-bold">% Played</th>
                 <th class="py-3 px-4 font-bold">Current Stint / Wait</th>
-                <th class="py-3 px-4 font-bold">Fair Share</th>
               </tr>
             </thead>
             <tbody id="summary-table-body" class="divide-y divide-slate-100 text-sm">
@@ -3190,12 +3191,12 @@
               </span>
             </td>
             <td class="py-3 px-4 font-mono font-extrabold text-slate-900 tabular-nums">${formatTime(p.totalSec)}</td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-0.5 rounded-full text-xs font-bold ${fair.badgeClass}">${fair.label}</span>
+            </td>
             <td class="py-3 px-4 font-semibold text-slate-600 tabular-nums">${pctPlayed}%</td>
             <td class="py-3 px-4 font-mono text-xs text-slate-600 tabular-nums">
               ${p.onCourt ? `Stint: ${formatTime(p.stintSec)}` : `Wait: ${formatTime(p.benchSec)}`}
-            </td>
-            <td class="py-3 px-4">
-              <span class="px-2 py-0.5 rounded-full text-xs font-bold ${fair.badgeClass}">${fair.label}</span>
             </td>
           </tr>
         `;
