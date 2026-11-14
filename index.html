@@ -1,212 +1,3341 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#111418" media="(prefers-color-scheme: dark)">
-  <meta name="description" content="Track playing time and substitutions for kids' sports.">
-  <title>Sub Tracker</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b7a43'/%3E%3Cpath d='M9 12h12l-3-3m5 11H11l3 3' fill='none' stroke='%23fff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css">
-  <script type="module" src="src/app.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>FairShift · Playing Time &amp; Sub Tracker</title>
+  <meta name="theme-color" content="#0d1d22">
+  <meta name="description" content="Track fair playing time and substitutions for youth sports, right from the sideline.">
+  <!-- All styles and icons are embedded; no network dependencies. -->
+  <style>
+/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
+@layer properties;
+@layer theme, base, components, utilities;
+@layer theme {
+  :root, :host {
+    --font-sans: 'Inter var', Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+    --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+    --color-orange-50: oklch(97.6% 0.018 35);
+    --color-orange-100: oklch(94.5% 0.04 35);
+    --color-orange-300: oklch(82% 0.11 35);
+    --color-orange-400: oklch(74% 0.16 33);
+    --color-orange-500: oklch(66% 0.2 31);
+    --color-orange-600: oklch(58.5% 0.205 29);
+    --color-orange-700: oklch(50% 0.18 28);
+    --color-amber-50: oklch(98.6% 0.025 90);
+    --color-amber-100: oklch(96% 0.06 90);
+    --color-amber-200: oklch(92.5% 0.11 90);
+    --color-amber-400: oklch(84% 0.165 85);
+    --color-amber-500: oklch(78.5% 0.17 75);
+    --color-amber-600: oklch(66% 0.16 62);
+    --color-amber-800: oklch(46% 0.11 55);
+    --color-emerald-50: oklch(97.8% 0.022 158);
+    --color-emerald-100: oklch(94.8% 0.055 158);
+    --color-emerald-200: oklch(90% 0.095 158);
+    --color-emerald-300: oklch(84.5% 0.14 158);
+    --color-emerald-400: oklch(77% 0.17 156);
+    --color-emerald-500: oklch(70% 0.17 155);
+    --color-emerald-600: oklch(59% 0.145 155);
+    --color-emerald-700: oklch(50% 0.115 156);
+    --color-emerald-800: oklch(42% 0.09 158);
+    --color-sky-100: oklch(95% 0.03 215);
+    --color-sky-200: oklch(90% 0.06 215);
+    --color-sky-500: oklch(66% 0.13 218);
+    --color-sky-800: oklch(42% 0.08 222);
+    --color-indigo-50: oklch(96.5% 0.02 300);
+    --color-indigo-100: oklch(93% 0.04 300);
+    --color-indigo-200: oklch(87% 0.08 300);
+    --color-indigo-500: oklch(60% 0.2 300);
+    --color-indigo-600: oklch(52% 0.22 300);
+    --color-indigo-700: oklch(45% 0.2 300);
+    --color-rose-50: oklch(97% 0.015 5);
+    --color-rose-100: oklch(94% 0.03 5);
+    --color-rose-200: oklch(89% 0.06 5);
+    --color-rose-600: oklch(56% 0.22 5);
+    --color-rose-700: oklch(48% 0.19 5);
+    --color-slate-50: oklch(98.4% 0.004 200);
+    --color-slate-100: oklch(96.4% 0.008 205);
+    --color-slate-200: oklch(92.4% 0.012 210);
+    --color-slate-300: oklch(86.5% 0.018 212);
+    --color-slate-400: oklch(70% 0.03 215);
+    --color-slate-500: oklch(55% 0.035 218);
+    --color-slate-600: oklch(44% 0.035 220);
+    --color-slate-700: oklch(36% 0.036 222);
+    --color-slate-800: oklch(27% 0.035 224);
+    --color-slate-900: oklch(20.5% 0.032 226);
+    --color-slate-950: oklch(14.5% 0.028 228);
+    --color-white: #fff;
+    --spacing: 0.25rem;
+    --container-sm: 24rem;
+    --container-md: 28rem;
+    --container-6xl: 72rem;
+    --text-xs: 0.75rem;
+    --text-xs--line-height: calc(1 / 0.75);
+    --text-sm: 0.875rem;
+    --text-sm--line-height: calc(1.25 / 0.875);
+    --text-base: 1rem;
+    --text-base--line-height: calc(1.5 / 1);
+    --text-lg: 1.125rem;
+    --text-lg--line-height: calc(1.75 / 1.125);
+    --text-xl: 1.25rem;
+    --text-xl--line-height: calc(1.75 / 1.25);
+    --text-2xl: 1.5rem;
+    --text-2xl--line-height: calc(2 / 1.5);
+    --text-3xl: 1.875rem;
+    --text-3xl--line-height: calc(2.25 / 1.875);
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
+    --tracking-tight: -0.025em;
+    --tracking-wider: 0.05em;
+    --tracking-widest: 0.1em;
+    --leading-tight: 1.25;
+    --leading-relaxed: 1.625;
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.875rem;
+    --radius-2xl: 1.25rem;
+    --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    --default-transition-duration: 150ms;
+    --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    --default-font-family: var(--font-sans);
+    --default-mono-font-family: var(--font-mono);
+  }
+}
+@layer base {
+  *, ::after, ::before, ::backdrop, ::file-selector-button {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+  }
+  html, :host {
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    tab-size: 4;
+    font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji');
+    font-feature-settings: var(--default-font-feature-settings, normal);
+    font-variation-settings: var(--default-font-variation-settings, normal);
+    -webkit-tap-highlight-color: transparent;
+  }
+  hr {
+    height: 0;
+    color: inherit;
+    border-top-width: 1px;
+  }
+  abbr:where([title]) {
+    -webkit-text-decoration: underline dotted;
+    text-decoration: underline dotted;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  a {
+    color: inherit;
+    -webkit-text-decoration: inherit;
+    text-decoration: inherit;
+  }
+  b, strong {
+    font-weight: bolder;
+  }
+  code, kbd, samp, pre {
+    font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace);
+    font-feature-settings: var(--default-mono-font-feature-settings, normal);
+    font-variation-settings: var(--default-mono-font-variation-settings, normal);
+    font-size: 1em;
+  }
+  small {
+    font-size: 80%;
+  }
+  sub, sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+  }
+  sub {
+    bottom: -0.25em;
+  }
+  sup {
+    top: -0.5em;
+  }
+  table {
+    text-indent: 0;
+    border-color: inherit;
+    border-collapse: collapse;
+  }
+  :-moz-focusring {
+    outline: auto;
+  }
+  progress {
+    vertical-align: baseline;
+  }
+  summary {
+    display: list-item;
+  }
+  ol, ul, menu {
+    list-style: none;
+  }
+  img, svg, video, canvas, audio, iframe, embed, object {
+    display: block;
+    vertical-align: middle;
+  }
+  img, video {
+    max-width: 100%;
+    height: auto;
+  }
+  button, input, select, optgroup, textarea, ::file-selector-button {
+    font: inherit;
+    font-feature-settings: inherit;
+    font-variation-settings: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    border-radius: 0;
+    background-color: transparent;
+    opacity: 1;
+  }
+  :where(select:is([multiple], [size])) optgroup {
+    font-weight: bolder;
+  }
+  :where(select:is([multiple], [size])) optgroup option {
+    padding-inline-start: 20px;
+  }
+  ::file-selector-button {
+    margin-inline-end: 4px;
+  }
+  ::placeholder {
+    opacity: 1;
+  }
+  @supports (not (-webkit-appearance: -apple-pay-button))  or (contain-intrinsic-size: 1px) {
+    ::placeholder {
+      color: currentcolor;
+      @supports (color: color-mix(in lab, red, red)) {
+        color: color-mix(in oklab, currentcolor 50%, transparent);
+      }
+    }
+  }
+  textarea {
+    resize: vertical;
+  }
+  ::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+  ::-webkit-date-and-time-value {
+    min-height: 1lh;
+    text-align: inherit;
+  }
+  ::-webkit-datetime-edit {
+    display: inline-flex;
+  }
+  ::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+  }
+  ::-webkit-datetime-edit, ::-webkit-datetime-edit-year-field, ::-webkit-datetime-edit-month-field, ::-webkit-datetime-edit-day-field, ::-webkit-datetime-edit-hour-field, ::-webkit-datetime-edit-minute-field, ::-webkit-datetime-edit-second-field, ::-webkit-datetime-edit-millisecond-field, ::-webkit-datetime-edit-meridiem-field {
+    padding-block: 0;
+  }
+  :-moz-ui-invalid {
+    box-shadow: none;
+  }
+  button, input:where([type='button'], [type='reset'], [type='submit']), ::file-selector-button {
+    appearance: button;
+  }
+  ::-webkit-inner-spin-button, ::-webkit-outer-spin-button {
+    height: auto;
+  }
+  [hidden]:where(:not([hidden='until-found'])) {
+    display: none !important;
+  }
+}
+@layer utilities {
+  .pointer-events-none {
+    pointer-events: none;
+  }
+  .fixed {
+    position: fixed;
+  }
+  .sticky {
+    position: sticky;
+  }
+  .top-0 {
+    top: calc(var(--spacing) * 0);
+  }
+  .bottom-20 {
+    bottom: calc(var(--spacing) * 20);
+  }
+  .left-1\/2 {
+    left: calc(1/2 * 100%);
+  }
+  .z-30 {
+    z-index: 30;
+  }
+  .z-50 {
+    z-index: 50;
+  }
+  .container {
+    width: 100%;
+    @media (width >= 40rem) {
+      max-width: 40rem;
+    }
+    @media (width >= 48rem) {
+      max-width: 48rem;
+    }
+    @media (width >= 64rem) {
+      max-width: 64rem;
+    }
+    @media (width >= 80rem) {
+      max-width: 80rem;
+    }
+    @media (width >= 96rem) {
+      max-width: 96rem;
+    }
+  }
+  .mx-auto {
+    margin-inline: auto;
+  }
+  .mt-0\.5 {
+    margin-top: calc(var(--spacing) * 0.5);
+  }
+  .mt-1 {
+    margin-top: calc(var(--spacing) * 1);
+  }
+  .mt-2\.5 {
+    margin-top: calc(var(--spacing) * 2.5);
+  }
+  .mt-3 {
+    margin-top: calc(var(--spacing) * 3);
+  }
+  .mb-1 {
+    margin-bottom: calc(var(--spacing) * 1);
+  }
+  .mb-2 {
+    margin-bottom: calc(var(--spacing) * 2);
+  }
+  .mb-3 {
+    margin-bottom: calc(var(--spacing) * 3);
+  }
+  .mb-6 {
+    margin-bottom: calc(var(--spacing) * 6);
+  }
+  .ml-0\.5 {
+    margin-left: calc(var(--spacing) * 0.5);
+  }
+  .ml-auto {
+    margin-left: auto;
+  }
+  .block {
+    display: block;
+  }
+  .flex {
+    display: flex;
+  }
+  .grid {
+    display: grid;
+  }
+  .hidden {
+    display: none;
+  }
+  .inline-block {
+    display: inline-block;
+  }
+  .inline-flex {
+    display: inline-flex;
+  }
+  .table {
+    display: table;
+  }
+  .h-1\.5 {
+    height: calc(var(--spacing) * 1.5);
+  }
+  .h-2\.5 {
+    height: calc(var(--spacing) * 2.5);
+  }
+  .h-3 {
+    height: calc(var(--spacing) * 3);
+  }
+  .h-3\.5 {
+    height: calc(var(--spacing) * 3.5);
+  }
+  .h-4 {
+    height: calc(var(--spacing) * 4);
+  }
+  .h-5 {
+    height: calc(var(--spacing) * 5);
+  }
+  .h-7 {
+    height: calc(var(--spacing) * 7);
+  }
+  .h-8 {
+    height: calc(var(--spacing) * 8);
+  }
+  .h-9 {
+    height: calc(var(--spacing) * 9);
+  }
+  .h-10 {
+    height: calc(var(--spacing) * 10);
+  }
+  .h-11 {
+    height: calc(var(--spacing) * 11);
+  }
+  .h-full {
+    height: 100%;
+  }
+  .max-h-\[440px\] {
+    max-height: 440px;
+  }
+  .min-h-screen {
+    min-height: 100vh;
+  }
+  .w-2\.5 {
+    width: calc(var(--spacing) * 2.5);
+  }
+  .w-3 {
+    width: calc(var(--spacing) * 3);
+  }
+  .w-3\.5 {
+    width: calc(var(--spacing) * 3.5);
+  }
+  .w-4 {
+    width: calc(var(--spacing) * 4);
+  }
+  .w-5 {
+    width: calc(var(--spacing) * 5);
+  }
+  .w-7 {
+    width: calc(var(--spacing) * 7);
+  }
+  .w-8 {
+    width: calc(var(--spacing) * 8);
+  }
+  .w-9 {
+    width: calc(var(--spacing) * 9);
+  }
+  .w-10 {
+    width: calc(var(--spacing) * 10);
+  }
+  .w-11 {
+    width: calc(var(--spacing) * 11);
+  }
+  .w-11\/12 {
+    width: calc(11/12 * 100%);
+  }
+  .w-16 {
+    width: calc(var(--spacing) * 16);
+  }
+  .w-full {
+    width: 100%;
+  }
+  .max-w-6xl {
+    max-width: var(--container-6xl);
+  }
+  .max-w-md {
+    max-width: var(--container-md);
+  }
+  .max-w-sm {
+    max-width: var(--container-sm);
+  }
+  .min-w-0 {
+    min-width: calc(var(--spacing) * 0);
+  }
+  .min-w-\[88px\] {
+    min-width: 88px;
+  }
+  .flex-1 {
+    flex: 1;
+  }
+  .shrink-0 {
+    flex-shrink: 0;
+  }
+  .border-collapse {
+    border-collapse: collapse;
+  }
+  .-translate-x-1\/2 {
+    --tw-translate-x: calc(calc(1/2 * 100%) * -1);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .translate-y-2 {
+    --tw-translate-y: calc(var(--spacing) * 2);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .transform {
+    transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
+  }
+  .animate-pulse {
+    animation: var(--animate-pulse);
+  }
+  .cursor-pointer {
+    cursor: pointer;
+  }
+  .grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .flex-col {
+    flex-direction: column;
+  }
+  .flex-wrap {
+    flex-wrap: wrap;
+  }
+  .items-center {
+    align-items: center;
+  }
+  .items-start {
+    align-items: flex-start;
+  }
+  .justify-between {
+    justify-content: space-between;
+  }
+  .justify-center {
+    justify-content: center;
+  }
+  .justify-end {
+    justify-content: flex-end;
+  }
+  .gap-1 {
+    gap: calc(var(--spacing) * 1);
+  }
+  .gap-1\.5 {
+    gap: calc(var(--spacing) * 1.5);
+  }
+  .gap-2 {
+    gap: calc(var(--spacing) * 2);
+  }
+  .gap-2\.5 {
+    gap: calc(var(--spacing) * 2.5);
+  }
+  .gap-3 {
+    gap: calc(var(--spacing) * 3);
+  }
+  .gap-4 {
+    gap: calc(var(--spacing) * 4);
+  }
+  .gap-5 {
+    gap: calc(var(--spacing) * 5);
+  }
+  .space-y-2\.5 {
+    :where(& > :not(:last-child)) {
+      --tw-space-y-reverse: 0;
+      margin-block-start: calc(calc(var(--spacing) * 2.5) * var(--tw-space-y-reverse));
+      margin-block-end: calc(calc(var(--spacing) * 2.5) * calc(1 - var(--tw-space-y-reverse)));
+    }
+  }
+  .space-y-4 {
+    :where(& > :not(:last-child)) {
+      --tw-space-y-reverse: 0;
+      margin-block-start: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
+      margin-block-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));
+    }
+  }
+  .space-y-5 {
+    :where(& > :not(:last-child)) {
+      --tw-space-y-reverse: 0;
+      margin-block-start: calc(calc(var(--spacing) * 5) * var(--tw-space-y-reverse));
+      margin-block-end: calc(calc(var(--spacing) * 5) * calc(1 - var(--tw-space-y-reverse)));
+    }
+  }
+  .divide-y {
+    :where(& > :not(:last-child)) {
+      --tw-divide-y-reverse: 0;
+      border-bottom-style: var(--tw-border-style);
+      border-top-style: var(--tw-border-style);
+      border-top-width: calc(1px * var(--tw-divide-y-reverse));
+      border-bottom-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
+    }
+  }
+  .divide-slate-100 {
+    :where(& > :not(:last-child)) {
+      border-color: var(--color-slate-100);
+    }
+  }
+  .truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .overflow-hidden {
+    overflow: hidden;
+  }
+  .overflow-x-auto {
+    overflow-x: auto;
+  }
+  .overflow-y-auto {
+    overflow-y: auto;
+  }
+  .rounded {
+    border-radius: 0.25rem;
+  }
+  .rounded-2xl {
+    border-radius: var(--radius-2xl);
+  }
+  .rounded-full {
+    border-radius: calc(infinity * 1px);
+  }
+  .rounded-lg {
+    border-radius: var(--radius-lg);
+  }
+  .rounded-xl {
+    border-radius: var(--radius-xl);
+  }
+  .border {
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+  }
+  .border-2 {
+    border-style: var(--tw-border-style);
+    border-width: 2px;
+  }
+  .border-t {
+    border-top-style: var(--tw-border-style);
+    border-top-width: 1px;
+  }
+  .border-b {
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+  }
+  .border-amber-200 {
+    border-color: var(--color-amber-200);
+  }
+  .border-amber-400 {
+    border-color: var(--color-amber-400);
+  }
+  .border-amber-400\/50 {
+    border-color: color-mix(in srgb, oklch(82.8% 0.189 84.429) 50%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--color-amber-400) 50%, transparent);
+    }
+  }
+  .border-emerald-200 {
+    border-color: var(--color-emerald-200);
+  }
+  .border-emerald-500 {
+    border-color: var(--color-emerald-500);
+  }
+  .border-emerald-500\/30 {
+    border-color: color-mix(in srgb, oklch(69.6% 0.17 162.48) 30%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--color-emerald-500) 30%, transparent);
+    }
+  }
+  .border-indigo-200 {
+    border-color: var(--color-indigo-200);
+  }
+  .border-indigo-500 {
+    border-color: var(--color-indigo-500);
+  }
+  .border-orange-500 {
+    border-color: var(--color-orange-500);
+  }
+  .border-orange-500\/50 {
+    border-color: color-mix(in srgb, oklch(70.5% 0.213 47.604) 50%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--color-orange-500) 50%, transparent);
+    }
+  }
+  .border-rose-200 {
+    border-color: var(--color-rose-200);
+  }
+  .border-sky-200 {
+    border-color: var(--color-sky-200);
+  }
+  .border-slate-100 {
+    border-color: var(--color-slate-100);
+  }
+  .border-slate-200 {
+    border-color: var(--color-slate-200);
+  }
+  .border-slate-200\/90 {
+    border-color: color-mix(in srgb, oklch(92.9% 0.013 255.508) 90%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--color-slate-200) 90%, transparent);
+    }
+  }
+  .border-slate-300 {
+    border-color: var(--color-slate-300);
+  }
+  .border-slate-700 {
+    border-color: var(--color-slate-700);
+  }
+  .border-slate-700\/80 {
+    border-color: color-mix(in srgb, oklch(37.2% 0.044 257.287) 80%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--color-slate-700) 80%, transparent);
+    }
+  }
+  .border-slate-800 {
+    border-color: var(--color-slate-800);
+  }
+  .border-slate-800\/90 {
+    border-color: color-mix(in srgb, oklch(27.9% 0.041 260.031) 90%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      border-color: color-mix(in oklab, var(--color-slate-800) 90%, transparent);
+    }
+  }
+  .bg-amber-50 {
+    background-color: var(--color-amber-50);
+  }
+  .bg-amber-100 {
+    background-color: var(--color-amber-100);
+  }
+  .bg-amber-400 {
+    background-color: var(--color-amber-400);
+  }
+  .bg-amber-500 {
+    background-color: var(--color-amber-500);
+  }
+  .bg-amber-500\/30 {
+    background-color: color-mix(in srgb, oklch(76.9% 0.188 70.08) 30%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-amber-500) 30%, transparent);
+    }
+  }
+  .bg-emerald-50 {
+    background-color: var(--color-emerald-50);
+  }
+  .bg-emerald-100 {
+    background-color: var(--color-emerald-100);
+  }
+  .bg-emerald-400 {
+    background-color: var(--color-emerald-400);
+  }
+  .bg-emerald-500 {
+    background-color: var(--color-emerald-500);
+  }
+  .bg-emerald-500\/20 {
+    background-color: color-mix(in srgb, oklch(69.6% 0.17 162.48) 20%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-emerald-500) 20%, transparent);
+    }
+  }
+  .bg-emerald-600 {
+    background-color: var(--color-emerald-600);
+  }
+  .bg-indigo-50 {
+    background-color: var(--color-indigo-50);
+  }
+  .bg-indigo-50\/60 {
+    background-color: color-mix(in srgb, oklch(96.2% 0.018 272.314) 60%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-indigo-50) 60%, transparent);
+    }
+  }
+  .bg-indigo-600 {
+    background-color: var(--color-indigo-600);
+  }
+  .bg-orange-50\/60 {
+    background-color: color-mix(in srgb, oklch(98% 0.016 73.684) 60%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-orange-50) 60%, transparent);
+    }
+  }
+  .bg-orange-50\/70 {
+    background-color: color-mix(in srgb, oklch(98% 0.016 73.684) 70%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-orange-50) 70%, transparent);
+    }
+  }
+  .bg-orange-100 {
+    background-color: var(--color-orange-100);
+  }
+  .bg-orange-500 {
+    background-color: var(--color-orange-500);
+  }
+  .bg-orange-600 {
+    background-color: var(--color-orange-600);
+  }
+  .bg-rose-50 {
+    background-color: var(--color-rose-50);
+  }
+  .bg-sky-100 {
+    background-color: var(--color-sky-100);
+  }
+  .bg-sky-500 {
+    background-color: var(--color-sky-500);
+  }
+  .bg-slate-50 {
+    background-color: var(--color-slate-50);
+  }
+  .bg-slate-100 {
+    background-color: var(--color-slate-100);
+  }
+  .bg-slate-200 {
+    background-color: var(--color-slate-200);
+  }
+  .bg-slate-700 {
+    background-color: var(--color-slate-700);
+  }
+  .bg-slate-800 {
+    background-color: var(--color-slate-800);
+  }
+  .bg-slate-800\/70 {
+    background-color: color-mix(in srgb, oklch(27.9% 0.041 260.031) 70%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-slate-800) 70%, transparent);
+    }
+  }
+  .bg-slate-800\/90 {
+    background-color: color-mix(in srgb, oklch(27.9% 0.041 260.031) 90%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-slate-800) 90%, transparent);
+    }
+  }
+  .bg-slate-900 {
+    background-color: var(--color-slate-900);
+  }
+  .bg-slate-950\/90 {
+    background-color: color-mix(in srgb, oklch(12.9% 0.042 264.695) 90%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-slate-950) 90%, transparent);
+    }
+  }
+  .bg-white {
+    background-color: var(--color-white);
+  }
+  .bg-gradient-to-br {
+    --tw-gradient-position: to bottom right in oklab;
+    background-image: linear-gradient(var(--tw-gradient-stops));
+  }
+  .from-orange-500 {
+    --tw-gradient-from: var(--color-orange-500);
+    --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+  }
+  .to-orange-600 {
+    --tw-gradient-to: var(--color-orange-600);
+    --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+  }
+  .fill-current {
+    fill: currentcolor;
+  }
+  .p-1 {
+    padding: calc(var(--spacing) * 1);
+  }
+  .p-2 {
+    padding: calc(var(--spacing) * 2);
+  }
+  .p-2\.5 {
+    padding: calc(var(--spacing) * 2.5);
+  }
+  .p-3 {
+    padding: calc(var(--spacing) * 3);
+  }
+  .p-3\.5 {
+    padding: calc(var(--spacing) * 3.5);
+  }
+  .p-4 {
+    padding: calc(var(--spacing) * 4);
+  }
+  .p-6 {
+    padding: calc(var(--spacing) * 6);
+  }
+  .px-1\.5 {
+    padding-inline: calc(var(--spacing) * 1.5);
+  }
+  .px-2 {
+    padding-inline: calc(var(--spacing) * 2);
+  }
+  .px-2\.5 {
+    padding-inline: calc(var(--spacing) * 2.5);
+  }
+  .px-3 {
+    padding-inline: calc(var(--spacing) * 3);
+  }
+  .px-3\.5 {
+    padding-inline: calc(var(--spacing) * 3.5);
+  }
+  .px-4 {
+    padding-inline: calc(var(--spacing) * 4);
+  }
+  .py-0\.5 {
+    padding-block: calc(var(--spacing) * 0.5);
+  }
+  .py-1 {
+    padding-block: calc(var(--spacing) * 1);
+  }
+  .py-1\.5 {
+    padding-block: calc(var(--spacing) * 1.5);
+  }
+  .py-2 {
+    padding-block: calc(var(--spacing) * 2);
+  }
+  .py-2\.5 {
+    padding-block: calc(var(--spacing) * 2.5);
+  }
+  .py-3 {
+    padding-block: calc(var(--spacing) * 3);
+  }
+  .py-4 {
+    padding-block: calc(var(--spacing) * 4);
+  }
+  .py-8 {
+    padding-block: calc(var(--spacing) * 8);
+  }
+  .pt-1 {
+    padding-top: calc(var(--spacing) * 1);
+  }
+  .pt-2\.5 {
+    padding-top: calc(var(--spacing) * 2.5);
+  }
+  .pt-3 {
+    padding-top: calc(var(--spacing) * 3);
+  }
+  .pr-1 {
+    padding-right: calc(var(--spacing) * 1);
+  }
+  .pb-3 {
+    padding-bottom: calc(var(--spacing) * 3);
+  }
+  .pb-28 {
+    padding-bottom: calc(var(--spacing) * 28);
+  }
+  .pl-2 {
+    padding-left: calc(var(--spacing) * 2);
+  }
+  .text-center {
+    text-align: center;
+  }
+  .text-left {
+    text-align: left;
+  }
+  .text-right {
+    text-align: right;
+  }
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+  .font-sans {
+    font-family: var(--font-sans);
+  }
+  .text-2xl {
+    font-size: var(--text-2xl);
+    line-height: var(--tw-leading, var(--text-2xl--line-height));
+  }
+  .text-base {
+    font-size: var(--text-base);
+    line-height: var(--tw-leading, var(--text-base--line-height));
+  }
+  .text-lg {
+    font-size: var(--text-lg);
+    line-height: var(--tw-leading, var(--text-lg--line-height));
+  }
+  .text-sm {
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+  }
+  .text-xl {
+    font-size: var(--text-xl);
+    line-height: var(--tw-leading, var(--text-xl--line-height));
+  }
+  .text-xs {
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+  }
+  .text-\[10px\] {
+    font-size: 10px;
+  }
+  .text-\[11px\] {
+    font-size: 11px;
+  }
+  .leading-none {
+    --tw-leading: 1;
+    line-height: 1;
+  }
+  .leading-relaxed {
+    --tw-leading: var(--leading-relaxed);
+    line-height: var(--leading-relaxed);
+  }
+  .leading-tight {
+    --tw-leading: var(--leading-tight);
+    line-height: var(--leading-tight);
+  }
+  .font-bold {
+    --tw-font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-bold);
+  }
+  .font-extrabold {
+    --tw-font-weight: var(--font-weight-extrabold);
+    font-weight: var(--font-weight-extrabold);
+  }
+  .font-medium {
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+  }
+  .font-semibold {
+    --tw-font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-semibold);
+  }
+  .tracking-tight {
+    --tw-tracking: var(--tracking-tight);
+    letter-spacing: var(--tracking-tight);
+  }
+  .tracking-wider {
+    --tw-tracking: var(--tracking-wider);
+    letter-spacing: var(--tracking-wider);
+  }
+  .tracking-widest {
+    --tw-tracking: var(--tracking-widest);
+    letter-spacing: var(--tracking-widest);
+  }
+  .text-amber-200 {
+    color: var(--color-amber-200);
+  }
+  .text-amber-400 {
+    color: var(--color-amber-400);
+  }
+  .text-amber-600 {
+    color: var(--color-amber-600);
+  }
+  .text-amber-800 {
+    color: var(--color-amber-800);
+  }
+  .text-emerald-300 {
+    color: var(--color-emerald-300);
+  }
+  .text-emerald-400 {
+    color: var(--color-emerald-400);
+  }
+  .text-emerald-700 {
+    color: var(--color-emerald-700);
+  }
+  .text-emerald-800 {
+    color: var(--color-emerald-800);
+  }
+  .text-indigo-700 {
+    color: var(--color-indigo-700);
+  }
+  .text-orange-300 {
+    color: var(--color-orange-300);
+  }
+  .text-orange-400 {
+    color: var(--color-orange-400);
+  }
+  .text-orange-600 {
+    color: var(--color-orange-600);
+  }
+  .text-rose-700 {
+    color: var(--color-rose-700);
+  }
+  .text-sky-800 {
+    color: var(--color-sky-800);
+  }
+  .text-slate-200 {
+    color: var(--color-slate-200);
+  }
+  .text-slate-300 {
+    color: var(--color-slate-300);
+  }
+  .text-slate-400 {
+    color: var(--color-slate-400);
+  }
+  .text-slate-500 {
+    color: var(--color-slate-500);
+  }
+  .text-slate-600 {
+    color: var(--color-slate-600);
+  }
+  .text-slate-700 {
+    color: var(--color-slate-700);
+  }
+  .text-slate-800 {
+    color: var(--color-slate-800);
+  }
+  .text-slate-900 {
+    color: var(--color-slate-900);
+  }
+  .text-slate-950 {
+    color: var(--color-slate-950);
+  }
+  .text-white {
+    color: var(--color-white);
+  }
+  .uppercase {
+    text-transform: uppercase;
+  }
+  .tabular-nums {
+    --tw-numeric-spacing: tabular-nums;
+    font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,) var(--tw-numeric-figure,) var(--tw-numeric-spacing,) var(--tw-numeric-fraction,);
+  }
+  .underline {
+    text-decoration-line: underline;
+  }
+  .opacity-0 {
+    opacity: 0%;
+  }
+  .opacity-55 {
+    opacity: 55%;
+  }
+  .shadow-2xl {
+    --tw-shadow: 0 25px 50px -12px var(--tw-shadow-color, rgb(0 0 0 / 0.25));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-inner {
+    --tw-shadow: inset 0 2px 4px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-lg {
+    --tw-shadow: 0 10px 15px -3px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 4px 6px -4px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-md {
+    --tw-shadow: 0 4px 6px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 2px 4px -2px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-sm {
+    --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-xl {
+    --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-xs {
+    --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .ring-2 {
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .shadow-amber-500\/20 {
+    --tw-shadow-color: color-mix(in srgb, oklch(76.9% 0.188 70.08) 20%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-amber-500) 20%, transparent) var(--tw-shadow-alpha), transparent);
+    }
+  }
+  .shadow-emerald-500\/20 {
+    --tw-shadow-color: color-mix(in srgb, oklch(69.6% 0.17 162.48) 20%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-emerald-500) 20%, transparent) var(--tw-shadow-alpha), transparent);
+    }
+  }
+  .shadow-orange-500\/20 {
+    --tw-shadow-color: color-mix(in srgb, oklch(70.5% 0.213 47.604) 20%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-orange-500) 20%, transparent) var(--tw-shadow-alpha), transparent);
+    }
+  }
+  .shadow-orange-500\/30 {
+    --tw-shadow-color: color-mix(in srgb, oklch(70.5% 0.213 47.604) 30%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-orange-500) 30%, transparent) var(--tw-shadow-alpha), transparent);
+    }
+  }
+  .ring-indigo-500\/20 {
+    --tw-ring-color: color-mix(in srgb, oklch(58.5% 0.233 277.117) 20%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      --tw-ring-color: color-mix(in oklab, var(--color-indigo-500) 20%, transparent);
+    }
+  }
+  .transition {
+    transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, visibility, content-visibility, overlay, pointer-events;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
+  .transition-all {
+    transition-property: all;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
+  .duration-300 {
+    --tw-duration: 300ms;
+    transition-duration: 300ms;
+  }
+  .select-none {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .selection\:bg-orange-500 {
+    & *::selection {
+      background-color: var(--color-orange-500);
+    }
+    &::selection {
+      background-color: var(--color-orange-500);
+    }
+  }
+  .selection\:text-white {
+    & *::selection {
+      color: var(--color-white);
+    }
+    &::selection {
+      color: var(--color-white);
+    }
+  }
+  .hover\:border-slate-300 {
+    &:hover {
+      @media (hover: hover) {
+        border-color: var(--color-slate-300);
+      }
+    }
+  }
+  .hover\:bg-amber-500 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-amber-500);
+      }
+    }
+  }
+  .hover\:bg-emerald-600 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-emerald-600);
+      }
+    }
+  }
+  .hover\:bg-indigo-100 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-indigo-100);
+      }
+    }
+  }
+  .hover\:bg-orange-600 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-orange-600);
+      }
+    }
+  }
+  .hover\:bg-orange-700 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-orange-700);
+      }
+    }
+  }
+  .hover\:bg-rose-50 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-rose-50);
+      }
+    }
+  }
+  .hover\:bg-rose-100 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-rose-100);
+      }
+    }
+  }
+  .hover\:bg-sky-200 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-sky-200);
+      }
+    }
+  }
+  .hover\:bg-slate-50\/80 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: color-mix(in srgb, oklch(98.4% 0.003 247.858) 80%, transparent);
+        @supports (color: color-mix(in lab, red, red)) {
+          background-color: color-mix(in oklab, var(--color-slate-50) 80%, transparent);
+        }
+      }
+    }
+  }
+  .hover\:bg-slate-200 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-slate-200);
+      }
+    }
+  }
+  .hover\:bg-slate-300 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-slate-300);
+      }
+    }
+  }
+  .hover\:bg-slate-700 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-slate-700);
+      }
+    }
+  }
+  .hover\:bg-slate-800 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-slate-800);
+      }
+    }
+  }
+  .hover\:text-rose-600 {
+    &:hover {
+      @media (hover: hover) {
+        color: var(--color-rose-600);
+      }
+    }
+  }
+  .hover\:text-slate-900 {
+    &:hover {
+      @media (hover: hover) {
+        color: var(--color-slate-900);
+      }
+    }
+  }
+  .hover\:text-white {
+    &:hover {
+      @media (hover: hover) {
+        color: var(--color-white);
+      }
+    }
+  }
+  .focus\:ring-2 {
+    &:focus {
+      --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+      box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    }
+  }
+  .focus\:ring-orange-500 {
+    &:focus {
+      --tw-ring-color: var(--color-orange-500);
+    }
+  }
+  .focus\:outline-none {
+    &:focus {
+      --tw-outline-style: none;
+      outline-style: none;
+    }
+  }
+  .active\:scale-95 {
+    &:active {
+      --tw-scale-x: 95%;
+      --tw-scale-y: 95%;
+      --tw-scale-z: 95%;
+      scale: var(--tw-scale-x) var(--tw-scale-y);
+    }
+  }
+  .active\:scale-\[0\.99\] {
+    &:active {
+      scale: 0.99;
+    }
+  }
+  .disabled\:opacity-40 {
+    &:disabled {
+      opacity: 40%;
+    }
+  }
+  .sm\:bottom-6 {
+    @media (width >= 40rem) {
+      bottom: calc(var(--spacing) * 6);
+    }
+  }
+  .sm\:ml-0 {
+    @media (width >= 40rem) {
+      margin-left: calc(var(--spacing) * 0);
+    }
+  }
+  .sm\:inline {
+    @media (width >= 40rem) {
+      display: inline;
+    }
+  }
+  .sm\:min-w-\[104px\] {
+    @media (width >= 40rem) {
+      min-width: 104px;
+    }
+  }
+  .sm\:grid-cols-4 {
+    @media (width >= 40rem) {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .sm\:gap-3 {
+    @media (width >= 40rem) {
+      gap: calc(var(--spacing) * 3);
+    }
+  }
+  .sm\:gap-6 {
+    @media (width >= 40rem) {
+      gap: calc(var(--spacing) * 6);
+    }
+  }
+  .sm\:p-3\.5 {
+    @media (width >= 40rem) {
+      padding: calc(var(--spacing) * 3.5);
+    }
+  }
+  .sm\:p-4 {
+    @media (width >= 40rem) {
+      padding: calc(var(--spacing) * 4);
+    }
+  }
+  .sm\:p-5 {
+    @media (width >= 40rem) {
+      padding: calc(var(--spacing) * 5);
+    }
+  }
+  .sm\:px-6 {
+    @media (width >= 40rem) {
+      padding-inline: calc(var(--spacing) * 6);
+    }
+  }
+  .sm\:py-6 {
+    @media (width >= 40rem) {
+      padding-block: calc(var(--spacing) * 6);
+    }
+  }
+  .sm\:text-3xl {
+    @media (width >= 40rem) {
+      font-size: var(--text-3xl);
+      line-height: var(--tw-leading, var(--text-3xl--line-height));
+    }
+  }
+  .sm\:text-base {
+    @media (width >= 40rem) {
+      font-size: var(--text-base);
+      line-height: var(--tw-leading, var(--text-base--line-height));
+    }
+  }
+  .sm\:text-lg {
+    @media (width >= 40rem) {
+      font-size: var(--text-lg);
+      line-height: var(--tw-leading, var(--text-lg--line-height));
+    }
+  }
+  .sm\:text-sm {
+    @media (width >= 40rem) {
+      font-size: var(--text-sm);
+      line-height: var(--tw-leading, var(--text-sm--line-height));
+    }
+  }
+  .sm\:text-xl {
+    @media (width >= 40rem) {
+      font-size: var(--text-xl);
+      line-height: var(--tw-leading, var(--text-xl--line-height));
+    }
+  }
+  .lg\:col-span-5 {
+    @media (width >= 64rem) {
+      grid-column: span 5 / span 5;
+    }
+  }
+  .lg\:col-span-6 {
+    @media (width >= 64rem) {
+      grid-column: span 6 / span 6;
+    }
+  }
+  .lg\:col-span-7 {
+    @media (width >= 64rem) {
+      grid-column: span 7 / span 7;
+    }
+  }
+  .lg\:grid-cols-12 {
+    @media (width >= 64rem) {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+  }
+}
+@property --tw-translate-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-translate-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-translate-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-rotate-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-rotate-y {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-rotate-z {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-skew-x {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-skew-y {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-space-y-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-divide-y-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-border-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@property --tw-gradient-position {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-gradient-from {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #0000;
+}
+@property --tw-gradient-via {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #0000;
+}
+@property --tw-gradient-to {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #0000;
+}
+@property --tw-gradient-stops {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-gradient-via-stops {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-gradient-from-position {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+@property --tw-gradient-via-position {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 50%;
+}
+@property --tw-gradient-to-position {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-leading {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-font-weight {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-tracking {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-ordinal {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-slashed-zero {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-numeric-figure {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-numeric-spacing {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-numeric-fraction {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-shadow-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-inset-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-inset-shadow-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-inset-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-ring-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-ring-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-inset-ring-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-inset-ring-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-ring-inset {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-ring-offset-width {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --tw-ring-offset-color {
+  syntax: "*";
+  inherits: false;
+  initial-value: #fff;
+}
+@property --tw-ring-offset-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-duration {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-scale-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-scale-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-scale-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-translate-x: 0;
+      --tw-translate-y: 0;
+      --tw-translate-z: 0;
+      --tw-rotate-x: initial;
+      --tw-rotate-y: initial;
+      --tw-rotate-z: initial;
+      --tw-skew-x: initial;
+      --tw-skew-y: initial;
+      --tw-space-y-reverse: 0;
+      --tw-divide-y-reverse: 0;
+      --tw-border-style: solid;
+      --tw-gradient-position: initial;
+      --tw-gradient-from: #0000;
+      --tw-gradient-via: #0000;
+      --tw-gradient-to: #0000;
+      --tw-gradient-stops: initial;
+      --tw-gradient-via-stops: initial;
+      --tw-gradient-from-position: 0%;
+      --tw-gradient-via-position: 50%;
+      --tw-gradient-to-position: 100%;
+      --tw-leading: initial;
+      --tw-font-weight: initial;
+      --tw-tracking: initial;
+      --tw-ordinal: initial;
+      --tw-slashed-zero: initial;
+      --tw-numeric-figure: initial;
+      --tw-numeric-spacing: initial;
+      --tw-numeric-fraction: initial;
+      --tw-shadow: 0 0 #0000;
+      --tw-shadow-color: initial;
+      --tw-shadow-alpha: 100%;
+      --tw-inset-shadow: 0 0 #0000;
+      --tw-inset-shadow-color: initial;
+      --tw-inset-shadow-alpha: 100%;
+      --tw-ring-color: initial;
+      --tw-ring-shadow: 0 0 #0000;
+      --tw-inset-ring-color: initial;
+      --tw-inset-ring-shadow: 0 0 #0000;
+      --tw-ring-inset: initial;
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: #fff;
+      --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-duration: initial;
+      --tw-scale-x: 1;
+      --tw-scale-y: 1;
+      --tw-scale-z: 1;
+    }
+  }
+}
+
+
+    /* Custom scrollbar & mobile touch optimization */
+    body {
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: contain;
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    @keyframes pulse-border {
+      0%, 100% { border-color: rgba(226, 76, 60, 0.9); box-shadow: 0 0 0 3px rgba(226, 76, 60, 0.2); }
+      50% { border-color: rgba(226, 76, 60, 0.4); box-shadow: 0 0 0 1px rgba(226, 76, 60, 0.05); }
+    }
+    .selected-swap-card {
+      animation: pulse-border 1.6s infinite;
+    }
+
+    * { -webkit-tap-highlight-color: transparent; }
+    body { min-height:100dvh; padding-bottom:env(safe-area-inset-bottom); }
+    header { padding-top:env(safe-area-inset-top); }
+    button { touch-action:manipulation; min-height:44px; }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    button:focus-visible,input:focus-visible,select:focus-visible { outline:3px solid #2f8f9d; outline-offset:2px; }
+    #confirm-modal { margin:auto; border:0; background:transparent; width:min(92vw,26rem); max-width:none; padding:0; }
+    #confirm-modal::backdrop { background:rgba(2,6,23,.75); }
+    #clock-display { font-size:clamp(1.6rem,5vw,2rem); }
+    [data-lucide] { flex-shrink:0; }
+    input { min-width:0; }
+    .player-card { display:block; }
+    .player-card [data-progress] { display:block; }
+    @media(max-width:639px){
+      header>div { padding:8px; }
+      header nav { margin-top:5px; padding-top:5px; }
+      header nav button { padding:5px 8px; font-size:12px; white-space:nowrap; }
+      header nav button i { display:none!important; }
+      header div:has(> #clock-toggle-btn) { width:100%; justify-content:space-between; gap:4px; padding:3px 5px; margin:0; }
+      header div:has(> #clock-toggle-btn) button { min-width:44px; }
+      .live-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; }
+      .live-grid>div>div:first-child { padding:9px 6px; gap:4px; }
+      .live-grid h2 { font-size:11px; }
+      #court-players-list,#bench-players-list { padding:5px; }
+      .player-card { padding:6px; border-radius:10px; }
+      .player-card>span:first-child { display:flex; flex-direction:column; align-items:stretch; gap:4px; }
+      .player-card>span:first-child>span:first-child { gap:4px; }
+      .player-card>span:first-child>span:first-child>span:first-child { width:27px;height:27px;font-size:12px; border-radius:6px; }
+      .player-card>span:first-child>span:first-child>span:nth-child(2) { flex:1; }
+      .player-card>span:first-child>span:first-child>span:nth-child(2)>span { flex-wrap:wrap; gap:2px; }
+      .player-card [data-fair] { font-size:9px; padding:1px 3px; }
+      .player-card [data-total] { font-size:20px; }
+      .player-card>span:first-child>span:last-child { display:flex; align-items:center; justify-content:space-between; padding:0; }
+      .player-card>span:last-child { margin-top:5px; }
+      #roster-manage-list>div { flex-wrap:wrap; }
+      #view-roster form { flex-wrap:wrap; }
+      #view-roster form input:nth-child(2){flex:1; }
+    }
+
+    /* ===== FairShift design layer ===== */
+    html { background:#eef3f2; }
+    body {
+      font-feature-settings:"cv11","ss01","ss03";
+      background:
+        radial-gradient(1200px 420px at 50% -120px, rgba(47,143,157,.10), transparent 70%),
+        linear-gradient(#f3f7f6, #eaf0ef);
+      background-attachment:fixed;
+      letter-spacing:-0.005em;
+    }
+    /* Header: deep pine ink with faint court lines and a coral baseline */
+    header {
+      background:
+        radial-gradient(600px 200px at 85% -40px, rgba(226,76,60,.18), transparent 70%),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.025) 0 1px, transparent 1px 64px),
+        linear-gradient(180deg, #10262c, #0b1a1f) !important;
+      border-bottom:0 !important;
+      box-shadow:0 1px 0 rgba(255,255,255,.04) inset, 0 10px 30px -12px rgba(8,22,26,.55) !important;
+    }
+    header::after { content:""; position:absolute; left:0; right:0; bottom:0; height:3px;
+      background:linear-gradient(90deg, #e24c3c, #f59e4b 45%, #2f8f9d); }
+    header h1 { font-size:1.2rem; letter-spacing:-0.035em; }
+    #sport-icon-badge { border-radius:14px; box-shadow:0 6px 18px -6px rgba(226,76,60,.65), inset 0 1px 0 rgba(255,255,255,.25); }
+    #header-sport-pill { background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.12); }
+    header div:has(> #clock-toggle-btn) {
+      background:rgba(4,12,14,.55) !important; border-color:rgba(255,255,255,.08) !important;
+      backdrop-filter:blur(6px); border-radius:18px;
+    }
+    #clock-display { letter-spacing:-0.04em; text-shadow:0 0 18px rgba(255,255,255,.18); }
+    #clock-toggle-btn { border-radius:12px; letter-spacing:.04em; }
+    header nav { border-top-color:rgba(255,255,255,.07) !important; }
+    header nav .tab-btn { border-radius:999px; }
+    header nav .tab-btn.bg-orange-600 { box-shadow:0 6px 16px -6px rgba(226,76,60,.7); }
+
+    /* Surfaces */
+    main .bg-white.rounded-2xl {
+      border-color:rgba(16,38,44,.08) !important;
+      box-shadow:0 1px 2px rgba(16,38,44,.04), 0 12px 32px -18px rgba(16,38,44,.22) !important;
+    }
+    #view-live > div:nth-of-type(3) button { border-radius:999px; border-color:rgba(16,38,44,.14); }
+
+    /* Court & bench column heads */
+    .live-grid > div:first-child > div:first-child { background:linear-gradient(135deg, #12423f, #0f2a2f) !important; }
+    .live-grid > div:last-child > div:first-child  { background:linear-gradient(135deg, #2a3a40, #1d2a2f) !important; }
+    .live-grid h2 { letter-spacing:.04em; }
+    @media (min-width:640px) { .live-grid h2 { font-size:.8rem; } }
+    @media (max-width:639px) {
+      #period-display { white-space:nowrap; font-size:13px; }
+      header div:has(> #clock-toggle-btn) > button:first-child { padding:2px 6px; }
+      header div:has(> #clock-toggle-btn) > div > div { min-width:68px; padding:0 2px; }
+      #clock-display { font-size:1.45rem; }
+      #clock-status-label { font-size:9px; letter-spacing:.06em; white-space:nowrap; }
+      #clock-toggle-btn { padding:8px 10px; gap:4px; font-size:13px; }
+      header div:has(> #clock-toggle-btn) > div > button { width:32px; }
+    }
+    .live-grid > div > div:first-child { border-bottom:1px solid rgba(255,255,255,.06); }
+
+    /* Player cards */
+    .player-card { border-width:1.5px !important; border-radius:16px !important; }
+    .player-card.bg-white { background:linear-gradient(180deg,#fff,#fbfcfc); }
+    @media (hover:hover) {
+      .player-card:hover { transform:translateY(-1px); box-shadow:0 8px 20px -12px rgba(16,38,44,.35); }
+    }
+    .player-card [data-total] { letter-spacing:-0.03em; }
+    .player-card > span:last-child { height:6px !important; background:#e7eeed !important; }
+    .player-card [data-progress] { border-radius:999px; }
+
+    /* Forms */
+    main input, main select { border-color:rgba(16,38,44,.16) !important; background-color:#fbfdfd; }
+    .preset-btn { border-radius:16px !important; }
+    .preset-btn.border-orange-500 { box-shadow:0 0 0 4px rgba(226,76,60,.12); }
+
+    /* Summary table */
+    #view-summary thead tr { background:linear-gradient(135deg, #12423f, #0f2a2f) !important; }
+    #view-summary [id^="sum-"] { letter-spacing:-0.03em; }
+
+    /* Modal + toasts */
+    #confirm-modal > div { border-radius:22px; box-shadow:0 30px 60px -20px rgba(8,22,26,.5); }
+    #confirm-modal::backdrop { background:rgba(8,22,26,.6); backdrop-filter:blur(3px); }
+    #toast-container > div { border-radius:999px; box-shadow:0 12px 30px -10px rgba(8,22,26,.45); }
+
+    ::selection { background:#e24c3c; color:#fff; }
+    @media(prefers-reduced-motion:reduce){ *,*::before,*::after { animation:none!important; transition:none!important; } }
+  </style>
 </head>
-<body>
-  <main>
-    <section id="setup" class="setup">
-      <h1>Sub Tracker</h1>
-      <p class="lede">Playing time and substitutions, kept simple.</p>
+<body class="bg-slate-100 text-slate-900 font-sans min-h-screen flex flex-col selection:bg-orange-500 selection:text-white">
 
-      <form id="settings" class="stack">
-        <fieldset class="sports">
-          <legend>Game</legend>
-          <div id="sports" class="sport-grid"></div>
-        </fieldset>
+  <!-- Toast Notification Banner (Replaces alert/confirm) -->
+  <div id="toast-container" role="status" aria-live="polite" aria-atomic="false" class="fixed bottom-20 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-2 w-11/12 max-w-md"></div>
 
-        <div class="fields">
-          <div class="field">
-            <label for="periods">Periods</label>
-            <input id="periods" name="periods" type="number" inputmode="numeric" min="1" max="8" required>
-          </div>
-          <div class="field">
-            <label for="minutes">Minutes</label>
-            <input id="minutes" name="minutes" type="number" inputmode="numeric" min="1" max="60" required>
-          </div>
-          <div class="field">
-            <label for="on-field">Players on</label>
-            <input id="on-field" name="onField" type="number" inputmode="numeric" min="1" max="15" required>
-          </div>
-          <div class="field">
-            <label for="direction">Clock</label>
-            <select id="direction" name="direction">
-              <option value="down">Counts down</option>
-              <option value="up">Counts up</option>
-            </select>
-          </div>
+  <!-- Confirmation Modal (Replaces window.confirm) -->
+  <dialog id="confirm-modal" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 border border-slate-200">
+      <div class="flex items-center gap-3 mb-3">
+        <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+          <i data-lucide="alert-triangle" class="w-5 h-5"></i>
         </div>
-      </form>
+        <h3 id="confirm-title" class="text-lg font-bold text-slate-900">Confirm Action</h3>
+      </div>
+      <p id="confirm-message" class="text-sm text-slate-600 mb-6 leading-relaxed">Are you sure you want to proceed?</p>
+      <div class="flex gap-3 justify-end">
+        <button id="confirm-cancel-btn" class="px-4 py-2.5 rounded-xl font-semibold text-sm text-slate-700 bg-slate-100 hover:bg-slate-200 active:scale-95 transition">Cancel</button>
+        <button id="confirm-ok-btn" class="px-4 py-2.5 rounded-xl font-semibold text-sm text-white bg-orange-600 hover:bg-orange-700 active:scale-95 transition shadow-sm">Confirm</button>
+      </div>
+    </div>
+  </dialog>
 
-      <section class="stack" aria-labelledby="team-title">
-        <div class="heading-row">
-          <h2 id="team-title">Players</h2>
-          <p id="team-count" class="hint" role="status"></p>
-        </div>
-
-        <form id="add-form" class="add-row">
-          <input id="add-number" name="number" class="number" aria-label="Jersey number" inputmode="numeric"
-            maxlength="3" placeholder="#" autocomplete="off">
-          <input id="add-name" name="name" aria-label="Player name" maxlength="40" placeholder="Player name"
-            autocomplete="off" autocapitalize="words" spellcheck="false" enterkeyhint="done" aria-describedby="add-hint">
-          <button class="primary">Add</button>
-        </form>
-        <p id="add-hint" class="hint">Jersey numbers are optional. Paste a list of names to add them all at once.</p>
-
-        <ul id="team" class="team"></ul>
-      </section>
-
-      <p id="setup-error" class="error" role="alert"></p>
-      <button id="start-game" type="button" class="primary big">Start game</button>
-    </section>
-
-    <section id="game" class="game" hidden>
-      <header class="scoreboard">
-        <div class="heading-row">
-          <h1 id="period-label"></h1>
-          <div id="views" class="seg" role="group" aria-label="View">
-            <button type="button" data-view="live">Lineup</button>
-            <button type="button" data-view="times">Times</button>
+  <!-- TOP SCOREBOARD HEADER -->
+  <header class="bg-slate-900 text-white sticky top-0 z-30 shadow-lg border-b border-slate-800">
+    <div class="max-w-6xl mx-auto px-3 sm:px-6 py-3">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        
+        <!-- Brand & Active Sport Badge -->
+        <div class="flex items-center gap-2.5">
+          <div id="sport-icon-badge" class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-md shadow-orange-500/20 text-white font-bold text-lg">
+            🏀
           </div>
-        </div>
-        <p id="clock" class="clock" role="timer" aria-label="Game clock"></p>
-        <div class="controls">
-          <button id="toggle" type="button" class="primary big"></button>
-          <button id="end-period" type="button" class="big"></button>
-          <button id="adjust-open" type="button" class="big" aria-label="Adjust clock">±</button>
-        </div>
-      </header>
-
-      <div id="live" class="live">
-        <div class="toolbar">
-          <div id="modes" class="seg" role="group" aria-label="When to substitute">
-            <button type="button" data-mode="swap">Swap now</button>
-            <button type="button" data-mode="queue">Queue</button>
-          </div>
-          <button id="suggest" type="button">Suggest a sub</button>
-        </div>
-
-        <section id="queue-bar" class="queue" aria-labelledby="queue-title" hidden>
           <div>
-            <h2 id="queue-title">Queued for the next stoppage</h2>
-            <ol id="queue-list"></ol>
-          </div>
-          <div class="actions">
-            <button id="queue-clear" type="button">Clear</button>
-            <button id="queue-go" type="button" class="primary"></button>
-          </div>
-        </section>
-
-        <div class="groups">
-          <section class="group">
-            <h2><span id="on-title"></span> <span id="on-count" class="count"></span></h2>
-            <div id="on-list" class="players"></div>
-            <p id="on-empty" class="hint" hidden>No one is on. Tap a bench player, then Put in.</p>
-          </section>
-          <section class="group">
-            <div class="heading-row">
-              <h2>Bench <span class="count">least played first</span></h2>
-              <button id="add-open" type="button">Add player</button>
+            <div class="flex items-center gap-2">
+              <h1 class="font-extrabold text-base sm:text-lg tracking-tight leading-none">Fair<span class="text-orange-400">Shift</span></h1>
+              <span id="header-sport-pill" class="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-800 text-orange-300 border border-slate-700">
+                Basketball • 5v5
+              </span>
             </div>
-            <div id="bench-list" class="players"></div>
-            <p id="bench-empty" class="hint" hidden>No one on the bench.</p>
-          </section>
-          <section id="out-group" class="group" hidden>
-            <h2>Sitting out <span class="count">tap to bring back</span></h2>
-            <div id="out-list" class="players"></div>
-          </section>
+            <p id="header-fair-share-info" class="text-xs text-slate-400 mt-0.5 tabular-nums">
+              Target Fair Share: <span class="text-slate-200 font-semibold">0:00</span> / player
+            </p>
+          </div>
         </div>
-        <p id="fair-note" class="hint"></p>
+
+        <!-- Scoreboard Game Clock Controls -->
+        <div class="flex items-center gap-2 sm:gap-3 bg-slate-950/90 border border-slate-800 rounded-2xl px-3 py-1.5 shadow-inner ml-auto sm:ml-0">
+          <!-- Period Switcher -->
+          <button onclick="cyclePeriod()" title="Tap to switch Period/Quarter" class="flex flex-col items-center justify-center px-2.5 py-1 rounded-xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 transition border border-slate-700/80">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Period</span>
+            <span id="period-display" class="text-sm sm:text-base font-extrabold text-orange-400 leading-tight">Q1 / 4</span>
+          </button>
+
+          <!-- Main Digital Clock + +/- 1m quick adjust -->
+          <div class="flex items-center gap-1">
+            <button onclick="adjustClock(-60)" title="Subtract 1 Minute" class="w-7 h-7 rounded-lg bg-slate-800/70 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs font-bold active:scale-95 transition">-1m</button>
+            <div class="px-2 text-center min-w-[88px] sm:min-w-[104px]">
+              <div id="clock-display" class="font-mono text-2xl sm:text-3xl font-extrabold tracking-tight tabular-nums text-white leading-none">
+                08:00
+              </div>
+              <div id="clock-status-label" class="text-[10px] font-bold uppercase tracking-widest text-amber-400 mt-0.5">
+                STOPPED
+              </div>
+            </div>
+            <button onclick="adjustClock(60)" title="Add 1 Minute" class="w-7 h-7 rounded-lg bg-slate-800/70 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs font-bold active:scale-95 transition">+1m</button>
+          </div>
+
+          <!-- Start / Pause Primary Action Button -->
+          <button id="clock-toggle-btn" onclick="toggleClock()" class="flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-extrabold text-sm bg-emerald-500 hover:bg-emerald-600 text-slate-950 shadow-md shadow-emerald-500/20 active:scale-95 transition">
+            <i id="clock-toggle-icon" data-lucide="play" class="w-4 h-4 fill-current"></i>
+            <span id="clock-toggle-text">START</span>
+          </button>
+
+          <!-- Reset Period Clock -->
+          <button onclick="confirmResetPeriod()" title="Reset Period Clock" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white active:scale-95 transition border border-slate-700">
+            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          </button>
+        </div>
+
       </div>
 
-      <div id="times" class="times" hidden>
-        <dl class="kpis">
-          <div><dt>Game time</dt><dd id="kpi-time"></dd></div>
-          <div><dt>Average</dt><dd id="kpi-average"></dd></div>
-          <div><dt>Spread</dt><dd id="kpi-spread"></dd></div>
-          <div><dt>Fair share</dt><dd id="kpi-target"></dd></div>
-        </dl>
-        <div class="toolbar">
-          <label for="sort">Sort</label>
-          <select id="sort">
-            <option value="most">Most played</option>
-            <option value="least">Least played</option>
-            <option value="number">Number</option>
-            <option value="name">Name</option>
-          </select>
-          <button id="copy" type="button">Copy</button>
-          <button id="csv" type="button">CSV</button>
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center gap-1.5 mt-3 pt-2.5 border-t border-slate-800/90 overflow-x-auto no-scrollbar">
+        <button onclick="switchTab('live')" id="tab-btn-live" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition bg-orange-600 text-white shadow-sm">
+          <i data-lucide="users" class="w-4 h-4"></i>
+          <span>Court & Bench</span>
+          <span id="nav-queued-badge" class="hidden ml-0.5 px-1.5 py-0.2 text-[11px] font-extrabold rounded-full bg-white text-orange-600">0</span>
+        </button>
+        <button onclick="switchTab('roster')" id="tab-btn-roster" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 transition">
+          <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+          <span>Roster & Setup</span>
+        </button>
+        <button onclick="switchTab('summary')" id="tab-btn-summary" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 transition">
+          <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+          <span>Game Summary</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT WORKSPACE -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 pb-28">
+
+    <!-- ==================== TAB 1: LIVE COURT & BENCH BOARD ==================== -->
+    <section id="view-live" class="space-y-4">
+
+      <!-- Quick Action & Substitution Queue Bar -->
+      <div class="bg-white rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-200/90 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5">
+          <div id="swap-helper-icon" class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+            <i data-lucide="arrow-left-right" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <p id="swap-instruction-title" class="text-sm font-bold text-slate-900">Tap any player to sub or queue</p>
+            <p id="swap-instruction-sub" class="text-xs text-slate-500">Tap 1 Court + 1 Bench player to swap immediately, or queue subs for the whistle.</p>
+          </div>
         </div>
-        <div class="table-wrap" role="region" aria-label="Playing time" tabindex="0">
-          <table class="summary">
-            <thead><tr id="summary-head"></tr></thead>
-            <tbody id="summary-body"></tbody>
+
+        <div class="flex flex-wrap items-center gap-2 ml-auto">
+          <!-- Mode Toggle: Instant Swap vs Queue for Whistle -->
+          <div class="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200">
+            <button onclick="setSubMode('instant')" id="mode-instant-btn" class="px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow-sm">
+              Instant Swap
+            </button>
+            <button onclick="setSubMode('queue')" id="mode-queue-btn" class="px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">
+              Whistle Queue
+            </button>
+          </div>
+
+          <!-- Auto-Suggest Fair Sub Button -->
+          <button onclick="suggestFairSwap()" title="Highlight longest-playing player & lowest-minutes bench player" class="px-3 py-2 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 flex items-center gap-1.5 active:scale-95 transition">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+            <span>Fair Sub Hint</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Active Whistle Queue Banner (Visible whenever subs are queued) -->
+      <div id="queue-action-banner" class="hidden bg-slate-900 text-white rounded-2xl p-3.5 sm:p-4 shadow-lg border border-orange-500/50 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span class="w-8 h-8 rounded-xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-sm" id="queue-count-circle">0</span>
+          <div>
+            <h3 class="text-sm font-bold text-white">Queued Dead-Ball Substitutions</h3>
+            <p id="queue-pairs-preview" class="text-xs text-slate-300 mt-0.5">Select matching court & bench players to pair.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 ml-auto">
+          <button onclick="clearSubQueue()" class="px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
+            Clear
+          </button>
+          <button onclick="executeQueuedSubs()" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-orange-500 hover:bg-orange-600 text-white shadow-md shadow-orange-500/30 flex items-center gap-1.5 active:scale-95 transition">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+            <span>Sub In Queued (<span id="queue-exec-count">0</span>)</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2"><button id="undo-btn" onclick="undoSwap()" class="px-3 py-2 rounded-xl text-xs font-bold bg-white border border-slate-300" disabled>Undo substitution</button><button id="wake-btn" onclick="toggleWake()" class="px-3 py-2 rounded-xl text-xs font-bold bg-white border border-slate-300" aria-pressed="false">Keep screen awake</button><span id="save-status" class="text-xs text-slate-600" role="status"></span></div>
+      <!-- Split Court & Bench Grid -->
+      <div class="grid grid-cols-2 lg:grid-cols-12 gap-2 sm:gap-6 items-start live-grid">
+        
+        <!-- LEFT / TOP: ON COURT (ACTIVE) -->
+        <div class="lg:col-span-6 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <h2 id="active-zone-title" class="font-extrabold text-sm sm:text-base tracking-tight uppercase">On Court (Active)</h2>
+            </div>
+            <span id="active-count-badge" class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 tabular-nums">
+              5 / 5
+            </span>
+          </div>
+
+          <!-- Warning if active count doesn't match target -->
+          <div id="lineup-count-warning" class="hidden bg-amber-50 border-b border-amber-200 px-4 py-2 text-xs font-semibold text-amber-800 flex items-center justify-between">
+            <span id="lineup-warning-text">Lineup has 4 players (Target: 5).</span>
+            <button class="text-[11px] underline cursor-pointer" onclick="switchTab('roster')">Adjust Roster</button>
+          </div>
+
+          <div id="court-players-list" class="p-3 sm:p-4 space-y-2.5">
+            <!-- Active Player Cards Rendered Here -->
+          </div>
+        </div>
+
+        <!-- RIGHT / BOTTOM: ON BENCH -->
+        <div class="lg:col-span-6 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+          <div class="bg-slate-800 text-white px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+              <h2 class="font-extrabold text-sm sm:text-base tracking-tight uppercase">On Bench (Ready)</h2>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] text-slate-300 hidden sm:inline">Sorted by least played</span>
+              <span id="bench-count-badge" class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-slate-700 text-slate-200 tabular-nums">
+                0
+              </span>
+            </div>
+          </div>
+
+          <div id="bench-players-list" class="p-3 sm:p-4 space-y-2.5">
+            <!-- Bench Player Cards Rendered Here -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Fair Play Legend Footer -->
+      <div class="bg-white rounded-2xl px-4 py-3 border border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
+        <span class="font-bold text-slate-800">Fair Play Time Legend:</span>
+        <div class="flex flex-wrap items-center gap-4">
+          <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Needs Minutes (&lt;85% avg)</span>
+          <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-sky-500 inline-block"></span> Balanced (85%–115% avg)</span>
+          <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> High Minutes (&gt;115% avg)</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 2: ROSTER & SPORT SETUP ==================== -->
+    <section id="view-roster" class="hidden space-y-5">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        
+        <!-- Sport & Clock Settings Card -->
+        <div class="lg:col-span-5 bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+              <i data-lucide="sliders" class="w-4 h-4 text-orange-600"></i>
+              Sport & Clock Configuration
+            </h2>
+          </div>
+
+          <!-- Sport Presets -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Sport Preset</label>
+            <div class="grid grid-cols-2 gap-2" id="sport-presets-grid">
+              <button onclick="applySportPreset('basketball')" data-preset="basketball" class="preset-btn p-2.5 rounded-xl border-2 text-left transition flex items-center gap-2.5 border-orange-500 bg-orange-50/70">
+                <span class="text-xl">🏀</span>
+                <div>
+                  <div class="text-xs font-extrabold text-slate-900">Basketball</div>
+                  <div class="text-[11px] text-slate-500">5 on court • 4×8m</div>
+                </div>
+              </button>
+              <button onclick="applySportPreset('soccer7')" data-preset="soccer7" class="preset-btn p-2.5 rounded-xl border-2 border-slate-200 hover:border-slate-300 text-left transition flex items-center gap-2.5">
+                <span class="text-xl">⚽</span>
+                <div>
+                  <div class="text-xs font-extrabold text-slate-900">Soccer 7v7</div>
+                  <div class="text-[11px] text-slate-500">7 on field • 2×25m</div>
+                </div>
+              </button>
+              <button onclick="applySportPreset('soccer9')" data-preset="soccer9" class="preset-btn p-2.5 rounded-xl border-2 border-slate-200 hover:border-slate-300 text-left transition flex items-center gap-2.5">
+                <span class="text-xl">⚽</span>
+                <div>
+                  <div class="text-xs font-extrabold text-slate-900">Soccer 9v9</div>
+                  <div class="text-[11px] text-slate-500">9 on field • 2×30m</div>
+                </div>
+              </button>
+              <button onclick="applySportPreset('hockey')" data-preset="hockey" class="preset-btn p-2.5 rounded-xl border-2 border-slate-200 hover:border-slate-300 text-left transition flex items-center gap-2.5">
+                <span class="text-xl">🏒</span>
+                <div>
+                  <div class="text-xs font-extrabold text-slate-900">Hockey / Lax</div>
+                  <div class="text-[11px] text-slate-500">6 active • 3×15m</div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Custom Numeric Settings -->
+          <div class="grid grid-cols-3 gap-3 pt-1">
+            <div>
+              <label for="setting-active-count" class="block text-xs font-bold text-slate-700 mb-1">Active Spots</label>
+              <input id="setting-active-count" type="number" min="1" max="22" value="5" onchange="updateGameSettings()" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" />
+            </div>
+            <div>
+              <label for="setting-period-mins" class="block text-xs font-bold text-slate-700 mb-1">Mins / Period</label>
+              <input id="setting-period-mins" type="number" min="1" max="60" value="8" onchange="updateGameSettings()" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" />
+            </div>
+            <div>
+              <label for="setting-num-periods" class="block text-xs font-bold text-slate-700 mb-1">Periods</label>
+              <select id="setting-num-periods" onchange="updateGameSettings()" class="w-full px-2.5 py-2 rounded-xl border border-slate-300 font-bold text-sm bg-white focus:outline-none focus:ring-2 focus:ring-orange-500">
+                <option value="2">2 Halves</option>
+                <option value="3">3 Periods</option>
+                <option value="4" selected>4 Quarters</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Game Reset Controls -->
+          <div class="pt-3 border-t border-slate-100 flex flex-wrap gap-2">
+            <button onclick="confirmResetAllStats()" class="flex-1 px-3 py-2.5 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              <span>Reset All Game Timers</span>
+            </button>
+            <button onclick="confirmLoadSampleRoster()" class="px-3 py-2.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="users-round" class="w-3.5 h-3.5"></i>
+              <span>Load Default Roster</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Team Roster Management Card -->
+        <div class="lg:col-span-7 bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <div>
+              <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                <i data-lucide="shirt" class="w-4 h-4 text-orange-600"></i>
+                Team Roster & Attendance
+              </h2>
+              <p class="text-xs text-slate-500">Toggle Present/Absent for game day, or set starting lineup.</p>
+            </div>
+            <span id="roster-present-summary" class="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">
+              0 Present
+            </span>
+          </div>
+
+          <!-- Quick Add Player Form -->
+          <form onsubmit="handleAddPlayer(event)" class="flex gap-2">
+            <input id="new-player-number" aria-label="Jersey number" type="text" maxlength="3" placeholder="#" class="w-16 px-3 py-2.5 rounded-xl border border-slate-300 font-mono font-bold text-center text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" />
+            <input id="new-player-name" aria-label="Player name" maxlength="2000" type="text" required placeholder="Name, or paste a list: Ben, Caleb, 12 Jed" class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" />
+            <button type="submit" class="px-4 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-sm flex items-center gap-1.5 shadow-sm active:scale-95 transition">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>Add</span>
+            </button>
+          </form>
+
+          <!-- Roster Table / List -->
+          <div id="roster-manage-list" class="divide-y divide-slate-100 max-h-[440px] overflow-y-auto pr-1">
+            <!-- Roster rows injected here -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: POST-GAME / LIVE SUMMARY ==================== -->
+    <section id="view-summary" class="hidden space-y-4">
+      
+      <!-- Summary KPI Cards -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="text-xs font-bold text-slate-500 uppercase">Total Game Elapsed</div>
+          <div id="sum-total-elapsed" class="text-2xl font-extrabold font-mono text-slate-900 mt-1 tabular-nums">00:00</div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="text-xs font-bold text-slate-500 uppercase">Avg Per Player</div>
+          <div id="sum-avg-player" class="text-2xl font-extrabold font-mono text-orange-600 mt-1 tabular-nums">00:00</div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="text-xs font-bold text-slate-500 uppercase">Minutes Spread</div>
+          <div id="sum-spread" class="text-2xl font-extrabold font-mono text-slate-900 mt-1 tabular-nums">00:00</div>
+          <div class="text-[11px] text-slate-400">Max minus Min</div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+          <div class="text-xs font-bold text-slate-500 uppercase">Active Roster</div>
+          <div id="sum-roster-count" class="text-2xl font-extrabold text-slate-900 mt-1 tabular-nums">0</div>
+          <div class="text-[11px] text-slate-400">Present today</div>
+        </div>
+      </div>
+
+      <!-- Export & Sort Toolbar -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-slate-500 uppercase">Sort by:</span>
+          <select id="summary-sort-select" aria-label="Sort players" onchange="renderSummary()" class="px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-bold bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-orange-500">
+            <option value="least">Least Playing Time First</option>
+            <option value="most">Most Playing Time First</option>
+            <option value="jersey">Jersey Number</option>
+            <option value="name">Player Name</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="copySummaryToClipboard()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white flex items-center gap-1.5 active:scale-95 transition shadow-sm">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span>Copy Summary</span>
+          </button>
+          <button onclick="downloadCSV()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-orange-600 hover:bg-orange-700 text-white flex items-center gap-1.5 active:scale-95 transition shadow-sm">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>Download CSV</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Detailed Playing Time Table -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-900 text-slate-200 text-xs uppercase tracking-wider">
+                <th class="py-3 px-4 font-bold">#</th>
+                <th class="py-3 px-4 font-bold">Player</th>
+                <th class="py-3 px-4 font-bold">Status</th>
+                <th class="py-3 px-4 font-bold">Total Time</th>
+                <th class="py-3 px-4 font-bold">% Played</th>
+                <th class="py-3 px-4 font-bold">Current Stint / Wait</th>
+                <th class="py-3 px-4 font-bold">Fair Share</th>
+              </tr>
+            </thead>
+            <tbody id="summary-table-body" class="divide-y divide-slate-100 text-sm">
+              <!-- Summary rows injected here -->
+            </tbody>
           </table>
         </div>
       </div>
 
-      <div class="actionbar">
-        <p id="status" role="status"></p>
-        <div class="actions">
-          <button id="apply" type="button" class="primary" hidden></button>
-          <button id="move" type="button" hidden></button>
-          <button id="sit-out" type="button" hidden>Sit out</button>
-          <button id="cancel" type="button" hidden>Cancel</button>
-          <button id="undo" type="button" hidden>Undo</button>
-          <button id="new-game" type="button" class="quiet">New game</button>
-        </div>
-      </div>
     </section>
+
   </main>
 
-  <dialog id="confirm" aria-labelledby="confirm-title" aria-describedby="confirm-text" closedby="any">
-    <h2 id="confirm-title"></h2>
-    <p id="confirm-text"></p>
-    <form method="dialog" class="dialog-actions">
-      <button value="cancel" autofocus>Cancel</button>
-      <button id="confirm-ok" value="ok" class="primary"></button>
-    </form>
-  </dialog>
+  <!-- APPLICATION LOGIC -->
+  <script>
+    /**
+     * FairShift — Youth Sports Playing Time & Substitution Tracker
+     * Self-contained state management with localStorage persistence.
+     */
 
-  <dialog id="adjust" aria-labelledby="adjust-title" aria-describedby="adjust-hint" closedby="any">
-    <h2 id="adjust-title">Adjust clock</h2>
-    <p id="adjust-clock" class="clock" aria-live="polite"></p>
-    <div class="adjust-grid">
-      <button type="button" data-seconds="-60">−1:00</button>
-      <button type="button" data-seconds="-10">−0:10</button>
-      <button type="button" data-seconds="10">+0:10</button>
-      <button type="button" data-seconds="60">+1:00</button>
-    </div>
-    <p id="adjust-hint" class="hint"></p>
-    <form method="dialog" class="dialog-actions">
-      <button class="primary" autofocus>Done</button>
-    </form>
-  </dialog>
+    const ICONS = {"play": "<path d=\"m8 5 12 7-12 7z\"/>", "pause": "<path d=\"M9 5v14M15 5v14\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "users": "<circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5\"/>", "clipboard-list": "<rect x=\"5\" y=\"5\" width=\"14\" height=\"16\" rx=\"2\"/><path d=\"M9 5V3h6v2M9 10h6M9 14h6M9 18h6\"/>", "bar-chart-3": "<path d=\"M4 3v17h17M9 16v-5m5 5V8m5 8V4\"/>", "arrow-left-right": "<path d=\"M3 8h17l-4-4m4 4-4 4M21 16H4l4-4m-4 4 4 4\"/>", "sparkles": "<path d=\"m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z\"/>", "check-circle-2": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"m8 12 3 3 5-6\"/>", "alert-triangle": "<path d=\"M12 3 2 21h20zM12 9v5m0 3h.01\"/>", "rotate-ccw": "<path d=\"M3 11a9 9 0 1 1 3 7M3 4v7h7\"/>", "refresh-cw": "<path d=\"M3 11a9 9 0 0 1 15-6l3 3m0-5v5h-5M21 13a9 9 0 0 1-15 6l-3-3m0 5v-5h5\"/>", "shirt": "<path d=\"m8 3-6 4 3 5 3-1v10h8V11l3 1 3-5-6-4a4 4 0 0 1-8 0z\"/>", "sliders": "<path d=\"M4 6h16M4 12h16M4 18h16\"/><circle cx=\"8\" cy=\"6\" r=\"2\" fill=\"currentColor\"/><circle cx=\"16\" cy=\"12\" r=\"2\" fill=\"currentColor\"/><circle cx=\"10\" cy=\"18\" r=\"2\" fill=\"currentColor\"/>", "copy": "<rect x=\"8\" y=\"8\" width=\"12\" height=\"12\" rx=\"2\"/><path d=\"M16 8V4H4v12h4\"/>", "download": "<path d=\"M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5\"/>", "trash-2": "<path d=\"M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7m4-7v7\"/>", "users-round": "<circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5\"/>"};
+    const lucide = {createIcons(){document.querySelectorAll('[data-lucide]').forEach(el=>{const name=el.getAttribute('data-lucide');if(el.dataset.renderedIcon===name)return;el.dataset.renderedIcon=name;el.setAttribute('aria-hidden','true');el.style.display='inline-flex';el.innerHTML=`<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]||''}</svg>`;});}};
+    const STORAGE_KEY = 'courtside_pro_state_v1';
 
-  <dialog id="late" aria-labelledby="late-title" closedby="any">
-    <h2 id="late-title">Add player</h2>
-    <p>They start on the bench with no time played.</p>
-    <form id="late-form" method="dialog">
-      <div class="add-row">
-        <input name="number" class="number" aria-label="Jersey number" inputmode="numeric" maxlength="3"
-          placeholder="#" autocomplete="off">
-        <input name="name" aria-label="Player name" maxlength="40" placeholder="Player name" required
-          autocomplete="off" autocapitalize="words" spellcheck="false">
-      </div>
-      <div class="dialog-actions">
-        <button type="button" value="cancel">Cancel</button>
-        <button value="ok" class="primary">Add</button>
-      </div>
-    </form>
-  </dialog>
+    const SPORT_PRESETS = {
+      basketball: {
+        id: 'basketball',
+        name: 'Basketball',
+        icon: '🏀',
+        zoneLabel: 'On Court',
+        activeCount: 5,
+        periodDurationSec: 8 * 60,
+        numPeriods: 4,
+        periodPrefix: 'Q'
+      },
+      soccer7: {
+        id: 'soccer7',
+        name: 'Soccer 7v7',
+        icon: '⚽',
+        zoneLabel: 'On Field',
+        activeCount: 7,
+        periodDurationSec: 25 * 60,
+        numPeriods: 2,
+        periodPrefix: 'H'
+      },
+      soccer9: {
+        id: 'soccer9',
+        name: 'Soccer 9v9',
+        icon: '⚽',
+        zoneLabel: 'On Field',
+        activeCount: 9,
+        periodDurationSec: 30 * 60,
+        numPeriods: 2,
+        periodPrefix: 'H'
+      },
+      hockey: {
+        id: 'hockey',
+        name: 'Hockey / Lax',
+        icon: '🏒',
+        zoneLabel: 'On Ice/Field',
+        activeCount: 6,
+        periodDurationSec: 15 * 60,
+        numPeriods: 3,
+        periodPrefix: 'P'
+      }
+    };
+
+    const SAMPLE_ROSTER = [
+      { id: 'p1', number: '1', name: 'Ben', present: true, onCourt: true, totalSec: 0, stintSec: 0, benchSec: 0 },
+      { id: 'p2', number: '2', name: 'Caleb', present: true, onCourt: true, totalSec: 0, stintSec: 0, benchSec: 0 },
+      { id: 'p3', number: '3', name: 'Tristan', present: true, onCourt: true, totalSec: 0, stintSec: 0, benchSec: 0 },
+      { id: 'p4', number: '4', name: 'Noah', present: true, onCourt: true, totalSec: 0, stintSec: 0, benchSec: 0 },
+      { id: 'p5', number: '5', name: 'Gauge', present: true, onCourt: true, totalSec: 0, stintSec: 0, benchSec: 0 },
+      { id: 'p6', number: '6', name: 'Lawson', present: true, onCourt: false, totalSec: 0, stintSec: 0, benchSec: 0 },
+      { id: 'p7', number: '7', name: 'Myers', present: true, onCourt: false, totalSec: 0, stintSec: 0, benchSec: 0 },
+      { id: 'p8', number: '8', name: 'Jed', present: true, onCourt: false, totalSec: 0, stintSec: 0, benchSec: 0 },
+      { id: 'p9', number: '9', name: 'Jack', present: true, onCourt: false, totalSec: 0, stintSec: 0, benchSec: 0 }
+    ];
+
+    // Default Application State
+    let appState = {
+      sportId: 'basketball',
+      sportName: 'Basketball',
+      sportIcon: '🏀',
+      zoneLabel: 'On Court',
+      activeTarget: 5,
+      periodDurationSec: 480, // 8 mins
+      numPeriods: 4,
+      currentPeriod: 1,
+      periodRemainingSec: 480,
+      totalGameElapsedSec: 0,
+      isRunning: false,
+      subMode: 'instant', // 'instant' or 'queue'
+      players: JSON.parse(JSON.stringify(SAMPLE_ROSTER))
+    };
+
+    // Transient UI Selection State (not persisted across reloads)
+    let selectedCourtId = null;
+    let selectedBenchId = null;
+    let queuedPairs = []; // Array of { courtId, benchId }
+    let currentTab = 'live';
+    let timerInterval = null;
+    let lastTickTimestamp = null;
+    let lastSaved = 0;
+    let lastRenderedSecond = -1;
+    let wakeLock = null, wakeWanted = false;
+    let undoRecord = null;
+
+    /* ==================== INITIALIZATION & PERSISTENCE ==================== */
+
+    function initApp() {
+      loadState();
+      // Always start paused on page load for safety
+      appState.isRunning = false;
+      queuedPairs = Array.isArray(appState.queuedPairs) ? appState.queuedPairs : [];
+      undoRecord = appState.undoRecord || null;
+      sanitizeSelections();
+      syncSettingsInputs();
+      renderAll();
+      startMasterTicker();
+    }
+
+    function saveState() {
+      try {
+        appState.queuedPairs = queuedPairs;
+        appState.undoRecord = undoRecord;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+        lastSaved = performance.now();
+        document.getElementById("save-status").textContent = "Saved on this device";
+      } catch (e) {
+        document.getElementById('save-status').textContent = 'Not saved — storage unavailable';
+      }
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed.players) || !parsed.players.every(p => p && typeof p.id === "string" && /^[a-zA-Z0-9_-]+$/.test(p.id) && typeof p.name === "string" && typeof p.number === "string" && [p.totalSec,p.stintSec,p.benchSec].every(v=>Number.isFinite(v)&&v>=0))) throw Error("Invalid roster");
+          if (![parsed.periodDurationSec,parsed.periodRemainingSec,parsed.totalGameElapsedSec,parsed.activeTarget,parsed.numPeriods,parsed.currentPeriod].every(v=>Number.isFinite(v)&&v>=0) || parsed.activeTarget<1 || parsed.numPeriods<1 || parsed.periodDurationSec<1) throw Error("Invalid clock");
+          appState = { ...appState, ...parsed, isRunning: false };
+        }
+      } catch (e) {
+        console.warn('Could not load saved state:', e);
+      }
+    }
+
+    /* ==================== MASTER 1-SECOND GAME CLOCK TICKER ==================== */
+
+    function startMasterTicker() {
+      lastTickTimestamp = performance.now();
+      timerInterval = setInterval(() => {
+        if (!appState.isRunning) return;
+        reconcileClock();
+        const sec = Math.floor(appState.totalGameElapsedSec);
+        if (sec !== lastRenderedSecond || !appState.isRunning) {
+          lastRenderedSecond = sec;
+          renderHeaderClock();
+          if (currentTab === 'live') updateLiveTimes();
+          if (currentTab === 'summary') renderSummary();
+        }
+        if (performance.now() - lastSaved >= 1000 || !appState.isRunning) saveState();
+      }, 200);
+    }
+    function reconcileClock() {
+      const now = performance.now();
+      if (!appState.isRunning) { lastTickTimestamp = now; return; }
+      const delta = Math.min(appState.periodRemainingSec, Math.max(0, (now-lastTickTimestamp)/1000));
+      lastTickTimestamp = now;
+      appState.periodRemainingSec = Math.max(0, appState.periodRemainingSec-delta);
+      appState.totalGameElapsedSec += delta;
+      for (const p of appState.players) {
+        if (!p.present) continue;
+        if (p.onCourt) { p.totalSec += delta; p.stintSec += delta; }
+        else p.benchSec += delta;
+      }
+      if (appState.periodRemainingSec <= 0) {
+        appState.isRunning = false;
+        showToast(`End of Period ${appState.currentPeriod}! Clock stopped.`, 'orange');
+      }
+    }
+    function toggleClock() {
+      const wasRunning = appState.isRunning;
+      reconcileClock();
+      if (wasRunning) appState.isRunning = false;
+      else {
+        if (appState.periodRemainingSec <= 0) { showToast('Period ended. Advance or reset the clock.', 'amber'); return; }
+        const n = appState.players.filter(p=>p.present && p.onCourt).length;
+        if (!n || n !== Math.min(appState.activeTarget,appState.players.filter(p=>p.present).length) || n>appState.activeTarget) { showToast('Check the active lineup before starting.', 'amber'); return; }
+        appState.isRunning = true;
+      }
+      lastTickTimestamp = performance.now(); saveState(); renderHeaderClock(); updateLiveTimes();
+    }
+    function adjustClock(deltaSec) {
+      reconcileClock();
+      appState.periodRemainingSec = Math.max(0, Math.min(appState.periodDurationSec, appState.periodRemainingSec + deltaSec));
+      if (!appState.periodRemainingSec) appState.isRunning = false;
+      saveState(); renderHeaderClock();
+    }
+    function cyclePeriod() {
+      reconcileClock();
+      if (appState.currentPeriod >= appState.numPeriods) { showToast('Final period. Reset game timers to start a new game.', 'amber'); return; }
+      const advance = () => { reconcileClock(); appState.isRunning=false; appState.currentPeriod++; appState.periodRemainingSec=appState.periodDurationSec; saveState(); renderHeaderClock(); showToast(`Switched to Period ${appState.currentPeriod}`, 'slate'); };
+      if (appState.periodRemainingSec>0) openConfirmModal('Advance period?', 'Remaining time will be cleared. Playing time totals remain intact.', advance); else advance();
+    }
+
+    function confirmResetPeriod() {
+      openConfirmModal(
+        'Reset Period Clock?',
+        `Reset Period ${appState.currentPeriod} clock back to ${formatTime(appState.periodDurationSec)}? Player cumulative totals will stay intact.`,
+        () => {
+          reconcileClock();
+          appState.isRunning = false;
+          appState.periodRemainingSec = appState.periodDurationSec;
+          saveState();
+          renderHeaderClock();
+          showToast('Period clock reset.', 'slate');
+        }
+      );
+    }
+
+    /* ==================== SUBSTITUTION & QUEUE WORKFLOW ==================== */
+
+    function setSubMode(mode) {
+      if (queuedPairs.length && mode !== appState.subMode) { showToast("Execute or clear queued substitutions first.", "amber"); return; }
+      appState.subMode = mode;
+      selectedCourtId = null;
+      selectedBenchId = null;
+      saveState();
+      renderLiveBoard();
+    }
+
+    function handlePlayerCardTap(playerId) {
+      sanitizeSelections();
+      const player = appState.players.find(p => p.id === playerId);
+      if (!player || !player.present) return;
+
+      // Check if player is already part of a queued pair -> remove that pair if tapped again
+      const existingPairIdx = queuedPairs.findIndex(pair => pair.courtId === playerId || pair.benchId === playerId);
+      if (existingPairIdx !== -1) {
+        queuedPairs.splice(existingPairIdx, 1);
+        selectedCourtId = null;
+        selectedBenchId = null;
+        saveState(); renderLiveBoard();
+        showToast('Removed player from sub queue.', 'slate');
+        return;
+      }
+
+      if (player.onCourt) {
+        selectedCourtId = (selectedCourtId === playerId) ? null : playerId;
+      } else {
+        selectedBenchId = (selectedBenchId === playerId) ? null : playerId;
+      }
+
+      // If we have 1 Court player and 1 Bench player selected:
+      if (selectedCourtId && selectedBenchId) {
+        if (appState.subMode === 'instant') {
+          executeSingleSwap(selectedCourtId, selectedBenchId);
+          selectedCourtId = null;
+          selectedBenchId = null;
+        } else {
+          // Add to dead-ball whistle queue
+          queuedPairs.push({ courtId: selectedCourtId, benchId: selectedBenchId });
+          selectedCourtId = null;
+          selectedBenchId = null;
+          showToast(`Queued substitution (${queuedPairs.length} ready for whistle).`, 'orange');
+        }
+      }
+
+      saveState(); renderLiveBoard();
+    }
+
+    function executeSingleSwap(courtPlayerId, benchPlayerId, silent = false) {
+      const outPlayer = appState.players.find(p => p.id === courtPlayerId);
+      const inPlayer = appState.players.find(p => p.id === benchPlayerId);
+      if (!outPlayer?.present || !inPlayer?.present || !outPlayer.onCourt || inPlayer.onCourt || outPlayer === inPlayer) return false;
+      reconcileClock();
+      if (!silent) rememberSwap([ {courtId:courtPlayerId, benchId:benchPlayerId} ]);
+
+      outPlayer.onCourt = false;
+      outPlayer.stintSec = 0;
+      outPlayer.benchSec = 0;
+
+      inPlayer.onCourt = true;
+      inPlayer.benchSec = 0;
+      inPlayer.stintSec = 0;
+
+      saveState();
+      if (!silent) {
+        showToast(`SUB: #${inPlayer.number} ${inPlayer.name} IN for #${outPlayer.number} ${outPlayer.name}`, 'emerald');
+      }
+      return true;
+    }
+
+    function executeQueuedSubs() {
+      if (queuedPairs.length === 0) return;
+      sanitizeSelections();
+      reconcileClock();
+      const valid = [...queuedPairs];
+      if (!valid.length) { renderLiveBoard(); return; }
+      rememberSwap(valid);
+      let count = 0;
+      valid.forEach(pair => { if (executeSingleSwap(pair.courtId, pair.benchId, true)) count++; });
+      queuedPairs = [];
+      selectedCourtId = null;
+      selectedBenchId = null;
+      saveState();
+      renderAll();
+      showToast(`Completed ${count} substitution${count > 1 ? 's' : ''}!`, 'emerald');
+    }
+
+    function clearSubQueue() {
+      queuedPairs = [];
+      selectedCourtId = null;
+      selectedBenchId = null;
+      saveState(); renderLiveBoard();
+    }
+
+    function suggestFairSwap() {
+      const present = appState.players.filter(p => p.present);
+      const reserved = new Set(queuedPairs.flatMap(p=>[p.courtId,p.benchId]));
+      const onCourt = present.filter(p => p.onCourt && !reserved.has(p.id));
+      const onBench = present.filter(p => !p.onCourt && !reserved.has(p.id));
+
+      if (onCourt.length === 0 || onBench.length === 0) {
+        showToast('Need players both on court and on bench for a sub suggestion.', 'amber');
+        return;
+      }
+
+      // Highest total minutes (tie-break by longest current stint)
+      const mostPlayed = [...onCourt].sort((a, b) => (b.totalSec - a.totalSec) || (b.stintSec - a.stintSec))[0];
+      // Lowest total minutes (tie-break by longest bench wait)
+      const leastPlayed = [...onBench].sort((a, b) => (a.totalSec - b.totalSec) || (b.benchSec - a.benchSec))[0];
+
+      selectedCourtId = mostPlayed.id;
+      selectedBenchId = leastPlayed.id;
+      document.getElementById("suggest-apply")?.remove();
+      renderLiveBoard();
+      showToast(`Suggested: #${leastPlayed.number} ${leastPlayed.name} IN for #${mostPlayed.number} ${mostPlayed.name}`, 'indigo');
+    }
+
+    /* ==================== SPORT & ROSTER MANAGEMENT ==================== */
+
+    function applySportPreset(presetKey) {
+      const preset = SPORT_PRESETS[presetKey];
+      if (!preset) return;
+
+      reconcileClock();
+      if (appState.totalGameElapsedSec > 0 || appState.isRunning) { showToast("Reset game timers before changing sports.", "amber"); return; }
+      undoRecord = null;
+      appState.isRunning = false;
+      appState.sportId = preset.id;
+      appState.sportName = preset.name;
+      appState.sportIcon = preset.icon;
+      appState.zoneLabel = preset.zoneLabel;
+      appState.activeTarget = preset.activeCount;
+      appState.periodDurationSec = preset.periodDurationSec;
+      appState.numPeriods = preset.numPeriods;
+      appState.currentPeriod = 1;
+      appState.periodRemainingSec = preset.periodDurationSec;
+
+      // Auto-balance active players on court/field up to preset.activeCount
+      let activeAssigned = 0;
+      appState.players.forEach(p => {
+        if (p.present && activeAssigned < preset.activeCount) {
+          p.onCourt = true;
+          activeAssigned++;
+        } else {
+          p.onCourt = false;
+        }
+      });
+
+      queuedPairs = [];
+      selectedCourtId = null;
+      selectedBenchId = null;
+      syncSettingsInputs();
+      saveState();
+      renderAll();
+      showToast(`Switched to ${preset.name} (${preset.activeCount} active).`, 'orange');
+    }
+
+    function updateGameSettings() {
+      reconcileClock();
+      if (appState.isRunning || appState.totalGameElapsedSec > 0) { syncSettingsInputs(); showToast("Reset game timers before changing settings.", "amber"); return; }
+      const activeVal = parseInt(document.getElementById('setting-active-count').value, 10) || 5;
+      const minsVal = parseInt(document.getElementById('setting-period-mins').value, 10) || 8;
+      const periodsVal = parseInt(document.getElementById('setting-num-periods').value, 10) || 4;
+
+      appState.activeTarget = Math.max(1, Math.min(22, activeVal));
+      appState.periodDurationSec = Math.max(1, Math.min(60, minsVal)) * 60;
+      appState.numPeriods = periodsVal;
+      if (appState.currentPeriod > appState.numPeriods) {
+        appState.currentPeriod = 1;
+      }
+      if (!appState.isRunning) {
+        appState.periodRemainingSec = appState.periodDurationSec;
+      }
+
+      syncSettingsInputs();
+      // Mark custom if modified away from exact preset
+      saveState();
+      renderAll();
+      showToast('Game settings updated.', 'slate');
+    }
+
+    function syncSettingsInputs() {
+      document.getElementById('setting-active-count').value = appState.activeTarget;
+      document.getElementById('setting-period-mins').value = Math.round(appState.periodDurationSec / 60);
+      document.getElementById('setting-num-periods').value = appState.numPeriods;
+
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        if (btn.dataset.preset === appState.sportId) {
+          btn.classList.add('border-orange-500', 'bg-orange-50/70');
+          btn.classList.remove('border-slate-200');
+        } else {
+          btn.classList.remove('border-orange-500', 'bg-orange-50/70');
+          btn.classList.add('border-slate-200');
+        }
+      });
+    }
+
+    function handleAddPlayer(e) {
+      e.preventDefault(); reconcileClock();
+      if (appState.isRunning) { showToast("Pause the clock before editing the roster.", "amber"); return; }
+      const numInput = document.getElementById('new-player-number');
+      const nameInput = document.getElementById('new-player-name');
+      // Accept one name or a comma/newline separated list. "12 Jordan" or "#12 Jordan" sets the number.
+      const entries = nameInput.value.split(/[,\n;]+/).map(x => x.trim()).filter(Boolean).map(entry => {
+        const m = entry.match(/^#?(\d{1,3})[\s.:-]+(.+)$/);
+        return m ? { number: m[1], name: m[2].trim().slice(0, 40) } : { number: '', name: entry.slice(0, 40) };
+      }).filter(x => x.name);
+      if (!entries.length) return;
+      if (entries.length === 1 && !entries[0].number) entries[0].number = numInput.value.trim();
+
+      undoRecord = null;
+      const used = new Set(appState.players.map(p => p.number));
+      entries.forEach(x => { if (x.number) used.add(x.number); });
+      let next = 1;
+      let activeCount = appState.players.filter(p => p.present && p.onCourt).length;
+      for (const x of entries) {
+        if (!x.number) { while (used.has(String(next))) next++; x.number = String(next); used.add(x.number); }
+        appState.players.push({
+          id: 'p_' + (globalThis.crypto?.randomUUID?.() || Date.now() + '_' + Math.random().toString(36).slice(2, 8)),
+          number: x.number,
+          name: x.name,
+          present: true,
+          onCourt: activeCount < appState.activeTarget,
+          totalSec: 0,
+          stintSec: 0,
+          benchSec: 0
+        });
+        if (activeCount < appState.activeTarget) activeCount++;
+      }
+
+      numInput.value = '';
+      nameInput.value = '';
+      saveState();
+      renderAll();
+      showToast(entries.length === 1 ? `Added #${entries[0].number} ${entries[0].name} to roster.` : `Added ${entries.length} players to roster.`, 'emerald');
+    }
+
+    function togglePlayerPresence(playerId) {
+      reconcileClock();
+      if (appState.isRunning) { showToast("Pause the clock before editing the roster.", "amber"); return; }
+      undoRecord = null;
+      const player = appState.players.find(p => p.id === playerId);
+      if (!player) return;
+
+      player.present = !player.present;
+      if (!player.present) {
+        player.onCourt = false;
+        queuedPairs = queuedPairs.filter(pair => pair.courtId !== playerId && pair.benchId !== playerId);
+      } else {
+        const currentActive = appState.players.filter(p => p.present && p.onCourt).length;
+        if (currentActive < appState.activeTarget) {
+          player.onCourt = true;
+        }
+      }
+      saveState();
+      renderAll();
+    }
+
+    function togglePlayerLineupSpot(playerId) {
+      reconcileClock();
+      if (appState.isRunning) { showToast("Pause the clock before editing the roster.", "amber"); return; }
+      undoRecord = null;
+      const player = appState.players.find(p => p.id === playerId);
+      if (!player || !player.present) return;
+      if (!player.onCourt && appState.players.filter(p=>p.present && p.onCourt).length >= appState.activeTarget) { showToast("Active lineup is full. Move a player to bench first.", "amber"); return; }
+      player.onCourt = !player.onCourt;
+      player.stintSec = 0;
+      player.benchSec = 0;
+      saveState();
+      renderAll();
+    }
+
+    function removePlayer(playerId) {
+      reconcileClock();
+      if (appState.isRunning) { showToast("Pause the clock before editing the roster.", "amber"); return; }
+      undoRecord = null;
+      appState.players = appState.players.filter(p => p.id !== playerId);
+      queuedPairs = queuedPairs.filter(pair => pair.courtId !== playerId && pair.benchId !== playerId);
+      saveState();
+      renderAll();
+      showToast('Player removed from roster.', 'slate');
+    }
+
+    function confirmResetAllStats() {
+      openConfirmModal(
+        'Reset All Game Timers?',
+        'This will reset the clock to Period 1 and set every player’s game minutes, stints, and bench time back to 00:00.',
+        () => {
+          reconcileClock();
+          appState.isRunning = false;
+          appState.currentPeriod = 1;
+          appState.periodRemainingSec = appState.periodDurationSec;
+          appState.totalGameElapsedSec = 0;
+          undoRecord = null;
+          selectedCourtId = selectedBenchId = null;
+          queuedPairs = [];
+          selectedCourtId = null;
+          selectedBenchId = null;
+          appState.players.forEach(p => {
+            p.totalSec = 0;
+            p.stintSec = 0;
+            p.benchSec = 0;
+          });
+          saveState();
+          renderAll();
+          showToast('All game clocks & player timers reset.', 'orange');
+        }
+      );
+    }
+
+    function confirmLoadSampleRoster() {
+      openConfirmModal(
+        'Load Default Roster?',
+        'Replace your current roster with the default 9-player roster and reset timers?',
+        () => {
+          reconcileClock();
+          appState.isRunning = false;
+          appState.currentPeriod = 1;
+          appState.periodRemainingSec = appState.periodDurationSec;
+          appState.totalGameElapsedSec = 0;
+          undoRecord = null;
+          selectedCourtId = selectedBenchId = null;
+          queuedPairs = [];
+          appState.players = JSON.parse(JSON.stringify(SAMPLE_ROSTER));
+          // Adjust active count to match current sport
+          let activeAssigned = 0;
+          appState.players.forEach(p => {
+            if (activeAssigned < appState.activeTarget) {
+              p.onCourt = true;
+              activeAssigned++;
+            } else {
+              p.onCourt = false;
+            }
+          });
+          saveState();
+          renderAll();
+          showToast('Default roster loaded!', 'emerald');
+        }
+      );
+    }
+
+    /* ==================== FAIR PLAY METRICS & FORMATTING ==================== */
+
+    function getFairPlayMetrics() {
+      const presentPlayers = appState.players.filter(p => p.present);
+      const count = presentPlayers.length;
+      if (count === 0) return { avgSec: 0, targetShareSec: 0, minSec: 0, maxSec: 0 };
+
+      const totalPlayerSec = presentPlayers.reduce((sum, p) => sum + p.totalSec, 0);
+      const avgSec = totalPlayerSec / count;
+      const totalScheduledGameSec = appState.periodDurationSec * appState.numPeriods * Math.min(appState.activeTarget,count);
+      const targetShareSec = Math.round(totalScheduledGameSec / count);
+
+      const times = presentPlayers.map(p => p.totalSec);
+      const minSec = Math.min(...times);
+      const maxSec = Math.max(...times);
+
+      return { avgSec, targetShareSec, minSec, maxSec };
+    }
+
+    function getFairnessStatus(playerTotalSec, avgSec) {
+      if (avgSec < 15) {
+        return { label: 'Even', badgeClass: 'bg-slate-100 text-slate-700', barClass: 'bg-sky-500' };
+      }
+      const ratio = playerTotalSec / avgSec;
+      if (ratio < 0.85) {
+        return { label: 'Needs Mins', badgeClass: 'bg-emerald-100 text-emerald-800 border border-emerald-200', barClass: 'bg-emerald-500' };
+      }
+      if (ratio > 1.15) {
+        return { label: 'High Mins', badgeClass: 'bg-amber-100 text-amber-800 border border-amber-200', barClass: 'bg-amber-500' };
+      }
+      return { label: 'Balanced', badgeClass: 'bg-sky-100 text-sky-800 border border-sky-200', barClass: 'bg-sky-500' };
+    }
+
+    function formatTime(totalSeconds) {
+      const s = Math.max(0, Math.floor(totalSeconds));
+      const mins = Math.floor(s / 60);
+      const secs = s % 60;
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    /* ==================== RENDERING ==================== */
+
+    function renderAll() {
+      renderHeaderClock();
+      renderLiveBoard();
+      renderRosterManagement();
+      renderSummary();
+      lucide.createIcons();
+    }
+
+    function renderHeaderClock() {
+      const { targetShareSec } = getFairPlayMetrics();
+      document.getElementById('sport-icon-badge').textContent = appState.sportIcon;
+      document.getElementById('header-sport-pill').textContent = `${appState.sportName} • ${appState.activeTarget}v${appState.activeTarget}`;
+      document.getElementById('header-fair-share-info').innerHTML = `Target Fair Share: <span class="text-slate-200 font-semibold">${formatTime(targetShareSec)}</span> / player`;
+
+      const presetObj = SPORT_PRESETS[appState.sportId];
+      const prefix = presetObj ? presetObj.periodPrefix : 'P';
+      document.getElementById('period-display').textContent = `${prefix}${appState.currentPeriod} / ${appState.numPeriods}`;
+      document.getElementById('clock-display').textContent = formatTime(Math.ceil(appState.periodRemainingSec));
+
+      const statusLabel = document.getElementById('clock-status-label');
+      const toggleBtn = document.getElementById('clock-toggle-btn');
+      const toggleIcon = document.getElementById('clock-toggle-icon');
+      const toggleText = document.getElementById('clock-toggle-text');
+
+      if (appState.isRunning) {
+        statusLabel.textContent = 'LIVE • RUNNING';
+        statusLabel.className = 'text-[10px] font-bold uppercase tracking-widest text-emerald-400 mt-0.5';
+        toggleBtn.className = 'flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-extrabold text-sm bg-amber-400 hover:bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 active:scale-95 transition';
+        toggleIcon.setAttribute('data-lucide', 'pause');
+        toggleText.textContent = 'PAUSE';
+      } else {
+        statusLabel.textContent = appState.periodRemainingSec === 0 ? 'PERIOD END' : 'STOPPED';
+        statusLabel.className = 'text-[10px] font-bold uppercase tracking-widest text-amber-400 mt-0.5';
+        toggleBtn.className = 'flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-extrabold text-sm bg-emerald-500 hover:bg-emerald-600 text-slate-950 shadow-md shadow-emerald-500/20 active:scale-95 transition';
+        toggleIcon.setAttribute('data-lucide', 'play');
+        toggleText.textContent = 'START';
+      }
+      lucide.createIcons();
+    }
+
+    function renderLiveBoard() {
+      sanitizeSelections();
+      const focusId = document.activeElement?.dataset?.player;
+      document.getElementById("undo-btn").disabled = !undoRecord;
+      document.getElementById("mode-instant-btn").setAttribute("aria-pressed", appState.subMode === "instant");
+      document.getElementById("mode-queue-btn").setAttribute("aria-pressed", appState.subMode === "queue");
+      const presentPlayers = appState.players.filter(p => p.present);
+      const courtPlayers = presentPlayers
+        .filter(p => p.onCourt)
+        .sort((a, b) => b.stintSec - a.stintSec); // Longest stint at top so coach sees who may need a breather
+      const benchPlayers = presentPlayers
+        .filter(p => !p.onCourt)
+        .sort((a, b) => (a.totalSec - b.totalSec) || (b.benchSec - a.benchSec)); // Least total played at top
+
+      const { avgSec, targetShareSec } = getFairPlayMetrics();
+
+      // Zone Headers & Counts
+      document.getElementById('active-zone-title').textContent = `${appState.zoneLabel} (Active)`;
+      const countBadge = document.getElementById('active-count-badge');
+      countBadge.textContent = `${courtPlayers.length} / ${appState.activeTarget}`;
+      if (courtPlayers.length === appState.activeTarget) {
+        countBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 tabular-nums';
+        document.getElementById('lineup-count-warning').classList.add('hidden');
+      } else {
+        countBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-500/30 text-amber-200 border border-amber-400/50 tabular-nums';
+        document.getElementById('lineup-count-warning').classList.remove('hidden');
+        document.getElementById('lineup-warning-text').textContent = `Active lineup has ${courtPlayers.length} players (Target: ${appState.activeTarget}).`;
+      }
+
+      document.getElementById('bench-count-badge').textContent = benchPlayers.length;
+
+      // Sub Mode Buttons
+      const instantBtn = document.getElementById('mode-instant-btn');
+      const queueBtn = document.getElementById('mode-queue-btn');
+      if (appState.subMode === 'instant') {
+        instantBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow-sm';
+        queueBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900';
+      } else {
+        queueBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition bg-orange-600 text-white shadow-sm';
+        instantBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900';
+      }
+
+      // Dynamic Instruction Text
+      const instrTitle = document.getElementById('swap-instruction-title');
+      const instrSub = document.getElementById('swap-instruction-sub');
+      if (selectedCourtId) {
+        const p = appState.players.find(x => x.id === selectedCourtId);
+        instrTitle.textContent = `Selected #${p.number} ${p.name} to come OUT`;
+        instrSub.textContent = 'Now tap a player ON BENCH to complete the substitution.';
+      } else if (selectedBenchId) {
+        const p = appState.players.find(x => x.id === selectedBenchId);
+        instrTitle.textContent = `Selected #${p.number} ${p.name} to go IN`;
+        instrSub.textContent = `Now tap an active player ${appState.zoneLabel.toUpperCase()} to swap out.`;
+      } else {
+        instrTitle.textContent = appState.subMode === 'instant'
+          ? 'Instant Swap Mode: Tap 1 Active + 1 Bench'
+          : 'Whistle Queue Mode: Pair subs for next stoppage';
+        instrSub.textContent = 'Cards show Total Played, Current Stint/Wait, and Fair-Play balance.';
+      }
+
+      // Queue Action Banner
+      const queueBanner = document.getElementById('queue-action-banner');
+      const navBadge = document.getElementById('nav-queued-badge');
+      if (queuedPairs.length > 0) {
+        queueBanner.classList.remove('hidden');
+        navBadge.classList.remove('hidden');
+        navBadge.textContent = queuedPairs.length;
+        document.getElementById('queue-count-circle').textContent = queuedPairs.length;
+        document.getElementById('queue-exec-count').textContent = queuedPairs.length;
+        const previewText = queuedPairs.map(pair => {
+          const outP = appState.players.find(p => p.id === pair.courtId);
+          const inP = appState.players.find(p => p.id === pair.benchId);
+          return `#${inP?.number} ${inP?.name} ⇄ #${outP?.number} ${outP?.name}`;
+        }).join('  •  ');
+        document.getElementById('queue-pairs-preview').textContent = previewText;
+      } else {
+        queueBanner.classList.add('hidden');
+        navBadge.classList.add('hidden');
+      }
+
+      // Render Court Cards
+      const courtListEl = document.getElementById('court-players-list');
+      if (courtPlayers.length === 0) {
+        courtListEl.innerHTML = `<div class="text-center py-8 text-sm text-slate-400">No active players assigned. Go to Roster & Setup to add players.</div>`;
+      } else {
+        courtListEl.innerHTML = courtPlayers.map(p => buildPlayerCardHTML(p, true, avgSec, targetShareSec)).join('');
+      }
+
+      // Render Bench Cards
+      const benchListEl = document.getElementById('bench-players-list');
+      if (benchPlayers.length === 0) {
+        benchListEl.innerHTML = `<div class="text-center py-8 text-sm text-slate-400">No players on the bench.</div>`;
+      } else {
+        benchListEl.innerHTML = benchPlayers.map(p => buildPlayerCardHTML(p, false, avgSec, targetShareSec)).join('');
+      }
+
+      lucide.createIcons();
+      if (focusId) document.querySelector(`[data-player="${focusId}"]`)?.focus({preventScroll:true});
+    }
+
+    function buildPlayerCardHTML(player, isCourt, avgSec, targetShareSec) {
+      const isSelected = (isCourt && selectedCourtId === player.id) || (!isCourt && selectedBenchId === player.id);
+      const queuedIdx = queuedPairs.findIndex(pair => pair.courtId === player.id || pair.benchId === player.id);
+      const isQueued = queuedIdx !== -1;
+
+      const fair = getFairnessStatus(player.totalSec, avgSec);
+      const progressPct = targetShareSec > 0 ? Math.min(100, Math.round((player.totalSec / targetShareSec) * 100)) : 0;
+
+      let borderClasses = 'border-slate-200 hover:border-slate-300 bg-white';
+      if (isSelected) {
+        borderClasses = 'border-orange-500 bg-orange-50/60 selected-swap-card';
+      } else if (isQueued) {
+        borderClasses = 'border-indigo-500 bg-indigo-50/60 ring-2 ring-indigo-500/20';
+      }
+
+      const secondaryTimeLabel = isCourt ? 'Stint' : 'Bench Wait';
+      const secondaryTimeValue = isCourt ? formatTime(player.stintSec) : formatTime(player.benchSec);
+      const secondaryHighlight = isCourt && player.stintSec >= 240 ? 'text-amber-600 font-extrabold' : 'text-slate-700 font-bold';
+
+      return `
+        <button type="button" data-player="${player.id}" onclick="handlePlayerCardTap('${player.id}')" aria-pressed="${isSelected || isQueued}"
+             
+             class="player-card w-full text-left cursor-pointer select-none rounded-2xl border-2 p-3 sm:p-3.5 transition-all active:scale-[0.99] shadow-xs ${borderClasses}">
+          <span class="flex items-center justify-between gap-2">
+            
+            <!-- Left: Jersey Number + Name + Status Tag -->
+            <span class="flex items-center gap-3 min-w-0">
+              <span class="w-11 h-11 rounded-xl ${isCourt ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-800 border border-slate-200'} font-mono font-extrabold text-base flex items-center justify-center shrink-0">
+                ${escapeHTML(player.number)}
+              </span>
+              <span class="min-w-0">
+                <span class="flex items-center gap-1.5">
+                  <span class="font-extrabold text-slate-900 text-sm sm:text-base truncate">${escapeHTML(player.name)}</span>
+                  ${isQueued ? `<span class="px-1.5 py-0.5 text-[10px] font-extrabold rounded bg-indigo-600 text-white uppercase">Sub #${queuedIdx + 1}</span>` : ''}
+                  ${isSelected ? `<span class="px-1.5 py-0.5 text-[10px] font-extrabold rounded bg-orange-600 text-white uppercase">${isCourt ? 'Sub Out' : 'Sub In'}</span>` : ''}
+                </span>
+                <span class="flex items-center gap-2 mt-1">
+                  <span data-fair class="text-[11px] font-bold px-2 py-0.5 rounded-full ${fair.badgeClass}">${fair.label}</span>
+                  <span class="text-xs text-slate-500 tabular-nums">${secondaryTimeLabel}: <span data-stint class="${secondaryHighlight}">${secondaryTimeValue}</span></span>
+                </span>
+              </span>
+            </span>
+
+            <!-- Right: Total Game Time -->
+            <span class="text-right shrink-0 pl-2">
+              <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Played</span>
+              <span data-total class="block font-mono text-lg sm:text-xl font-extrabold text-slate-900 tabular-nums leading-tight">
+                ${formatTime(player.totalSec)}
+              </span>
+            </span>
+
+          </span>
+
+          <!-- Fair Share Progress Bar -->
+          <span class="block mt-2.5 w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+            <span data-progress role="progressbar" aria-label="Fair share progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progressPct}" class="block h-full ${fair.barClass} transition-all duration-300" style="width: ${progressPct}%"></span>
+          </span>
+        </button>
+      `;
+    }
+
+    function renderRosterManagement() {
+      const presentCount = appState.players.filter(p => p.present).length;
+      document.getElementById('roster-present-summary').textContent = `${presentCount} Present / ${appState.players.length} Total`;
+
+      const listEl = document.getElementById('roster-manage-list');
+      if (appState.players.length === 0) {
+        listEl.innerHTML = `<div class="py-8 text-center text-sm text-slate-400">No players on roster yet. Add players above or load the default roster.</div>`;
+        return;
+      }
+
+      listEl.innerHTML = appState.players.map(p => `
+        <div class="py-3 flex items-center justify-between gap-2 ${p.present ? '' : 'opacity-55'}">
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="w-9 h-9 rounded-xl bg-slate-900 text-white font-mono font-bold text-sm flex items-center justify-center shrink-0">
+              ${escapeHTML(p.number)}
+            </span>
+            <div class="min-w-0">
+              <div class="font-bold text-sm text-slate-900 truncate">${escapeHTML(p.name)}</div>
+              <div class="text-xs text-slate-500">Played: ${formatTime(p.totalSec)}</div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1.5 shrink-0">
+            <!-- Toggle Starting / Active Spot -->
+            <button onclick="togglePlayerLineupSpot('${p.id}')" ${!p.present ? 'disabled' : ''}
+              class="px-2.5 py-1.5 rounded-lg text-xs font-bold border transition ${p.onCourt && p.present ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-50 text-slate-600 border-slate-200 disabled:opacity-40'}">
+              ${p.onCourt && p.present ? appState.zoneLabel : 'Bench'}
+            </button>
+
+            <!-- Toggle Present / Absent -->
+            <button onclick="togglePlayerPresence('${p.id}')"
+              class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition ${p.present ? 'bg-sky-100 text-sky-800 hover:bg-sky-200' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}">
+              ${p.present ? 'Present' : 'Absent'}
+            </button>
+
+            <!-- Delete Player -->
+            <button onclick="removePlayer('${p.id}')" title="Remove Player" class="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function renderSummary() {
+      const presentPlayers = appState.players.filter(p => p.present);
+      const { avgSec, minSec, maxSec } = getFairPlayMetrics();
+
+      document.getElementById('sum-total-elapsed').textContent = formatTime(appState.totalGameElapsedSec);
+      document.getElementById('sum-avg-player').textContent = formatTime(avgSec);
+      document.getElementById('sum-spread').textContent = formatTime(presentPlayers.length > 0 ? (maxSec - minSec) : 0);
+      document.getElementById('sum-roster-count').textContent = presentPlayers.length;
+
+      const sortBy = document.getElementById('summary-sort-select').value;
+      const sorted = [...presentPlayers].sort((a, b) => {
+        if (sortBy === 'least') return a.totalSec - b.totalSec;
+        if (sortBy === 'most') return b.totalSec - a.totalSec;
+        if (sortBy === 'jersey') return (parseInt(a.number, 10) || 0) - (parseInt(b.number, 10) || 0);
+        return a.name.localeCompare(b.name);
+      });
+
+      const tbody = document.getElementById('summary-table-body');
+      if (sorted.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">No present players to summarize.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = sorted.map(p => {
+        const pctPlayed = appState.totalGameElapsedSec > 0
+          ? Math.round((p.totalSec / appState.totalGameElapsedSec) * 100)
+          : 0;
+        const fair = getFairnessStatus(p.totalSec, avgSec);
+        return `
+          <tr class="hover:bg-slate-50/80">
+            <td class="py-3 px-4 font-mono font-bold text-slate-700">#${escapeHTML(p.number)}</td>
+            <td class="py-3 px-4 font-bold text-slate-900">${escapeHTML(p.name)}</td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-0.5 rounded-full text-xs font-bold ${p.onCourt ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
+                ${p.onCourt ? appState.zoneLabel : 'Bench'}
+              </span>
+            </td>
+            <td class="py-3 px-4 font-mono font-extrabold text-slate-900 tabular-nums">${formatTime(p.totalSec)}</td>
+            <td class="py-3 px-4 font-semibold text-slate-600 tabular-nums">${pctPlayed}%</td>
+            <td class="py-3 px-4 font-mono text-xs text-slate-600 tabular-nums">
+              ${p.onCourt ? `Stint: ${formatTime(p.stintSec)}` : `Wait: ${formatTime(p.benchSec)}`}
+            </td>
+            <td class="py-3 px-4">
+              <span class="px-2 py-0.5 rounded-full text-xs font-bold ${fair.badgeClass}">${fair.label}</span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    /* ==================== NAVIGATION, EXPORT & UI HELPERS ==================== */
+
+    function switchTab(tabName) {
+      currentTab = tabName;
+      ['live', 'roster', 'summary'].forEach(t => {
+        const view = document.getElementById(`view-${t}`);
+        const btn = document.getElementById(`tab-btn-${t}`);
+        btn.setAttribute("aria-pressed", t === tabName);
+        if (t === tabName) {
+          view.classList.remove('hidden');
+          btn.className = 'tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition bg-orange-600 text-white shadow-sm';
+        } else {
+          view.classList.add('hidden');
+          btn.className = 'tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 transition';
+        }
+      });
+
+      if (tabName === 'live') renderLiveBoard();
+      if (tabName === 'roster') renderRosterManagement();
+      if (tabName === 'summary') renderSummary();
+    }
+
+    async function copySummaryToClipboard() {
+      reconcileClock();
+      const presentPlayers = appState.players
+        .filter(p => p.present)
+        .sort((a, b) => b.totalSec - a.totalSec);
+
+      const lines = [
+        `${appState.sportName} Playing Time Summary (Period ${appState.currentPeriod}/${appState.numPeriods})`,
+        `Total Game Elapsed: ${formatTime(appState.totalGameElapsedSec)}`,
+        `----------------------------------------`,
+        ...presentPlayers.map(p => {
+          const pct = appState.totalGameElapsedSec > 0 ? Math.round((p.totalSec / appState.totalGameElapsedSec) * 100) : 0;
+          return `#${p.number} ${p.name}: ${formatTime(p.totalSec)} (${pct}%)`;
+        })
+      ];
+
+      const text = lines.join('\n');
+      try { if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(text); showToast('Game summary copied to clipboard!', 'emerald'); return; } } catch {}
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        if (!document.execCommand('copy')) throw Error('Copy failed');
+        showToast('Game summary copied to clipboard!', 'emerald');
+      } catch (err) {
+        showToast('Unable to copy summary.', 'amber');
+      }
+      document.body.removeChild(textarea);
+    }
+
+    function downloadCSV() {
+      reconcileClock();
+      const csv = value => { let t = String(value); if (/^[\s]*[=+@-]/.test(t) || /^[\t\r\n]/.test(t)) t = "\'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
+      const presentPlayers = appState.players
+        .filter(p => p.present)
+        .sort((a, b) => b.totalSec - a.totalSec);
+
+      const headers = ['Jersey', 'Player Name', 'Sport', 'Status', 'Total Seconds', 'Total Time (MM:SS)', 'Percent Played'];
+      const rows = presentPlayers.map(p => {
+        const pct = appState.totalGameElapsedSec > 0 ? Math.round((p.totalSec / appState.totalGameElapsedSec) * 100) : 0;
+        return [
+          csv(p.number),
+          csv(p.name),
+          `"${appState.sportName}"`,
+          `"${p.onCourt ? appState.zoneLabel : 'Bench'}"`,
+          Math.floor(p.totalSec),
+          `"${formatTime(p.totalSec)}"`,
+          `"${pct}%"`
+        ].join(',');
+      });
+
+      const csvContent = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const dateStr = new Date().toISOString().slice(0, 10);
+      link.href = url;
+      link.download = `playing-time-${appState.sportId}-${dateStr}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(()=>URL.revokeObjectURL(url), 1000);
+      showToast('CSV report downloaded!', 'emerald');
+    }
+
+    function showToast(message, tone = 'slate') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const colors = {
+        emerald: 'bg-emerald-600 text-white border-emerald-500',
+        orange: 'bg-orange-600 text-white border-orange-500',
+        amber: 'bg-amber-500 text-slate-950 border-amber-400',
+        indigo: 'bg-indigo-600 text-white border-indigo-500',
+        slate: 'bg-slate-900 text-white border-slate-700'
+      };
+      toast.className = `px-4 py-2.5 rounded-xl shadow-xl border text-xs sm:text-sm font-bold transition-all duration-300 transform translate-y-2 opacity-0 ${colors[tone] || colors.slate}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 2600);
+    }
+
+    function openConfirmModal(title, message, onConfirm) {
+      const modal = document.getElementById('confirm-modal');
+      document.getElementById('confirm-title').textContent = title;
+      document.getElementById('confirm-message').textContent = message;
+      modal.showModal();
+      document.getElementById('confirm-cancel-btn').focus();
+
+      const cancelBtn = document.getElementById('confirm-cancel-btn');
+      const okBtn = document.getElementById('confirm-ok-btn');
+
+      const close = () => {
+        modal.close();
+      };
+
+      cancelBtn.onclick = close;
+      okBtn.onclick = () => {
+        close();
+        onConfirm();
+      };
+    }
+
+
+    function sanitizeSelections() {
+      const active = id => appState.players.some(p=>p.id===id && p.present && p.onCourt);
+      const bench = id => appState.players.some(p=>p.id===id && p.present && !p.onCourt);
+      if (!active(selectedCourtId)) selectedCourtId=null;
+      if (!bench(selectedBenchId)) selectedBenchId=null;
+      const used=new Set();
+      queuedPairs=queuedPairs.filter(p=>p && active(p.courtId) && bench(p.benchId) && !used.has(p.courtId) && !used.has(p.benchId) && (used.add(p.courtId),used.add(p.benchId),true));
+    }
+    function rememberSwap(pairs) {
+      const ids=new Set(pairs.flatMap(p=>[p.courtId,p.benchId]));
+      undoRecord={elapsed:appState.totalGameElapsedSec, players:appState.players.filter(p=>ids.has(p.id)).map(p=>({...p}))};
+    }
+    function undoSwap() {
+      if (!undoRecord) return;
+      reconcileClock();
+      const delta=Math.max(0,appState.totalGameElapsedSec-undoRecord.elapsed);
+      for(const prior of undoRecord.players){
+        const p=appState.players.find(p=>p.id===prior.id);
+        if(!p) continue;
+        Object.assign(p,prior);
+        if(p.onCourt){p.totalSec+=delta;p.stintSec+=delta;} else p.benchSec+=delta;
+      }
+      undoRecord=null; selectedCourtId=selectedBenchId=null; sanitizeSelections(); saveState(); renderAll(); showToast('Last substitution undone; playing times corrected.', 'slate');
+    }
+    function updateLiveTimes() {
+      const {avgSec,targetShareSec}=getFairPlayMetrics();
+      document.querySelectorAll('[data-player]').forEach(card=>{
+        const p=appState.players.find(p=>p.id===card.dataset.player); if(!p)return;
+        const fair=getFairnessStatus(p.totalSec,avgSec), pct=targetShareSec?Math.min(100,Math.round(p.totalSec/targetShareSec*100)):0;
+        const total=card.querySelector('[data-total]'), stint=card.querySelector('[data-stint]'), badge=card.querySelector('[data-fair]'), bar=card.querySelector('[data-progress]');
+        total.textContent=formatTime(p.totalSec); stint.textContent=formatTime(p.onCourt?p.stintSec:p.benchSec);
+        stint.className=p.onCourt&&p.stintSec>=240?'text-amber-600 font-extrabold':'text-slate-700 font-bold';
+        badge.textContent=fair.label; badge.className='text-[11px] font-bold px-2 py-0.5 rounded-full '+fair.badgeClass;
+        bar.className='block h-full transition-all duration-300 '+fair.barClass; bar.style.width=pct+'%'; bar.setAttribute('aria-valuenow',pct);
+      });
+    }
+    async function acquireWake(){
+      if(!wakeWanted || document.hidden || !('wakeLock' in navigator)) return;
+      try { wakeLock=await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release',()=>{wakeLock=null; updateWakeButton();}); } catch { wakeWanted=false; showToast('Screen wake lock unavailable.', 'amber'); } updateWakeButton();
+    }
+    function updateWakeButton(){const b=document.getElementById('wake-btn'); b.textContent=wakeLock?'Screen awake · on':'Keep screen awake'; b.setAttribute('aria-pressed',String(!!wakeLock));}
+    async function toggleWake(){
+      if(!('wakeLock' in navigator)){showToast('Screen wake lock unavailable in this browser.', 'amber');return;}
+      wakeWanted=!wakeWanted; if(wakeWanted) await acquireWake(); else if(wakeLock) await wakeLock.release(); updateWakeButton();
+    }
+    document.addEventListener('visibilitychange',()=>{reconcileClock();saveState();if(!document.hidden){renderHeaderClock();updateLiveTimes();acquireWake();}});
+    window.addEventListener('pagehide',()=>{reconcileClock();saveState();});
+    window.addEventListener('storage',e=>{if(e.key===STORAGE_KEY && e.newValue){appState.isRunning=false;showToast('Another tab changed this game. Reload before continuing.', 'amber');}});
+
+    function escapeHTML(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Boot application on DOM ready
+    window.addEventListener('DOMContentLoaded', initApp);
+  </script>
 </body>
 </html>
