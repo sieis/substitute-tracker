@@ -1,0 +1,11 @@
+{
+  "name": "substitute-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Track playing time and substitutions for kids' sports.",
+  "scripts": {
+    "start": "npx serve .",
+    "test": "node --test"
+  }
+}

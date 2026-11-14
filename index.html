@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#111418" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="Track playing time and substitutions for kids' basketball and soccer.">
+  <title>Sub Tracker</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b7a43'/%3E%3Cpath d='M9 12h12l-3-3m5 11H11l3 3' fill='none' stroke='%23fff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="src/app.js"></script>
+</head>
+<body>
+  <main>
+    <section id="setup" class="setup">
+      <h1>Sub Tracker</h1>
+      <p class="lede">Playing time and substitutions, kept simple.</p>
+
+      <form id="setup-form">
+        <fieldset class="sports">
+          <legend>Game</legend>
+          <div id="sports" class="sport-grid"></div>
+        </fieldset>
+
+        <div class="fields">
+          <div class="field">
+            <label for="periods">Periods</label>
+            <input id="periods" name="periods" type="number" inputmode="numeric" min="1" max="8" required>
+          </div>
+          <div class="field">
+            <label for="minutes">Minutes each</label>
+            <input id="minutes" name="minutes" type="number" inputmode="numeric" min="1" max="60" required>
+          </div>
+          <div class="field">
+            <label for="on-field">Players on</label>
+            <input id="on-field" name="onField" type="number" inputmode="numeric" min="1" max="11" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="roster">Players</label>
+          <textarea id="roster" name="roster" rows="9" required aria-describedby="roster-hint"
+            autocomplete="off" autocapitalize="words" spellcheck="false"></textarea>
+          <p id="roster-hint" class="hint"></p>
+        </div>
+
+        <button class="primary big">Start game</button>
+      </form>
+    </section>
+
+    <section id="game" class="game" hidden>
+      <header class="scoreboard">
+        <h1 id="period-label"></h1>
+        <p id="clock" class="clock" role="timer" aria-label="Game clock"></p>
+        <div class="controls">
+          <button id="toggle" type="button" class="primary big"></button>
+          <button id="end-period" type="button" class="big"></button>
+        </div>
+      </header>
+
+      <div id="live" class="live">
+        <section class="group">
+          <h2><span id="on-title"></span> <span id="on-count" class="count"></span></h2>
+          <div id="on-list" class="players"></div>
+        </section>
+        <section class="group">
+          <h2>Bench</h2>
+          <div id="bench-list" class="players"></div>
+          <p id="bench-empty" class="hint" hidden>No one on the bench.</p>
+        </section>
+      </div>
+
+      <table id="summary" class="summary" hidden>
+        <caption>Playing time</caption>
+        <thead>
+          <tr><th scope="col">Player</th><th scope="col" class="num">Played</th><th scope="col" class="num">Share</th></tr>
+        </thead>
+        <tbody id="summary-body"></tbody>
+      </table>
+
+      <div class="actionbar">
+        <p id="status" role="status"></p>
+        <div class="actions">
+          <button id="move" type="button" hidden></button>
+          <button id="cancel" type="button" hidden>Cancel</button>
+          <button id="undo" type="button" hidden>Undo</button>
+          <button id="new-game" type="button" class="quiet">New game</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="confirm" aria-labelledby="confirm-title" aria-describedby="confirm-text" closedby="any">
+    <h2 id="confirm-title"></h2>
+    <p id="confirm-text"></p>
+    <form method="dialog" class="dialog-actions">
+      <button value="cancel" autofocus>Cancel</button>
+      <button id="confirm-ok" value="ok" class="primary"></button>
+    </form>
+  </dialog>
+</body>
+</html>
