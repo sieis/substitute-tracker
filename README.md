@@ -17,8 +17,8 @@ Active spots, minutes per period and number of periods can be edited on the Rost
 
 **Roster & Setup**: add players one at a time or paste a comma-separated list (`Ben, Caleb, 12 Jed`). A leading number sets the jersey; players without one are numbered from 1, skipping numbers already taken. Mark players present or absent and set who starts. **Load Default Roster** restores the 9-player basketball roster (Ben, Caleb, Tristan, Noah, Gauge, Lawson, Myers, Jed, Jack).
 
-**Court & Bench**
-- **Instant Swap**: tap a court player and a bench player to swap them.
+**Court / Field & Bench**
+- **Instant Swap**: tap an active player and a bench player to swap them.
 - **Whistle Queue**: tap any number of bench players going in and active players coming out, in any order. The sub button unlocks once both counts match; players are paired in the order tapped.
 - **Fair Sub Hint** suggests the longest-playing player out and the least-played bench player in.
 - Cards show total time, current stint or bench wait, and a bar toward the fair share. The bench is sorted by least played.

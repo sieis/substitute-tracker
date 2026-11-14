@@ -1925,7 +1925,7 @@
       <nav class="flex items-center gap-1.5 mt-3 pt-2.5 border-t border-slate-800/90 overflow-x-auto no-scrollbar">
         <button onclick="switchTab('live')" id="tab-btn-live" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition bg-orange-600 text-white shadow-sm">
           <i data-lucide="users" class="w-4 h-4"></i>
-          <span>Court & Bench</span>
+          <span id="tab-live-label">Court & Bench</span>
           <span id="nav-queued-badge" class="hidden ml-0.5 px-1.5 py-0.2 text-[11px] font-extrabold rounded-full bg-white text-orange-600">0</span>
         </button>
         <button onclick="switchTab('roster')" id="tab-btn-roster" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 transition">
@@ -1954,7 +1954,7 @@
           </div>
           <div>
             <p id="swap-instruction-title" class="text-sm font-bold text-slate-900">Tap any player to sub or queue</p>
-            <p id="swap-instruction-sub" class="text-xs text-slate-500">Tap 1 Court + 1 Bench player to swap immediately, or queue subs for the whistle.</p>
+            <p id="swap-instruction-sub" class="text-xs text-slate-500">Tap 1 active + 1 bench player to swap immediately, or queue subs for the whistle.</p>
           </div>
         </div>
 
@@ -1983,7 +1983,7 @@
           <span class="w-8 h-8 rounded-xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-sm" id="queue-count-circle">0</span>
           <div>
             <h3 class="text-sm font-bold text-white">Queued Dead-Ball Substitutions</h3>
-            <p id="queue-pairs-preview" class="text-xs text-slate-300 mt-0.5">Select matching court & bench players to pair.</p>
+            <p id="queue-pairs-preview" class="text-xs text-slate-300 mt-0.5">Select matching active & bench players to pair.</p>
           </div>
         </div>
         <div class="flex items-center gap-2 ml-auto">
@@ -2577,7 +2577,7 @@
       const onBench = present.filter(p => !p.onCourt && !reserved.has(p.id));
 
       if (onCourt.length === 0 || onBench.length === 0) {
-        showToast('Need players both on court and on bench for a sub suggestion.', 'amber');
+        showToast(`Need players both ${appState.zoneLabel.toLowerCase()} and on bench for a sub suggestion.`, 'amber');
         return;
       }
 
@@ -2926,6 +2926,7 @@
 
       // Zone Headers & Counts
       document.getElementById('active-zone-title').textContent = `${appState.zoneLabel} (Active)`;
+      document.getElementById('tab-live-label').textContent = `${appState.zoneLabel.replace(/^On /, '')} & Bench`;
       const countBadge = document.getElementById('active-count-badge');
       countBadge.textContent = `${courtPlayers.length} / ${appState.activeTarget}`;
       if (courtPlayers.length === appState.activeTarget) {
