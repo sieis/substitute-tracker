@@ -1742,16 +1742,6 @@
       .live-grid>div>div:first-child { padding:9px 6px; gap:4px; }
       .live-grid h2 { font-size:11px; }
       #court-players-list,#bench-players-list { padding:5px; }
-      .player-card { padding:6px; border-radius:10px; }
-      .player-card>span:first-child { display:flex; flex-direction:column; align-items:stretch; gap:4px; }
-      .player-card>span:first-child>span:first-child { gap:4px; }
-      .player-card>span:first-child>span:first-child>span:first-child { width:27px;height:27px;font-size:12px; border-radius:6px; }
-      .player-card>span:first-child>span:first-child>span:nth-child(2) { flex:1; }
-      .player-card>span:first-child>span:first-child>span:nth-child(2)>span { flex-wrap:wrap; gap:2px; }
-      .player-card [data-fair] { font-size:9px; padding:1px 3px; }
-      .player-card [data-total] { font-size:20px; }
-      .player-card>span:first-child>span:last-child { display:flex; align-items:center; justify-content:space-between; padding:0; }
-      .player-card>span:last-child { margin-top:5px; }
       #roster-manage-list>div { flex-wrap:wrap; }
       #view-roster form { flex-wrap:wrap; }
       #view-roster form input:nth-child(2){flex:1; }
@@ -1831,6 +1821,28 @@
     .player-card [data-total] { letter-spacing:-0.03em; }
     .player-card > span:last-child { height:6px !important; background:#e7eeed !important; }
     .player-card [data-progress] { border-radius:999px; }
+    /* Compact player card: one header line, two big times. Sizes scale with card width. */
+    .player-card { container-type:inline-size; padding:7px 9px 8px; border-radius:14px !important; }
+    .pc-head { display:flex; align-items:center; gap:clamp(3px,2.5cqi,7px); min-width:0; }
+    .pc-num { flex:none; display:inline-flex; align-items:center; justify-content:center; font-family:ui-monospace,monospace; font-weight:800;
+      min-width:clamp(20px,13cqi,28px); height:clamp(20px,13cqi,28px); padding:0 3px; border-radius:7px; font-size:clamp(10px,7cqi,14px); }
+    .pc-name { flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+      font-weight:800; color:#0f172a; font-size:clamp(11px,8.5cqi,16px); line-height:1.15; }
+    .pc-fair, .pc-tag { flex:none; white-space:nowrap; font-weight:800; border-radius:999px; line-height:1.3;
+      font-size:clamp(8px,5.5cqi,11px); padding:1px clamp(4px,3cqi,8px); }
+    .pc-tag { border-radius:5px; text-transform:uppercase; }
+    .pc-times { display:flex; justify-content:space-between; align-items:flex-end; gap:6px; margin-top:4px; }
+    .pc-time { display:flex; flex-direction:column; min-width:0; }
+    .pc-time-right { text-align:right; align-items:flex-end; }
+    .pc-label { font-size:clamp(8px,5.5cqi,10px); font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#94a3b8; line-height:1.1; }
+    .pc-total, .pc-sec { font-family:ui-monospace,monospace; font-weight:800; font-variant-numeric:tabular-nums; line-height:1.05; letter-spacing:-0.03em; white-space:nowrap; }
+    .pc-total { color:#0f172a; font-size:clamp(17px,13.5cqi,26px); }
+    .pc-sec { font-size:clamp(15px,11cqi,22px); }
+    .player-card > span:last-child { margin-top:6px; height:5px !important; }
+    /* Very narrow phones: START/PAUSE shows its icon only so the clock row fits */
+    @media (max-width:374px) { #clock-toggle-text { display:none; } #clock-toggle-btn { padding:.6rem .7rem; } }
+    /* Pills, badges and buttons never wrap onto a second line */
+    .rounded-full, button:not(.player-card), #header-sport-pill { white-space:nowrap; }
 
     /* Forms */
     main input, main select { border-color:rgba(16,38,44,.16) !important; background-color:#fbfdfd; }
@@ -2034,7 +2046,7 @@
             <button class="text-[11px] underline cursor-pointer" onclick="switchTab('roster')">Adjust Roster</button>
           </div>
 
-          <div id="court-players-list" class="p-3 sm:p-4 space-y-2.5">
+          <div id="court-players-list" class="p-3 sm:p-4 space-y-1.5">
             <!-- Active Player Cards Rendered Here -->
           </div>
         </div>
@@ -2054,7 +2066,7 @@
             </div>
           </div>
 
-          <div id="bench-players-list" class="p-3 sm:p-4 space-y-2.5">
+          <div id="bench-players-list" class="p-3 sm:p-4 space-y-1.5">
             <!-- Bench Player Cards Rendered Here -->
           </div>
         </div>
@@ -2878,16 +2890,16 @@
 
     function getFairnessStatus(playerTotalSec, avgSec) {
       if (avgSec < 15) {
-        return { label: 'Even', badgeClass: 'bg-slate-100 text-slate-700', barClass: 'bg-sky-500' };
+        return { label: 'Even', short: 'Even', badgeClass: 'bg-slate-100 text-slate-700', barClass: 'bg-sky-500' };
       }
       const ratio = playerTotalSec / avgSec;
       if (ratio < 0.85) {
-        return { label: 'Needs Mins', badgeClass: 'bg-emerald-100 text-emerald-800 border border-emerald-200', barClass: 'bg-emerald-500' };
+        return { label: 'Needs Mins', short: 'Low', badgeClass: 'bg-emerald-100 text-emerald-800 border border-emerald-200', barClass: 'bg-emerald-500' };
       }
       if (ratio > 1.15) {
-        return { label: 'High Mins', badgeClass: 'bg-amber-100 text-amber-800 border border-amber-200', barClass: 'bg-amber-500' };
+        return { label: 'High Mins', short: 'High', badgeClass: 'bg-amber-100 text-amber-800 border border-amber-200', barClass: 'bg-amber-500' };
       }
-      return { label: 'Balanced', badgeClass: 'bg-sky-100 text-sky-800 border border-sky-200', barClass: 'bg-sky-500' };
+      return { label: 'Balanced', short: 'OK', badgeClass: 'bg-sky-100 text-sky-800 border border-sky-200', barClass: 'bg-sky-500' };
     }
 
     function formatTime(totalSeconds) {
@@ -2910,7 +2922,8 @@
     function renderHeaderClock() {
       const { targetShareSec } = getFairPlayMetrics();
       document.getElementById('sport-icon-badge').textContent = appState.sportIcon;
-      document.getElementById('header-sport-pill').textContent = `${appState.sportName} • ${appState.activeTarget}v${appState.activeTarget}`;
+      const matchup = `${appState.activeTarget}v${appState.activeTarget}`;
+      document.getElementById('header-sport-pill').textContent = appState.sportName.includes(matchup) ? appState.sportName : `${appState.sportName} • ${matchup}`;
       document.getElementById('header-fair-share-info').innerHTML = `Target Fair Share: <span class="text-slate-200 font-semibold">${formatTime(targetShareSec)}</span> / player`;
 
       const presetObj = SPORT_PRESETS[appState.sportId];
@@ -3042,6 +3055,7 @@
       }
 
       lucide.createIcons();
+      fitCardNames();
       if (focusId) document.querySelector(`[data-player="${focusId}"]`)?.focus({preventScroll:true});
     }
 
@@ -3060,46 +3074,32 @@
         borderClasses = 'border-indigo-500 bg-indigo-50/60 ring-2 ring-indigo-500/20';
       }
 
-      const secondaryTimeLabel = isCourt ? 'Stint' : 'Bench Wait';
+      const secondaryTimeLabel = isCourt ? 'Stint' : 'Wait';
       const secondaryTimeValue = isCourt ? formatTime(player.stintSec) : formatTime(player.benchSec);
-      const secondaryHighlight = isCourt && player.stintSec >= 240 ? 'text-amber-600 font-extrabold' : 'text-slate-700 font-bold';
+      const secondaryHighlight = isCourt && player.stintSec >= 240 ? 'text-amber-600' : 'text-slate-700';
 
       return `
         <button type="button" data-player="${player.id}" onclick="handlePlayerCardTap('${player.id}')" aria-pressed="${isSelected || isQueued}"
-             
-             class="player-card w-full text-left cursor-pointer select-none rounded-2xl border-2 p-3 sm:p-3.5 transition-all active:scale-[0.99] shadow-xs ${borderClasses}">
-          <span class="flex items-center justify-between gap-2">
-            
-            <!-- Left: Jersey Number + Name + Status Tag -->
-            <span class="flex items-center gap-3 min-w-0">
-              <span class="w-11 h-11 rounded-xl ${isCourt ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-800 border border-slate-200'} font-mono font-extrabold text-base flex items-center justify-center shrink-0">
-                ${escapeHTML(player.number)}
-              </span>
-              <span class="min-w-0">
-                <span class="flex items-center gap-1.5">
-                  <span class="font-extrabold text-slate-900 text-sm sm:text-base truncate">${escapeHTML(player.name)}</span>
-                  ${isQueued ? `<span class="px-1.5 py-0.5 text-[10px] font-extrabold rounded bg-indigo-600 text-white uppercase">${isCourt ? 'Out' : 'In'} #${queuedIdx + 1}</span>` : ''}
-                  ${isSelected ? `<span class="px-1.5 py-0.5 text-[10px] font-extrabold rounded bg-orange-600 text-white uppercase">${isCourt ? 'Sub Out' : 'Sub In'}</span>` : ''}
-                </span>
-                <span class="flex items-center gap-2 mt-1">
-                  <span data-fair class="text-[11px] font-bold px-2 py-0.5 rounded-full ${fair.badgeClass}">${fair.label}</span>
-                  <span class="text-xs text-slate-500 tabular-nums">${secondaryTimeLabel}: <span data-stint class="${secondaryHighlight}">${secondaryTimeValue}</span></span>
-                </span>
-              </span>
-            </span>
-
-            <!-- Right: Total Game Time -->
-            <span class="text-right shrink-0 pl-2">
-              <span class="block text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Played</span>
-              <span data-total class="block font-mono text-lg sm:text-xl font-extrabold text-slate-900 tabular-nums leading-tight">
-                ${formatTime(player.totalSec)}
-              </span>
-            </span>
-
+             class="player-card w-full text-left cursor-pointer select-none rounded-2xl border-2 transition-all active:scale-[0.99] shadow-xs ${borderClasses}">
+          <span class="pc-head">
+            <span class="pc-num ${isCourt ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-800 border border-slate-200'}">${escapeHTML(player.number)}</span>
+            <span class="pc-name">${escapeHTML(player.name)}</span>
+            ${isQueued ? `<span class="pc-tag bg-indigo-600 text-white">${isCourt ? 'Out' : 'In'} ${queuedIdx + 1}</span>` : ''}
+            ${isSelected ? `<span class="pc-tag bg-orange-600 text-white">${isCourt ? 'Out' : 'In'}</span>` : ''}
+            <span data-fair class="pc-fair ${fair.badgeClass}" title="${fair.label}">${fair.short}</span>
           </span>
-
+          <span class="pc-times">
+            <span class="pc-time">
+              <span class="pc-label">Played</span>
+              <span data-total class="pc-total">${formatTime(player.totalSec)}</span>
+            </span>
+            <span class="pc-time pc-time-right">
+              <span class="pc-label">${secondaryTimeLabel}</span>
+              <span data-stint class="pc-sec ${secondaryHighlight}">${secondaryTimeValue}</span>
+            </span>
+          </span>
           <!-- Fair Share Progress Bar -->
-          <span class="block mt-2.5 w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+          <span class="block w-full bg-slate-100 rounded-full overflow-hidden">
             <span data-progress role="progressbar" aria-label="Fair share progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progressPct}" class="block h-full ${fair.barClass} transition-all duration-300" style="width: ${progressPct}%"></span>
           </span>
         </button>
@@ -3205,6 +3205,7 @@
     /* ==================== NAVIGATION, EXPORT & UI HELPERS ==================== */
 
     function switchTab(tabName) {
+      requestAnimationFrame(fitCardNames);
       currentTab = tabName;
       ['live', 'roster', 'summary'].forEach(t => {
         const view = document.getElementById(`view-${t}`);
@@ -3369,11 +3370,24 @@
         const fair=getFairnessStatus(p.totalSec,avgSec), pct=targetShareSec?Math.min(100,Math.round(p.totalSec/targetShareSec*100)):0;
         const total=card.querySelector('[data-total]'), stint=card.querySelector('[data-stint]'), badge=card.querySelector('[data-fair]'), bar=card.querySelector('[data-progress]');
         total.textContent=formatTime(p.totalSec); stint.textContent=formatTime(p.onCourt?p.stintSec:p.benchSec);
-        stint.className=p.onCourt&&p.stintSec>=240?'text-amber-600 font-extrabold':'text-slate-700 font-bold';
-        badge.textContent=fair.label; badge.className='text-[11px] font-bold px-2 py-0.5 rounded-full '+fair.badgeClass;
+        stint.className='pc-sec '+(p.onCourt&&p.stintSec>=240?'text-amber-600':'text-slate-700');
+        badge.textContent=fair.short; badge.title=fair.label; badge.className='pc-fair '+fair.badgeClass;
         bar.className='block h-full transition-all duration-300 '+fair.barClass; bar.style.width=pct+'%'; bar.setAttribute('aria-valuenow',pct);
       });
+      fitCardNames();
     }
+    // Shrink each player name until it fits on its card's single header line.
+    function fitCardNames() {
+      document.querySelectorAll('.pc-name').forEach(el => {
+        el.style.fontSize = '';
+        let size = parseFloat(getComputedStyle(el).fontSize);
+        while (el.scrollWidth > el.clientWidth + 0.5 && size > 10) {
+          size -= 0.5;
+          el.style.fontSize = size + 'px';
+        }
+      });
+    }
+    window.addEventListener('resize', () => fitCardNames());
     async function acquireWake(){
       if(!wakeWanted || document.hidden || !('wakeLock' in navigator)) return;
       try { wakeLock=await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release',()=>{wakeLock=null; updateWakeButton();}); } catch { wakeWanted=false; showToast('Screen wake lock unavailable.', 'amber'); } updateWakeButton();

@@ -21,7 +21,7 @@ Active spots, minutes per period and number of periods can be edited on the Rost
 - **Instant Swap**: tap an active player and a bench player to swap them.
 - **Whistle Queue**: tap any number of bench players going in and active players coming out, in any order. The sub button unlocks once both counts match; players are paired in the order tapped.
 - **Fair Sub Hint** suggests the longest-playing player out and the least-played bench player in.
-- Cards show total time, current stint or bench wait, and a bar toward the fair share. The bench is sorted by least played.
+- Cards show number, name and fair-play status on one line (Low, OK, High; Even before play starts), then total time played and current stint or bench wait in large type, and a bar toward the fair share. Long names shrink to fit. The bench is sorted by least played.
 - **Undo** reverses the last substitution. **Keep screen awake** holds the screen on where supported.
 - The chevron in the header collapses it to one slim row (period, clock, start/pause) so more of the page fits on a phone. Tap it again to bring back the tabs and clock controls. The choice is remembered.
 - The header clock has start/pause, −/+ adjust, period advance and period reset. Tap the clock to switch the adjust step between 1 minute, 10 seconds and 1 second.
