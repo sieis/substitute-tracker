@@ -1,11 +1,9 @@
 {
-  "name": "substitute-tracker",
-  "version": "2.0.0",
+  "name": "fairshift",
+  "version": "3.0.0",
   "private": true,
-  "type": "module",
-  "description": "Track playing time and substitutions for kids' sports.",
+  "description": "Track fair playing time and substitutions for youth sports.",
   "scripts": {
-    "start": "npx serve .",
-    "test": "node --test"
+    "start": "npx serve ."
   }
 }
