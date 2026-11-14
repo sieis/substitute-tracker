@@ -23,6 +23,7 @@ Active spots, minutes per period and number of periods can be edited on the Rost
 - **Fair Sub Hint** suggests the longest-playing player out and the least-played bench player in.
 - Cards show total time, current stint or bench wait, and a bar toward the fair share. The bench is sorted by least played.
 - **Undo** reverses the last substitution. **Keep screen awake** holds the screen on where supported.
+- The chevron in the header collapses it to one slim row (period, clock, start/pause) so more of the page fits on a phone. Tap it again to bring back the tabs and clock controls. The choice is remembered.
 - The header clock has start/pause, −/+ adjust, period advance and period reset. Tap the clock to switch the adjust step between 1 minute, 10 seconds and 1 second.
 
 **Game Summary**: totals, average, spread and per-player share, sortable. Copy as text or download a CSV.

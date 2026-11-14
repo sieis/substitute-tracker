@@ -1736,6 +1736,8 @@
       header nav button i { display:none!important; }
       header div:has(> #clock-toggle-btn) { width:100%; justify-content:space-between; gap:4px; padding:3px 5px; margin:0; }
       header div:has(> #clock-toggle-btn) button { min-width:44px; }
+      header:not(.is-collapsed) #header-collapse-btn { order:-1; margin-left:auto; padding:.4rem; }
+      header:not(.is-collapsed) > div > div:first-child > .header-full-only:first-child { order:-2; }
       .live-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; }
       .live-grid>div>div:first-child { padding:9px 6px; gap:4px; }
       .live-grid h2 { font-size:11px; }
@@ -1777,6 +1779,14 @@
     header::after { content:""; position:absolute; left:0; right:0; bottom:0; height:3px;
       background:linear-gradient(90deg, #e24c3c, #f59e4b 45%, #2f8f9d); }
     header h1 { font-size:1.2rem; letter-spacing:-0.035em; }
+    /* Collapsed header: one slim row with period, clock and start/pause */
+    header.is-collapsed .header-full-only { display:none !important; }
+    header.is-collapsed > div { padding-top:.375rem; padding-bottom:.5rem; }
+    header.is-collapsed #clock-status-label { display:none; }
+    header.is-collapsed #clock-display { font-size:1.375rem; }
+    header.is-collapsed #clock-toggle-btn { padding:.5rem .75rem; }
+    header.is-collapsed > div > div:first-child { flex-wrap:nowrap; }
+    header.is-collapsed div:has(> #clock-toggle-btn) { width:auto !important; flex:1 1 auto; min-width:0; }
     #sport-icon-badge { border-radius:14px; box-shadow:0 6px 18px -6px rgba(226,76,60,.65), inset 0 1px 0 rgba(255,255,255,.25); }
     #header-sport-pill { background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.12); }
     header div:has(> #clock-toggle-btn) {
@@ -1863,12 +1873,12 @@
   </dialog>
 
   <!-- TOP SCOREBOARD HEADER -->
-  <header class="bg-slate-900 text-white sticky top-0 z-30 shadow-lg border-b border-slate-800">
+  <header id="app-header" class="bg-slate-900 text-white sticky top-0 z-30 shadow-lg border-b border-slate-800">
     <div class="max-w-6xl mx-auto px-3 sm:px-6 py-3">
       <div class="flex flex-wrap items-center justify-between gap-3">
         
         <!-- Brand & Active Sport Badge -->
-        <div class="flex items-center gap-2.5">
+        <div class="header-full-only flex items-center gap-2.5">
           <div id="sport-icon-badge" class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-md shadow-orange-500/20 text-white font-bold text-lg">
             🏀
           </div>
@@ -1895,7 +1905,7 @@
 
           <!-- Main Digital Clock + +/- 1m quick adjust -->
           <div class="flex items-center gap-1">
-            <button id="clock-minus-btn" onclick="adjustClock(-1)" title="Subtract time" class="w-7 h-7 rounded-lg bg-slate-800/70 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs font-bold active:scale-95 transition">-1m</button>
+            <button id="clock-minus-btn" onclick="adjustClock(-1)" title="Subtract time" class="header-full-only w-7 h-7 rounded-lg bg-slate-800/70 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs font-bold active:scale-95 transition">-1m</button>
             <div id="clock-step-btn" role="button" tabindex="0" onclick="cycleClockStep()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();cycleClockStep();}" title="Tap to change the -/+ adjust step (1m / 10s / 1s)" aria-label="Change clock adjust step" class="px-2 text-center min-w-[88px] sm:min-w-[104px] cursor-pointer select-none">
               <div id="clock-display" class="font-mono text-2xl sm:text-3xl font-extrabold tracking-tight tabular-nums text-white leading-none">
                 08:00
@@ -1904,7 +1914,7 @@
                 STOPPED
               </div>
             </div>
-            <button id="clock-plus-btn" onclick="adjustClock(1)" title="Add time" class="w-7 h-7 rounded-lg bg-slate-800/70 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs font-bold active:scale-95 transition">+1m</button>
+            <button id="clock-plus-btn" onclick="adjustClock(1)" title="Add time" class="header-full-only w-7 h-7 rounded-lg bg-slate-800/70 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs font-bold active:scale-95 transition">+1m</button>
           </div>
 
           <!-- Start / Pause Primary Action Button -->
@@ -1914,15 +1924,20 @@
           </button>
 
           <!-- Reset Period Clock -->
-          <button onclick="confirmResetPeriod()" title="Reset Period Clock" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white active:scale-95 transition border border-slate-700">
+          <button onclick="confirmResetPeriod()" title="Reset Period Clock" class="header-full-only p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white active:scale-95 transition border border-slate-700">
             <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
           </button>
         </div>
 
+        <!-- Collapse / Expand Header -->
+        <button id="header-collapse-btn" onclick="toggleHeaderCollapsed()" aria-expanded="true" title="Hide header" aria-label="Hide header" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white active:scale-95 transition border border-slate-700">
+          <i id="header-collapse-icon" data-lucide="chevron-up" class="w-4 h-4"></i>
+        </button>
+
       </div>
 
       <!-- Navigation Tabs -->
-      <nav class="flex items-center gap-1.5 mt-3 pt-2.5 border-t border-slate-800/90 overflow-x-auto no-scrollbar">
+      <nav class="header-full-only flex items-center gap-1.5 mt-3 pt-2.5 border-t border-slate-800/90 overflow-x-auto no-scrollbar">
         <button onclick="switchTab('live')" id="tab-btn-live" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition bg-orange-600 text-white shadow-sm">
           <i data-lucide="users" class="w-4 h-4"></i>
           <span id="tab-live-label">Court & Bench</span>
@@ -2256,7 +2271,7 @@
      * Self-contained state management with localStorage persistence.
      */
 
-    const ICONS = {"play": "<path d=\"m8 5 12 7-12 7z\"/>", "pause": "<path d=\"M9 5v14M15 5v14\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "users": "<circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5\"/>", "clipboard-list": "<rect x=\"5\" y=\"5\" width=\"14\" height=\"16\" rx=\"2\"/><path d=\"M9 5V3h6v2M9 10h6M9 14h6M9 18h6\"/>", "bar-chart-3": "<path d=\"M4 3v17h17M9 16v-5m5 5V8m5 8V4\"/>", "arrow-left-right": "<path d=\"M3 8h17l-4-4m4 4-4 4M21 16H4l4-4m-4 4 4 4\"/>", "sparkles": "<path d=\"m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z\"/>", "check-circle-2": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"m8 12 3 3 5-6\"/>", "alert-triangle": "<path d=\"M12 3 2 21h20zM12 9v5m0 3h.01\"/>", "rotate-ccw": "<path d=\"M3 11a9 9 0 1 1 3 7M3 4v7h7\"/>", "refresh-cw": "<path d=\"M3 11a9 9 0 0 1 15-6l3 3m0-5v5h-5M21 13a9 9 0 0 1-15 6l-3-3m0 5v-5h5\"/>", "shirt": "<path d=\"m8 3-6 4 3 5 3-1v10h8V11l3 1 3-5-6-4a4 4 0 0 1-8 0z\"/>", "sliders": "<path d=\"M4 6h16M4 12h16M4 18h16\"/><circle cx=\"8\" cy=\"6\" r=\"2\" fill=\"currentColor\"/><circle cx=\"16\" cy=\"12\" r=\"2\" fill=\"currentColor\"/><circle cx=\"10\" cy=\"18\" r=\"2\" fill=\"currentColor\"/>", "copy": "<rect x=\"8\" y=\"8\" width=\"12\" height=\"12\" rx=\"2\"/><path d=\"M16 8V4H4v12h4\"/>", "download": "<path d=\"M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5\"/>", "trash-2": "<path d=\"M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7m4-7v7\"/>", "users-round": "<circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5\"/>"};
+    const ICONS = {"play": "<path d=\"m8 5 12 7-12 7z\"/>", "pause": "<path d=\"M9 5v14M15 5v14\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "users": "<circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5\"/>", "clipboard-list": "<rect x=\"5\" y=\"5\" width=\"14\" height=\"16\" rx=\"2\"/><path d=\"M9 5V3h6v2M9 10h6M9 14h6M9 18h6\"/>", "bar-chart-3": "<path d=\"M4 3v17h17M9 16v-5m5 5V8m5 8V4\"/>", "arrow-left-right": "<path d=\"M3 8h17l-4-4m4 4-4 4M21 16H4l4-4m-4 4 4 4\"/>", "sparkles": "<path d=\"m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z\"/>", "check-circle-2": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"m8 12 3 3 5-6\"/>", "alert-triangle": "<path d=\"M12 3 2 21h20zM12 9v5m0 3h.01\"/>", "rotate-ccw": "<path d=\"M3 11a9 9 0 1 1 3 7M3 4v7h7\"/>", "refresh-cw": "<path d=\"M3 11a9 9 0 0 1 15-6l3 3m0-5v5h-5M21 13a9 9 0 0 1-15 6l-3-3m0 5v-5h5\"/>", "shirt": "<path d=\"m8 3-6 4 3 5 3-1v10h8V11l3 1 3-5-6-4a4 4 0 0 1-8 0z\"/>", "sliders": "<path d=\"M4 6h16M4 12h16M4 18h16\"/><circle cx=\"8\" cy=\"6\" r=\"2\" fill=\"currentColor\"/><circle cx=\"16\" cy=\"12\" r=\"2\" fill=\"currentColor\"/><circle cx=\"10\" cy=\"18\" r=\"2\" fill=\"currentColor\"/>", "copy": "<rect x=\"8\" y=\"8\" width=\"12\" height=\"12\" rx=\"2\"/><path d=\"M16 8V4H4v12h4\"/>", "download": "<path d=\"M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5\"/>", "trash-2": "<path d=\"M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7m4-7v7\"/>", "chevron-up": "<path d=\"m6 15 6-6 6 6\"/>", "chevron-down": "<path d=\"m6 9 6 6 6-6\"/>", "users-round": "<circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5\"/>"};
     const lucide = {createIcons(){document.querySelectorAll('[data-lucide]').forEach(el=>{const name=el.getAttribute('data-lucide');if(el.dataset.renderedIcon===name)return;el.dataset.renderedIcon=name;el.setAttribute('aria-hidden','true');el.style.display='inline-flex';el.innerHTML=`<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]||''}</svg>`;});}};
     const STORAGE_KEY = 'courtside_pro_state_v1';
 
@@ -2347,8 +2362,27 @@
 
     /* ==================== INITIALIZATION & PERSISTENCE ==================== */
 
+    const HEADER_PREF_KEY = 'fairshift_header_collapsed';
+    function setHeaderCollapsed(collapsed) {
+      const header = document.getElementById('app-header');
+      header.classList.toggle('is-collapsed', collapsed);
+      const btn = document.getElementById('header-collapse-btn');
+      const label = collapsed ? 'Show full header' : 'Hide header';
+      btn.title = label; btn.setAttribute('aria-label', label);
+      btn.setAttribute('aria-expanded', String(!collapsed));
+      const icon = document.getElementById('header-collapse-icon');
+      icon.setAttribute('data-lucide', collapsed ? 'chevron-down' : 'chevron-up');
+      lucide.createIcons();
+    }
+    function toggleHeaderCollapsed() {
+      const collapsed = !document.getElementById('app-header').classList.contains('is-collapsed');
+      setHeaderCollapsed(collapsed);
+      try { localStorage.setItem(HEADER_PREF_KEY, collapsed ? '1' : '0'); } catch (e) {}
+    }
+
     function initApp() {
       loadState();
+      try { if (localStorage.getItem(HEADER_PREF_KEY) === '1') setHeaderCollapsed(true); } catch (e) {}
       // Always start paused on page load for safety
       appState.isRunning = false;
       queueOut = Array.isArray(appState.queueOut) ? appState.queueOut : [];
