@@ -1895,8 +1895,8 @@
 
           <!-- Main Digital Clock + +/- 1m quick adjust -->
           <div class="flex items-center gap-1">
-            <button onclick="adjustClock(-60)" title="Subtract 1 Minute" class="w-7 h-7 rounded-lg bg-slate-800/70 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs font-bold active:scale-95 transition">-1m</button>
-            <div class="px-2 text-center min-w-[88px] sm:min-w-[104px]">
+            <button id="clock-minus-btn" onclick="adjustClock(-1)" title="Subtract time" class="w-7 h-7 rounded-lg bg-slate-800/70 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs font-bold active:scale-95 transition">-1m</button>
+            <div id="clock-step-btn" role="button" tabindex="0" onclick="cycleClockStep()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();cycleClockStep();}" title="Tap to change the -/+ adjust step (1m / 10s / 1s)" aria-label="Change clock adjust step" class="px-2 text-center min-w-[88px] sm:min-w-[104px] cursor-pointer select-none">
               <div id="clock-display" class="font-mono text-2xl sm:text-3xl font-extrabold tracking-tight tabular-nums text-white leading-none">
                 08:00
               </div>
@@ -1904,7 +1904,7 @@
                 STOPPED
               </div>
             </div>
-            <button onclick="adjustClock(60)" title="Add 1 Minute" class="w-7 h-7 rounded-lg bg-slate-800/70 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs font-bold active:scale-95 transition">+1m</button>
+            <button id="clock-plus-btn" onclick="adjustClock(1)" title="Add time" class="w-7 h-7 rounded-lg bg-slate-800/70 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs font-bold active:scale-95 transition">+1m</button>
           </div>
 
           <!-- Start / Pause Primary Action Button -->
@@ -1990,7 +1990,7 @@
           <button onclick="clearSubQueue()" class="px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
             Clear
           </button>
-          <button onclick="executeQueuedSubs()" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-orange-500 hover:bg-orange-600 text-white shadow-md shadow-orange-500/30 flex items-center gap-1.5 active:scale-95 transition">
+          <button id="queue-exec-btn" onclick="executeQueuedSubs()" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-orange-500 hover:bg-orange-600 text-white shadow-md shadow-orange-500/30 flex items-center gap-1.5 active:scale-95 transition">
             <i data-lucide="check-circle-2" class="w-4 h-4"></i>
             <span>Sub In Queued (<span id="queue-exec-count">0</span>)</span>
           </button>
@@ -2335,7 +2335,8 @@
     // Transient UI Selection State (not persisted across reloads)
     let selectedCourtId = null;
     let selectedBenchId = null;
-    let queuedPairs = []; // Array of { courtId, benchId }
+    let queueOut = []; // Whistle mode: court player ids selected to come out (in tap order)
+    let queueIn = [];  // Whistle mode: bench player ids selected to go in (in tap order)
     let currentTab = 'live';
     let timerInterval = null;
     let lastTickTimestamp = null;
@@ -2350,7 +2351,13 @@
       loadState();
       // Always start paused on page load for safety
       appState.isRunning = false;
-      queuedPairs = Array.isArray(appState.queuedPairs) ? appState.queuedPairs : [];
+      queueOut = Array.isArray(appState.queueOut) ? appState.queueOut : [];
+      queueIn = Array.isArray(appState.queueIn) ? appState.queueIn : [];
+      if (Array.isArray(appState.queuedPairs)) { // migrate older saved pairs
+        appState.queuedPairs.forEach(pr => { if (pr) { queueOut.push(pr.courtId); queueIn.push(pr.benchId); } });
+        delete appState.queuedPairs;
+      }
+      if (![60,10,1].includes(appState.clockStep)) appState.clockStep = 60;
       undoRecord = appState.undoRecord || null;
       sanitizeSelections();
       syncSettingsInputs();
@@ -2360,7 +2367,8 @@
 
     function saveState() {
       try {
-        appState.queuedPairs = queuedPairs;
+        appState.queueOut = queueOut;
+        appState.queueIn = queueIn;
         appState.undoRecord = undoRecord;
         localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
         lastSaved = performance.now();
@@ -2430,7 +2438,15 @@
       }
       lastTickTimestamp = performance.now(); saveState(); renderHeaderClock(); updateLiveTimes();
     }
-    function adjustClock(deltaSec) {
+    function stepLabel(sec) { return sec >= 60 ? `${sec/60}m` : `${sec}s`; }
+    function cycleClockStep() {
+      const steps = [60, 10, 1];
+      appState.clockStep = steps[(steps.indexOf(appState.clockStep) + 1) % steps.length];
+      saveState(); renderHeaderClock();
+      showToast(`Clock adjust step: ${stepLabel(appState.clockStep)}`, 'slate');
+    }
+    function adjustClock(direction) {
+      const deltaSec = direction * (appState.clockStep || 60);
       reconcileClock();
       appState.periodRemainingSec = Math.max(0, Math.min(appState.periodDurationSec, appState.periodRemainingSec + deltaSec));
       if (!appState.periodRemainingSec) appState.isRunning = false;
@@ -2461,7 +2477,7 @@
     /* ==================== SUBSTITUTION & QUEUE WORKFLOW ==================== */
 
     function setSubMode(mode) {
-      if (queuedPairs.length && mode !== appState.subMode) { showToast("Execute or clear queued substitutions first.", "amber"); return; }
+      if ((queueOut.length || queueIn.length) && mode !== appState.subMode) { showToast("Execute or clear queued substitutions first.", "amber"); return; }
       appState.subMode = mode;
       selectedCourtId = null;
       selectedBenchId = null;
@@ -2474,14 +2490,12 @@
       const player = appState.players.find(p => p.id === playerId);
       if (!player || !player.present) return;
 
-      // Check if player is already part of a queued pair -> remove that pair if tapped again
-      const existingPairIdx = queuedPairs.findIndex(pair => pair.courtId === playerId || pair.benchId === playerId);
-      if (existingPairIdx !== -1) {
-        queuedPairs.splice(existingPairIdx, 1);
-        selectedCourtId = null;
-        selectedBenchId = null;
+      if (appState.subMode === 'queue') {
+        // Whistle mode: build up any number of OUT and IN selections, then sub them all at once
+        const list = player.onCourt ? queueOut : queueIn;
+        const idx = list.indexOf(playerId);
+        if (idx === -1) list.push(playerId); else list.splice(idx, 1);
         saveState(); renderLiveBoard();
-        showToast('Removed player from sub queue.', 'slate');
         return;
       }
 
@@ -2491,19 +2505,11 @@
         selectedBenchId = (selectedBenchId === playerId) ? null : playerId;
       }
 
-      // If we have 1 Court player and 1 Bench player selected:
+      // Instant mode: 1 Court + 1 Bench selected swaps right away
       if (selectedCourtId && selectedBenchId) {
-        if (appState.subMode === 'instant') {
-          executeSingleSwap(selectedCourtId, selectedBenchId);
-          selectedCourtId = null;
-          selectedBenchId = null;
-        } else {
-          // Add to dead-ball whistle queue
-          queuedPairs.push({ courtId: selectedCourtId, benchId: selectedBenchId });
-          selectedCourtId = null;
-          selectedBenchId = null;
-          showToast(`Queued substitution (${queuedPairs.length} ready for whistle).`, 'orange');
-        }
+        executeSingleSwap(selectedCourtId, selectedBenchId);
+        selectedCourtId = null;
+        selectedBenchId = null;
       }
 
       saveState(); renderLiveBoard();
@@ -2532,24 +2538,33 @@
     }
 
     function executeQueuedSubs() {
-      if (queuedPairs.length === 0) return;
       sanitizeSelections();
+      if (!queueOut.length && !queueIn.length) return;
+      if (queueOut.length !== queueIn.length) {
+        showToast(`Select equal numbers: ${queueOut.length} out, ${queueIn.length} in.`, 'amber');
+        renderLiveBoard();
+        return;
+      }
       reconcileClock();
-      const valid = [...queuedPairs];
-      if (!valid.length) { renderLiveBoard(); return; }
-      rememberSwap(valid);
+      const pairs = queueOut.map((courtId, i) => ({ courtId, benchId: queueIn[i] }));
+      rememberSwap(pairs);
       let count = 0;
-      valid.forEach(pair => { if (executeSingleSwap(pair.courtId, pair.benchId, true)) count++; });
-      queuedPairs = [];
+      pairs.forEach(pair => { if (executeSingleSwap(pair.courtId, pair.benchId, true)) count++; });
+      queueOut = []; queueIn = [];
       selectedCourtId = null;
       selectedBenchId = null;
       saveState();
       renderAll();
-      showToast(`Completed ${count} substitution${count > 1 ? 's' : ''}!`, 'emerald');
+      showToast(`Completed ${count} substitution${count === 1 ? '' : 's'}!`, 'emerald');
+    }
+
+    function dropFromQueue(playerId) {
+      queueOut = queueOut.filter(id => id !== playerId);
+      queueIn = queueIn.filter(id => id !== playerId);
     }
 
     function clearSubQueue() {
-      queuedPairs = [];
+      queueOut = []; queueIn = [];
       selectedCourtId = null;
       selectedBenchId = null;
       saveState(); renderLiveBoard();
@@ -2557,7 +2572,7 @@
 
     function suggestFairSwap() {
       const present = appState.players.filter(p => p.present);
-      const reserved = new Set(queuedPairs.flatMap(p=>[p.courtId,p.benchId]));
+      const reserved = new Set([...queueOut, ...queueIn]);
       const onCourt = present.filter(p => p.onCourt && !reserved.has(p.id));
       const onBench = present.filter(p => !p.onCourt && !reserved.has(p.id));
 
@@ -2571,8 +2586,14 @@
       // Lowest total minutes (tie-break by longest bench wait)
       const leastPlayed = [...onBench].sort((a, b) => (a.totalSec - b.totalSec) || (b.benchSec - a.benchSec))[0];
 
-      selectedCourtId = mostPlayed.id;
-      selectedBenchId = leastPlayed.id;
+      if (appState.subMode === 'queue') {
+        queueOut.push(mostPlayed.id);
+        queueIn.push(leastPlayed.id);
+        saveState();
+      } else {
+        selectedCourtId = mostPlayed.id;
+        selectedBenchId = leastPlayed.id;
+      }
       document.getElementById("suggest-apply")?.remove();
       renderLiveBoard();
       showToast(`Suggested: #${leastPlayed.number} ${leastPlayed.name} IN for #${mostPlayed.number} ${mostPlayed.name}`, 'indigo');
@@ -2609,7 +2630,7 @@
         }
       });
 
-      queuedPairs = [];
+      queueOut = []; queueIn = [];
       selectedCourtId = null;
       selectedBenchId = null;
       syncSettingsInputs();
@@ -2708,7 +2729,7 @@
       player.present = !player.present;
       if (!player.present) {
         player.onCourt = false;
-        queuedPairs = queuedPairs.filter(pair => pair.courtId !== playerId && pair.benchId !== playerId);
+        dropFromQueue(playerId);
       } else {
         const currentActive = appState.players.filter(p => p.present && p.onCourt).length;
         if (currentActive < appState.activeTarget) {
@@ -2738,7 +2759,7 @@
       if (appState.isRunning) { showToast("Pause the clock before editing the roster.", "amber"); return; }
       undoRecord = null;
       appState.players = appState.players.filter(p => p.id !== playerId);
-      queuedPairs = queuedPairs.filter(pair => pair.courtId !== playerId && pair.benchId !== playerId);
+      dropFromQueue(playerId);
       saveState();
       renderAll();
       showToast('Player removed from roster.', 'slate');
@@ -2756,7 +2777,7 @@
           appState.totalGameElapsedSec = 0;
           undoRecord = null;
           selectedCourtId = selectedBenchId = null;
-          queuedPairs = [];
+          queueOut = []; queueIn = [];
           selectedCourtId = null;
           selectedBenchId = null;
           appState.players.forEach(p => {
@@ -2783,7 +2804,7 @@
           appState.totalGameElapsedSec = 0;
           undoRecord = null;
           selectedCourtId = selectedBenchId = null;
-          queuedPairs = [];
+          queueOut = []; queueIn = [];
           appState.players = JSON.parse(JSON.stringify(SAMPLE_ROSTER));
           // Adjust active count to match current sport
           let activeAssigned = 0;
@@ -2881,6 +2902,9 @@
         toggleIcon.setAttribute('data-lucide', 'play');
         toggleText.textContent = 'START';
       }
+      const stepTxt = stepLabel(appState.clockStep || 60);
+      document.getElementById('clock-minus-btn').textContent = `-${stepTxt}`;
+      document.getElementById('clock-plus-btn').textContent = `+${stepTxt}`;
       lucide.createIcons();
     }
 
@@ -2937,28 +2961,30 @@
         const p = appState.players.find(x => x.id === selectedBenchId);
         instrTitle.textContent = `Selected #${p.number} ${p.name} to go IN`;
         instrSub.textContent = `Now tap an active player ${appState.zoneLabel.toUpperCase()} to swap out.`;
+      } else if (appState.subMode === 'queue') {
+        instrTitle.textContent = 'Whistle Queue Mode: Select everyone coming in and out';
+        instrSub.textContent = 'Tap any number of bench and active players. Out and In counts must match to sub.';
       } else {
-        instrTitle.textContent = appState.subMode === 'instant'
-          ? 'Instant Swap Mode: Tap 1 Active + 1 Bench'
-          : 'Whistle Queue Mode: Pair subs for next stoppage';
+        instrTitle.textContent = 'Instant Swap Mode: Tap 1 Active + 1 Bench';
         instrSub.textContent = 'Cards show Total Played, Current Stint/Wait, and Fair-Play balance.';
       }
 
       // Queue Action Banner
       const queueBanner = document.getElementById('queue-action-banner');
       const navBadge = document.getElementById('nav-queued-badge');
-      if (queuedPairs.length > 0) {
+      if (queueOut.length || queueIn.length) {
+        const matched = queueOut.length === queueIn.length;
+        const n = Math.max(queueOut.length, queueIn.length);
         queueBanner.classList.remove('hidden');
         navBadge.classList.remove('hidden');
-        navBadge.textContent = queuedPairs.length;
-        document.getElementById('queue-count-circle').textContent = queuedPairs.length;
-        document.getElementById('queue-exec-count').textContent = queuedPairs.length;
-        const previewText = queuedPairs.map(pair => {
-          const outP = appState.players.find(p => p.id === pair.courtId);
-          const inP = appState.players.find(p => p.id === pair.benchId);
-          return `#${inP?.number} ${inP?.name} ⇄ #${outP?.number} ${outP?.name}`;
-        }).join('  •  ');
-        document.getElementById('queue-pairs-preview').textContent = previewText;
+        navBadge.textContent = n;
+        document.getElementById('queue-count-circle').textContent = n;
+        document.getElementById('queue-exec-count').textContent = matched ? queueOut.length : `${queueOut.length}/${queueIn.length}`;
+        document.getElementById('queue-exec-btn').disabled = !matched;
+        const names = ids => ids.map(id => { const p = appState.players.find(x => x.id === id); return p ? `#${p.number} ${p.name}` : ''; }).join(', ') || '—';
+        document.getElementById('queue-pairs-preview').textContent =
+          `IN (${queueIn.length}): ${names(queueIn)}  •  OUT (${queueOut.length}): ${names(queueOut)}` +
+          (matched ? '' : `  •  Select ${queueOut.length > queueIn.length ? queueOut.length - queueIn.length + ' more IN' : queueIn.length - queueOut.length + ' more OUT'} to match.`);
       } else {
         queueBanner.classList.add('hidden');
         navBadge.classList.add('hidden');
@@ -2986,7 +3012,7 @@
 
     function buildPlayerCardHTML(player, isCourt, avgSec, targetShareSec) {
       const isSelected = (isCourt && selectedCourtId === player.id) || (!isCourt && selectedBenchId === player.id);
-      const queuedIdx = queuedPairs.findIndex(pair => pair.courtId === player.id || pair.benchId === player.id);
+      const queuedIdx = (isCourt ? queueOut : queueIn).indexOf(player.id);
       const isQueued = queuedIdx !== -1;
 
       const fair = getFairnessStatus(player.totalSec, avgSec);
@@ -3017,7 +3043,7 @@
               <span class="min-w-0">
                 <span class="flex items-center gap-1.5">
                   <span class="font-extrabold text-slate-900 text-sm sm:text-base truncate">${escapeHTML(player.name)}</span>
-                  ${isQueued ? `<span class="px-1.5 py-0.5 text-[10px] font-extrabold rounded bg-indigo-600 text-white uppercase">Sub #${queuedIdx + 1}</span>` : ''}
+                  ${isQueued ? `<span class="px-1.5 py-0.5 text-[10px] font-extrabold rounded bg-indigo-600 text-white uppercase">${isCourt ? 'Out' : 'In'} #${queuedIdx + 1}</span>` : ''}
                   ${isSelected ? `<span class="px-1.5 py-0.5 text-[10px] font-extrabold rounded bg-orange-600 text-white uppercase">${isCourt ? 'Sub Out' : 'Sub In'}</span>` : ''}
                 </span>
                 <span class="flex items-center gap-2 mt-1">
@@ -3282,8 +3308,8 @@
       const bench = id => appState.players.some(p=>p.id===id && p.present && !p.onCourt);
       if (!active(selectedCourtId)) selectedCourtId=null;
       if (!bench(selectedBenchId)) selectedBenchId=null;
-      const used=new Set();
-      queuedPairs=queuedPairs.filter(p=>p && active(p.courtId) && bench(p.benchId) && !used.has(p.courtId) && !used.has(p.benchId) && (used.add(p.courtId),used.add(p.benchId),true));
+      queueOut=[...new Set(queueOut)].filter(active);
+      queueIn=[...new Set(queueIn)].filter(bench);
     }
     function rememberSwap(pairs) {
       const ids=new Set(pairs.flatMap(p=>[p.courtId,p.benchId]));
