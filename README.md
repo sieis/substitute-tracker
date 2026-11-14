@@ -15,7 +15,7 @@ Active spots, minutes per period and number of periods can be edited on the Rost
 
 ## Using it
 
-**Roster & Setup**: add players with optional jersey numbers, mark them present or absent, and set who starts. Load a sample roster or reset all game timers.
+**Roster & Setup**: add players one at a time or paste a comma-separated list (`Ben, Caleb, 12 Jed`). A leading number sets the jersey; players without one are numbered from 1, skipping numbers already taken. Mark players present or absent and set who starts. **Load Default Roster** restores the 9-player basketball roster (Ben, Caleb, Tristan, Noah, Gauge, Lawson, Myers, Jed, Jack).
 
 **Court & Bench**
 - **Instant Swap**: tap a court player and a bench player to swap them.

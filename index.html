@@ -2135,7 +2135,7 @@
             </button>
             <button onclick="confirmLoadSampleRoster()" class="px-3 py-2.5 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 flex items-center justify-center gap-1.5 transition">
               <i data-lucide="users-round" class="w-3.5 h-3.5"></i>
-              <span>Load Sample Roster</span>
+              <span>Load Default Roster</span>
             </button>
           </div>
         </div>
@@ -2158,7 +2158,7 @@
           <!-- Quick Add Player Form -->
           <form onsubmit="handleAddPlayer(event)" class="flex gap-2">
             <input id="new-player-number" aria-label="Jersey number" type="text" maxlength="3" placeholder="#" class="w-16 px-3 py-2.5 rounded-xl border border-slate-300 font-mono font-bold text-center text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" />
-            <input id="new-player-name" aria-label="Player name" maxlength="80" type="text" required placeholder="Player Name (e.g. Jordan M.)" class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" />
+            <input id="new-player-name" aria-label="Player name" maxlength="2000" type="text" required placeholder="Name, or paste a list: Ben, Caleb, 12 Jed" class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" />
             <button type="submit" class="px-4 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-sm flex items-center gap-1.5 shadow-sm active:scale-95 transition">
               <i data-lucide="plus" class="w-4 h-4"></i>
               <span>Add</span>
@@ -2304,15 +2304,15 @@
     };
 
     const SAMPLE_ROSTER = [
-      { id: 'p1', number: '3',  name: 'Liam Carter',   present: true, onCourt: true,  totalSec: 0, stintSec: 0, benchSec: 0 },
-      { id: 'p2', number: '11', name: 'Maya Lin',      present: true, onCourt: true,  totalSec: 0, stintSec: 0, benchSec: 0 },
-      { id: 'p3', number: '23', name: 'Jordan Brooks', present: true, onCourt: true,  totalSec: 0, stintSec: 0, benchSec: 0 },
-      { id: 'p4', number: '8',  name: 'Sofia Patel',   present: true, onCourt: true,  totalSec: 0, stintSec: 0, benchSec: 0 },
-      { id: 'p5', number: '34', name: 'Noah Bennett',  present: true, onCourt: true,  totalSec: 0, stintSec: 0, benchSec: 0 },
-      { id: 'p6', number: '5',  name: 'Ava Morales',   present: true, onCourt: false, totalSec: 0, stintSec: 0, benchSec: 0 },
-      { id: 'p7', number: '14', name: 'Ethan Kim',     present: true, onCourt: false, totalSec: 0, stintSec: 0, benchSec: 0 },
-      { id: 'p8', number: '21', name: 'Chloe Davis',   present: true, onCourt: false, totalSec: 0, stintSec: 0, benchSec: 0 },
-      { id: 'p9', number: '10', name: 'Lucas Wright',  present: true, onCourt: false, totalSec: 0, stintSec: 0, benchSec: 0 }
+      { id: 'p1', number: '1', name: 'Ben', present: true, onCourt: true, totalSec: 0, stintSec: 0, benchSec: 0 },
+      { id: 'p2', number: '2', name: 'Caleb', present: true, onCourt: true, totalSec: 0, stintSec: 0, benchSec: 0 },
+      { id: 'p3', number: '3', name: 'Tristan', present: true, onCourt: true, totalSec: 0, stintSec: 0, benchSec: 0 },
+      { id: 'p4', number: '4', name: 'Noah', present: true, onCourt: true, totalSec: 0, stintSec: 0, benchSec: 0 },
+      { id: 'p5', number: '5', name: 'Gauge', present: true, onCourt: true, totalSec: 0, stintSec: 0, benchSec: 0 },
+      { id: 'p6', number: '6', name: 'Lawson', present: true, onCourt: false, totalSec: 0, stintSec: 0, benchSec: 0 },
+      { id: 'p7', number: '7', name: 'Myers', present: true, onCourt: false, totalSec: 0, stintSec: 0, benchSec: 0 },
+      { id: 'p8', number: '8', name: 'Jed', present: true, onCourt: false, totalSec: 0, stintSec: 0, benchSec: 0 },
+      { id: 'p9', number: '9', name: 'Jack', present: true, onCourt: false, totalSec: 0, stintSec: 0, benchSec: 0 }
     ];
 
     // Default Application State
@@ -2661,33 +2661,41 @@
     function handleAddPlayer(e) {
       e.preventDefault(); reconcileClock();
       if (appState.isRunning) { showToast("Pause the clock before editing the roster.", "amber"); return; }
-      undoRecord = null;
-      e.preventDefault();
       const numInput = document.getElementById('new-player-number');
       const nameInput = document.getElementById('new-player-name');
-      const name = nameInput.value.trim();
-      const number = numInput.value.trim() || String(appState.players.length + 1);
-      if (!name) return;
+      // Accept one name or a comma/newline separated list. "12 Jordan" or "#12 Jordan" sets the number.
+      const entries = nameInput.value.split(/[,\n;]+/).map(x => x.trim()).filter(Boolean).map(entry => {
+        const m = entry.match(/^#?(\d{1,3})[\s.:-]+(.+)$/);
+        return m ? { number: m[1], name: m[2].trim().slice(0, 40) } : { number: '', name: entry.slice(0, 40) };
+      }).filter(x => x.name);
+      if (!entries.length) return;
+      if (entries.length === 1 && !entries[0].number) entries[0].number = numInput.value.trim();
 
-      const currentActiveCount = appState.players.filter(p => p.present && p.onCourt).length;
-      const shouldStartActive = currentActiveCount < appState.activeTarget;
-
-      appState.players.push({
-        id: 'p_' + (globalThis.crypto?.randomUUID?.() || Date.now() + '_' + Math.random().toString(36).slice(2, 8)),
-        number,
-        name,
-        present: true,
-        onCourt: shouldStartActive,
-        totalSec: 0,
-        stintSec: 0,
-        benchSec: 0
-      });
+      undoRecord = null;
+      const used = new Set(appState.players.map(p => p.number));
+      entries.forEach(x => { if (x.number) used.add(x.number); });
+      let next = 1;
+      let activeCount = appState.players.filter(p => p.present && p.onCourt).length;
+      for (const x of entries) {
+        if (!x.number) { while (used.has(String(next))) next++; x.number = String(next); used.add(x.number); }
+        appState.players.push({
+          id: 'p_' + (globalThis.crypto?.randomUUID?.() || Date.now() + '_' + Math.random().toString(36).slice(2, 8)),
+          number: x.number,
+          name: x.name,
+          present: true,
+          onCourt: activeCount < appState.activeTarget,
+          totalSec: 0,
+          stintSec: 0,
+          benchSec: 0
+        });
+        if (activeCount < appState.activeTarget) activeCount++;
+      }
 
       numInput.value = '';
       nameInput.value = '';
       saveState();
       renderAll();
-      showToast(`Added #${number} ${name} to roster.`, 'emerald');
+      showToast(entries.length === 1 ? `Added #${entries[0].number} ${entries[0].name} to roster.` : `Added ${entries.length} players to roster.`, 'emerald');
     }
 
     function togglePlayerPresence(playerId) {
@@ -2765,8 +2773,8 @@
 
     function confirmLoadSampleRoster() {
       openConfirmModal(
-        'Load Sample Youth Roster?',
-        'Replace your current roster with 9 sample youth players and reset timers?',
+        'Load Default Roster?',
+        'Replace your current roster with the default 9-player roster and reset timers?',
         () => {
           reconcileClock();
           appState.isRunning = false;
@@ -2789,7 +2797,7 @@
           });
           saveState();
           renderAll();
-          showToast('Sample roster loaded!', 'emerald');
+          showToast('Default roster loaded!', 'emerald');
         }
       );
     }
@@ -3043,7 +3051,7 @@
 
       const listEl = document.getElementById('roster-manage-list');
       if (appState.players.length === 0) {
-        listEl.innerHTML = `<div class="py-8 text-center text-sm text-slate-400">No players on roster yet. Add players above or load the sample roster.</div>`;
+        listEl.innerHTML = `<div class="py-8 text-center text-sm text-slate-400">No players on roster yet. Add players above or load the default roster.</div>`;
         return;
       }
 
