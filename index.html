@@ -1974,35 +1974,16 @@
     <!-- ==================== TAB 1: LIVE COURT & BENCH BOARD ==================== -->
     <section id="view-live" class="space-y-4">
 
-      <!-- Quick Action & Substitution Queue Bar -->
-      <div class="bg-white rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-200/90 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-2.5">
-          <div id="swap-helper-icon" class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
-            <i data-lucide="arrow-left-right" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <p id="swap-instruction-title" class="text-sm font-bold text-slate-900">Tap any player to sub or queue</p>
-            <p id="swap-instruction-sub" class="text-xs text-slate-500">Tap 1 active + 1 bench player to swap immediately, or queue subs for the whistle.</p>
-          </div>
+      <!-- Sub mode toggle & fair sub hint (one row) -->
+      <div class="bg-white rounded-2xl p-2 shadow-sm border border-slate-200/90 flex flex-nowrap items-center justify-between gap-2">
+        <div class="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200 shrink-0">
+          <button onclick="setSubMode('instant')" id="mode-instant-btn" class="px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow-sm">Instant</button>
+          <button onclick="setSubMode('queue')" id="mode-queue-btn" class="px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">Whistle</button>
         </div>
-
-        <div class="flex flex-wrap items-center gap-2 ml-auto">
-          <!-- Mode Toggle: Instant Swap vs Queue for Whistle -->
-          <div class="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200">
-            <button onclick="setSubMode('instant')" id="mode-instant-btn" class="px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow-sm">
-              Instant Swap
-            </button>
-            <button onclick="setSubMode('queue')" id="mode-queue-btn" class="px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">
-              Whistle Queue
-            </button>
-          </div>
-
-          <!-- Auto-Suggest Fair Sub Button -->
-          <button onclick="suggestFairSwap()" title="Highlight longest-playing player & lowest-minutes bench player" class="px-3 py-2 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 flex items-center gap-1.5 active:scale-95 transition">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-            <span>Fair Sub Hint</span>
-          </button>
-        </div>
+        <button onclick="suggestFairSwap()" title="Highlight longest-playing player & lowest-minutes bench player" class="px-3 py-2 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 flex items-center gap-1.5 whitespace-nowrap shrink-0 active:scale-95 transition">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          <span>Fair Sub</span>
+        </button>
       </div>
 
       <!-- Active Whistle Queue Banner (Visible whenever subs are queued) -->
@@ -3009,25 +2990,6 @@
       } else {
         queueBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition bg-orange-600 text-white shadow-sm';
         instantBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900';
-      }
-
-      // Dynamic Instruction Text
-      const instrTitle = document.getElementById('swap-instruction-title');
-      const instrSub = document.getElementById('swap-instruction-sub');
-      if (selectedCourtId) {
-        const p = appState.players.find(x => x.id === selectedCourtId);
-        instrTitle.textContent = `Selected #${p.number} ${p.name} to come OUT`;
-        instrSub.textContent = 'Now tap a player ON BENCH to complete the substitution.';
-      } else if (selectedBenchId) {
-        const p = appState.players.find(x => x.id === selectedBenchId);
-        instrTitle.textContent = `Selected #${p.number} ${p.name} to go IN`;
-        instrSub.textContent = `Now tap an active player ${appState.zoneLabel.toUpperCase()} to swap out.`;
-      } else if (appState.subMode === 'queue') {
-        instrTitle.textContent = 'Whistle Queue Mode: Select everyone coming in and out';
-        instrSub.textContent = 'Tap any number of bench and active players. Out and In counts must match to sub.';
-      } else {
-        instrTitle.textContent = 'Instant Swap Mode: Tap 1 Active + 1 Bench';
-        instrSub.textContent = 'Cards show Total Played, Current Stint/Wait, and Fair-Play balance.';
       }
 
       // Queue Action Banner
