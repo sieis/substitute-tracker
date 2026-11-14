@@ -28,6 +28,8 @@ Active spots, minutes per period and number of periods can be edited on the Rost
 
 **Game Summary**: totals, average, spread and per-player share, sortable. Copy as text or download a CSV.
 
+**Starters**: whoever is in the active lineup when the clock first starts is recorded as a starter. They are tagged in the summary table, listed in the copied text, and get a `Started` column in the CSV. Resetting game timers clears them for the next game.
+
 State is saved in the browser, so a reload does not lose the game.
 
 ## Running
