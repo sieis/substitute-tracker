@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#111418" media="(prefers-color-scheme: dark)">
-  <meta name="description" content="Track playing time and substitutions for kids' basketball and soccer.">
+  <meta name="description" content="Track playing time and substitutions for kids' sports.">
   <title>Sub Tracker</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b7a43'/%3E%3Cpath d='M9 12h12l-3-3m5 11H11l3 3' fill='none' stroke='%23fff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
@@ -18,7 +18,7 @@
       <h1>Sub Tracker</h1>
       <p class="lede">Playing time and substitutions, kept simple.</p>
 
-      <form id="setup-form">
+      <form id="settings" class="stack">
         <fieldset class="sports">
           <legend>Game</legend>
           <div id="sports" class="sport-grid"></div>
@@ -30,60 +30,136 @@
             <input id="periods" name="periods" type="number" inputmode="numeric" min="1" max="8" required>
           </div>
           <div class="field">
-            <label for="minutes">Minutes each</label>
+            <label for="minutes">Minutes</label>
             <input id="minutes" name="minutes" type="number" inputmode="numeric" min="1" max="60" required>
           </div>
           <div class="field">
             <label for="on-field">Players on</label>
-            <input id="on-field" name="onField" type="number" inputmode="numeric" min="1" max="11" required>
+            <input id="on-field" name="onField" type="number" inputmode="numeric" min="1" max="15" required>
+          </div>
+          <div class="field">
+            <label for="direction">Clock</label>
+            <select id="direction" name="direction">
+              <option value="down">Counts down</option>
+              <option value="up">Counts up</option>
+            </select>
           </div>
         </div>
+      </form>
 
-        <div class="field">
-          <label for="roster">Players</label>
-          <textarea id="roster" name="roster" rows="9" required aria-describedby="roster-hint"
-            autocomplete="off" autocapitalize="words" spellcheck="false"></textarea>
-          <p id="roster-hint" class="hint"></p>
+      <section class="stack" aria-labelledby="team-title">
+        <div class="heading-row">
+          <h2 id="team-title">Players</h2>
+          <p id="team-count" class="hint" role="status"></p>
         </div>
 
-        <button class="primary big">Start game</button>
-      </form>
+        <form id="add-form" class="add-row">
+          <input id="add-number" name="number" class="number" aria-label="Jersey number" inputmode="numeric"
+            maxlength="3" placeholder="#" autocomplete="off">
+          <input id="add-name" name="name" aria-label="Player name" maxlength="40" placeholder="Player name"
+            autocomplete="off" autocapitalize="words" spellcheck="false" enterkeyhint="done" aria-describedby="add-hint">
+          <button class="primary">Add</button>
+        </form>
+        <p id="add-hint" class="hint">Jersey numbers are optional. Paste a list of names to add them all at once.</p>
+
+        <ul id="team" class="team"></ul>
+      </section>
+
+      <p id="setup-error" class="error" role="alert"></p>
+      <button id="start-game" type="button" class="primary big">Start game</button>
     </section>
 
     <section id="game" class="game" hidden>
       <header class="scoreboard">
-        <h1 id="period-label"></h1>
+        <div class="heading-row">
+          <h1 id="period-label"></h1>
+          <div id="views" class="seg" role="group" aria-label="View">
+            <button type="button" data-view="live">Lineup</button>
+            <button type="button" data-view="times">Times</button>
+          </div>
+        </div>
         <p id="clock" class="clock" role="timer" aria-label="Game clock"></p>
         <div class="controls">
           <button id="toggle" type="button" class="primary big"></button>
           <button id="end-period" type="button" class="big"></button>
+          <button id="adjust-open" type="button" class="big" aria-label="Adjust clock">±</button>
         </div>
       </header>
 
       <div id="live" class="live">
-        <section class="group">
-          <h2><span id="on-title"></span> <span id="on-count" class="count"></span></h2>
-          <div id="on-list" class="players"></div>
+        <div class="toolbar">
+          <div id="modes" class="seg" role="group" aria-label="When to substitute">
+            <button type="button" data-mode="swap">Swap now</button>
+            <button type="button" data-mode="queue">Queue</button>
+          </div>
+          <button id="suggest" type="button">Suggest a sub</button>
+        </div>
+
+        <section id="queue-bar" class="queue" aria-labelledby="queue-title" hidden>
+          <div>
+            <h2 id="queue-title">Queued for the next stoppage</h2>
+            <ol id="queue-list"></ol>
+          </div>
+          <div class="actions">
+            <button id="queue-clear" type="button">Clear</button>
+            <button id="queue-go" type="button" class="primary"></button>
+          </div>
         </section>
-        <section class="group">
-          <h2>Bench</h2>
-          <div id="bench-list" class="players"></div>
-          <p id="bench-empty" class="hint" hidden>No one on the bench.</p>
-        </section>
+
+        <div class="groups">
+          <section class="group">
+            <h2><span id="on-title"></span> <span id="on-count" class="count"></span></h2>
+            <div id="on-list" class="players"></div>
+            <p id="on-empty" class="hint" hidden>No one is on. Tap a bench player, then Put in.</p>
+          </section>
+          <section class="group">
+            <div class="heading-row">
+              <h2>Bench <span class="count">least played first</span></h2>
+              <button id="add-open" type="button">Add player</button>
+            </div>
+            <div id="bench-list" class="players"></div>
+            <p id="bench-empty" class="hint" hidden>No one on the bench.</p>
+          </section>
+          <section id="out-group" class="group" hidden>
+            <h2>Sitting out <span class="count">tap to bring back</span></h2>
+            <div id="out-list" class="players"></div>
+          </section>
+        </div>
+        <p id="fair-note" class="hint"></p>
       </div>
 
-      <table id="summary" class="summary" hidden>
-        <caption>Playing time</caption>
-        <thead>
-          <tr><th scope="col">Player</th><th scope="col" class="num">Played</th><th scope="col" class="num">Share</th></tr>
-        </thead>
-        <tbody id="summary-body"></tbody>
-      </table>
+      <div id="times" class="times" hidden>
+        <dl class="kpis">
+          <div><dt>Game time</dt><dd id="kpi-time"></dd></div>
+          <div><dt>Average</dt><dd id="kpi-average"></dd></div>
+          <div><dt>Spread</dt><dd id="kpi-spread"></dd></div>
+          <div><dt>Fair share</dt><dd id="kpi-target"></dd></div>
+        </dl>
+        <div class="toolbar">
+          <label for="sort">Sort</label>
+          <select id="sort">
+            <option value="most">Most played</option>
+            <option value="least">Least played</option>
+            <option value="number">Number</option>
+            <option value="name">Name</option>
+          </select>
+          <button id="copy" type="button">Copy</button>
+          <button id="csv" type="button">CSV</button>
+        </div>
+        <div class="table-wrap" role="region" aria-label="Playing time" tabindex="0">
+          <table class="summary">
+            <thead><tr id="summary-head"></tr></thead>
+            <tbody id="summary-body"></tbody>
+          </table>
+        </div>
+      </div>
 
       <div class="actionbar">
         <p id="status" role="status"></p>
         <div class="actions">
+          <button id="apply" type="button" class="primary" hidden></button>
           <button id="move" type="button" hidden></button>
+          <button id="sit-out" type="button" hidden>Sit out</button>
           <button id="cancel" type="button" hidden>Cancel</button>
           <button id="undo" type="button" hidden>Undo</button>
           <button id="new-game" type="button" class="quiet">New game</button>
@@ -98,6 +174,38 @@
     <form method="dialog" class="dialog-actions">
       <button value="cancel" autofocus>Cancel</button>
       <button id="confirm-ok" value="ok" class="primary"></button>
+    </form>
+  </dialog>
+
+  <dialog id="adjust" aria-labelledby="adjust-title" aria-describedby="adjust-hint" closedby="any">
+    <h2 id="adjust-title">Adjust clock</h2>
+    <p id="adjust-clock" class="clock" aria-live="polite"></p>
+    <div class="adjust-grid">
+      <button type="button" data-seconds="-60">−1:00</button>
+      <button type="button" data-seconds="-10">−0:10</button>
+      <button type="button" data-seconds="10">+0:10</button>
+      <button type="button" data-seconds="60">+1:00</button>
+    </div>
+    <p id="adjust-hint" class="hint"></p>
+    <form method="dialog" class="dialog-actions">
+      <button class="primary" autofocus>Done</button>
+    </form>
+  </dialog>
+
+  <dialog id="late" aria-labelledby="late-title" closedby="any">
+    <h2 id="late-title">Add player</h2>
+    <p>They start on the bench with no time played.</p>
+    <form id="late-form" method="dialog">
+      <div class="add-row">
+        <input name="number" class="number" aria-label="Jersey number" inputmode="numeric" maxlength="3"
+          placeholder="#" autocomplete="off">
+        <input name="name" aria-label="Player name" maxlength="40" placeholder="Player name" required
+          autocomplete="off" autocapitalize="words" spellcheck="false">
+      </div>
+      <div class="dialog-actions">
+        <button type="button" value="cancel">Cancel</button>
+        <button value="ok" class="primary">Add</button>
+      </div>
     </form>
   </dialog>
 </body>
