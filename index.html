@@ -2028,6 +2028,8 @@
             <button class="text-[11px] underline cursor-pointer" onclick="switchTab('roster')">Adjust Roster</button>
           </div>
 
+          <div id="last-starters-note" class="hidden bg-slate-50 border-b border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600"></div>
+
           <div id="court-players-list" class="p-3 sm:p-4 space-y-1.5">
             <!-- Active Player Cards Rendered Here -->
           </div>
@@ -2414,6 +2416,7 @@
           if (!Array.isArray(parsed.players) || !parsed.players.every(p => p && typeof p.id === "string" && /^[a-zA-Z0-9_-]+$/.test(p.id) && typeof p.name === "string" && typeof p.number === "string" && [p.totalSec,p.stintSec,p.benchSec].every(v=>Number.isFinite(v)&&v>=0))) throw Error("Invalid roster");
           if (![parsed.periodDurationSec,parsed.periodRemainingSec,parsed.totalGameElapsedSec,parsed.activeTarget,parsed.numPeriods,parsed.currentPeriod].every(v=>Number.isFinite(v)&&v>=0) || parsed.activeTarget<1 || parsed.numPeriods<1 || parsed.periodDurationSec<1) throw Error("Invalid clock");
           if (!Array.isArray(parsed.starterIds) || !parsed.starterIds.every(id => typeof id === "string")) parsed.starterIds = null;
+          if (!Array.isArray(parsed.lastStarterIds) || !parsed.lastStarterIds.every(id => typeof id === "string")) parsed.lastStarterIds = null;
           appState = { ...appState, ...parsed, isRunning: false };
         }
       } catch (e) {
@@ -2464,10 +2467,12 @@
         const n = appState.players.filter(p=>p.present && p.onCourt).length;
         if (!n || n !== Math.min(appState.activeTarget,appState.players.filter(p=>p.present).length) || n>appState.activeTarget) { showToast('Check the active lineup before starting.', 'amber'); return; }
         // Lock in the starting lineup the moment the game clock first runs
-        if (appState.totalGameElapsedSec <= 0) appState.starterIds = appState.players.filter(p => p.present && p.onCourt).map(p => p.id);
+        var firstStart = appState.totalGameElapsedSec <= 0;
+        if (firstStart) appState.starterIds = appState.players.filter(p => p.present && p.onCourt).map(p => p.id);
         appState.isRunning = true;
       }
-      lastTickTimestamp = performance.now(); saveState(); renderHeaderClock(); updateLiveTimes();
+      lastTickTimestamp = performance.now(); saveState();
+      if (firstStart) renderAll(); else { renderHeaderClock(); updateLiveTimes(); }
     }
     function stepLabel(sec) { return sec >= 60 ? `${sec/60}m` : `${sec}s`; }
     function cycleClockStep() {
@@ -2791,6 +2796,7 @@
       undoRecord = null;
       appState.players = appState.players.filter(p => p.id !== playerId);
       if (Array.isArray(appState.starterIds)) appState.starterIds = appState.starterIds.filter(id => id !== playerId);
+      if (Array.isArray(appState.lastStarterIds)) appState.lastStarterIds = appState.lastStarterIds.filter(id => id !== playerId);
       dropFromQueue(playerId);
       saveState();
       renderAll();
@@ -2807,6 +2813,7 @@
           appState.currentPeriod = 1;
           appState.periodRemainingSec = appState.periodDurationSec;
           appState.totalGameElapsedSec = 0;
+          if (Array.isArray(appState.starterIds) && appState.starterIds.length) appState.lastStarterIds = appState.starterIds;
           appState.starterIds = null;
           undoRecord = null;
           selectedCourtId = selectedBenchId = null;
@@ -2836,6 +2843,7 @@
           appState.periodRemainingSec = appState.periodDurationSec;
           appState.totalGameElapsedSec = 0;
           appState.starterIds = null;
+          appState.lastStarterIds = null;
           undoRecord = null;
           selectedCourtId = selectedBenchId = null;
           queueOut = []; queueIn = [];
@@ -2864,6 +2872,13 @@
       if (Array.isArray(appState.starterIds)) return appState.starterIds.includes(player.id);
       return appState.totalGameElapsedSec <= 0 && player.present && player.onCourt;
     }
+
+    // Shown only while setting up a new game (clock never started), so coaches can rotate who starts.
+    function wasLastStarter(player) {
+      return Array.isArray(appState.lastStarterIds) && !Array.isArray(appState.starterIds)
+        && appState.totalGameElapsedSec <= 0 && appState.lastStarterIds.includes(player.id);
+    }
+    const LAST_STARTER_TAG = '<span class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-slate-200 text-slate-700 align-middle" title="Started last game">Last starter</span>';
 
     function getFairPlayMetrics() {
       const presentPlayers = appState.players.filter(p => p.present);
@@ -2981,6 +2996,11 @@
 
       document.getElementById('bench-count-badge').textContent = benchPlayers.length;
 
+      const lastNote = document.getElementById('last-starters-note');
+      const lastStarters = appState.players.filter(wasLastStarter);
+      lastNote.classList.toggle('hidden', lastStarters.length === 0);
+      if (lastStarters.length) lastNote.innerHTML = `<span class="px-1 rounded bg-slate-200 text-slate-700 uppercase text-[10px] font-extrabold">Last</span> started last game: ${lastStarters.map(p => `#${escapeHTML(p.number)} ${escapeHTML(p.name)}`).join(', ')}`;
+
       // Sub Mode Buttons
       const instantBtn = document.getElementById('mode-instant-btn');
       const queueBtn = document.getElementById('mode-queue-btn');
@@ -3059,6 +3079,7 @@
           <span class="pc-head">
             <span class="pc-num ${isCourt ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-800 border border-slate-200'}">${escapeHTML(player.number)}</span>
             <span class="pc-name">${escapeHTML(player.name)}</span>
+            ${wasLastStarter(player) ? '<span class="pc-tag bg-slate-200 text-slate-700" title="Started last game">Last</span>' : ''}
             ${isQueued ? `<span class="pc-tag bg-indigo-600 text-white">${isCourt ? 'Out' : 'In'} ${queuedIdx + 1}</span>` : ''}
             ${isSelected ? `<span class="pc-tag bg-orange-600 text-white">${isCourt ? 'Out' : 'In'}</span>` : ''}
             <span data-fair class="pc-fair ${fair.badgeClass}" title="${fair.label}">${fair.short}</span>
@@ -3098,7 +3119,7 @@
               ${escapeHTML(p.number)}
             </span>
             <div class="min-w-0">
-              <div class="font-bold text-sm text-slate-900 truncate">${escapeHTML(p.name)}</div>
+              <div class="font-bold text-sm text-slate-900 truncate">${escapeHTML(p.name)}${wasLastStarter(p) ? LAST_STARTER_TAG : ''}</div>
               <div class="text-xs text-slate-500">Played: ${formatTime(p.totalSec)}</div>
             </div>
           </div>
@@ -3158,7 +3179,7 @@
         return `
           <tr class="hover:bg-slate-50/80">
             <td class="py-3 px-4 font-mono font-bold text-slate-700">#${escapeHTML(p.number)}</td>
-            <td class="py-3 px-4 font-bold text-slate-900 whitespace-nowrap">${escapeHTML(p.name)}${isStarter(p) ? ' <span class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-800 align-middle">Starter</span>' : ''}</td>
+            <td class="py-3 px-4 font-bold text-slate-900 whitespace-nowrap">${escapeHTML(p.name)}${isStarter(p) ? ' <span class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-800 align-middle">Starter</span>' : ''}${wasLastStarter(p) ? LAST_STARTER_TAG : ''}</td>
             <td class="py-3 px-4">
               <span class="px-2 py-0.5 rounded-full text-xs font-bold ${p.onCourt ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
                 ${p.onCourt ? appState.zoneLabel : 'Bench'}
