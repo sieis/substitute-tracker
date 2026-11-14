@@ -1974,35 +1974,16 @@
     <!-- ==================== TAB 1: LIVE COURT & BENCH BOARD ==================== -->
     <section id="view-live" class="space-y-4">
 
-      <!-- Quick Action & Substitution Queue Bar -->
-      <div class="bg-white rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-200/90 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-2.5">
-          <div id="swap-helper-icon" class="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
-            <i data-lucide="arrow-left-right" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <p id="swap-instruction-title" class="text-sm font-bold text-slate-900">Tap any player to sub or queue</p>
-            <p id="swap-instruction-sub" class="text-xs text-slate-500">Tap 1 active + 1 bench player to swap immediately, or queue subs for the whistle.</p>
-          </div>
+      <!-- Sub mode toggle & fair sub hint (one row) -->
+      <div class="bg-white rounded-2xl p-2 shadow-sm border border-slate-200/90 flex flex-nowrap items-center justify-between gap-2">
+        <div class="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200 shrink-0">
+          <button onclick="setSubMode('instant')" id="mode-instant-btn" class="px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow-sm">Instant</button>
+          <button onclick="setSubMode('queue')" id="mode-queue-btn" class="px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">Whistle</button>
         </div>
-
-        <div class="flex flex-wrap items-center gap-2 ml-auto">
-          <!-- Mode Toggle: Instant Swap vs Queue for Whistle -->
-          <div class="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200">
-            <button onclick="setSubMode('instant')" id="mode-instant-btn" class="px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow-sm">
-              Instant Swap
-            </button>
-            <button onclick="setSubMode('queue')" id="mode-queue-btn" class="px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">
-              Whistle Queue
-            </button>
-          </div>
-
-          <!-- Auto-Suggest Fair Sub Button -->
-          <button onclick="suggestFairSwap()" title="Highlight longest-playing player & lowest-minutes bench player" class="px-3 py-2 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 flex items-center gap-1.5 active:scale-95 transition">
-            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-            <span>Fair Sub Hint</span>
-          </button>
-        </div>
+        <button onclick="suggestFairSwap()" title="Highlight longest-playing player & lowest-minutes bench player" class="px-3 py-2 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 flex items-center gap-1.5 whitespace-nowrap shrink-0 active:scale-95 transition">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          <span>Fair Sub</span>
+        </button>
       </div>
 
       <!-- Active Whistle Queue Banner (Visible whenever subs are queued) -->
@@ -2432,6 +2413,7 @@
           const parsed = JSON.parse(raw);
           if (!Array.isArray(parsed.players) || !parsed.players.every(p => p && typeof p.id === "string" && /^[a-zA-Z0-9_-]+$/.test(p.id) && typeof p.name === "string" && typeof p.number === "string" && [p.totalSec,p.stintSec,p.benchSec].every(v=>Number.isFinite(v)&&v>=0))) throw Error("Invalid roster");
           if (![parsed.periodDurationSec,parsed.periodRemainingSec,parsed.totalGameElapsedSec,parsed.activeTarget,parsed.numPeriods,parsed.currentPeriod].every(v=>Number.isFinite(v)&&v>=0) || parsed.activeTarget<1 || parsed.numPeriods<1 || parsed.periodDurationSec<1) throw Error("Invalid clock");
+          if (!Array.isArray(parsed.starterIds) || !parsed.starterIds.every(id => typeof id === "string")) parsed.starterIds = null;
           appState = { ...appState, ...parsed, isRunning: false };
         }
       } catch (e) {
@@ -2481,6 +2463,8 @@
         if (appState.periodRemainingSec <= 0) { showToast('Period ended. Advance or reset the clock.', 'amber'); return; }
         const n = appState.players.filter(p=>p.present && p.onCourt).length;
         if (!n || n !== Math.min(appState.activeTarget,appState.players.filter(p=>p.present).length) || n>appState.activeTarget) { showToast('Check the active lineup before starting.', 'amber'); return; }
+        // Lock in the starting lineup the moment the game clock first runs
+        if (appState.totalGameElapsedSec <= 0) appState.starterIds = appState.players.filter(p => p.present && p.onCourt).map(p => p.id);
         appState.isRunning = true;
       }
       lastTickTimestamp = performance.now(); saveState(); renderHeaderClock(); updateLiveTimes();
@@ -2806,6 +2790,7 @@
       if (appState.isRunning) { showToast("Pause the clock before editing the roster.", "amber"); return; }
       undoRecord = null;
       appState.players = appState.players.filter(p => p.id !== playerId);
+      if (Array.isArray(appState.starterIds)) appState.starterIds = appState.starterIds.filter(id => id !== playerId);
       dropFromQueue(playerId);
       saveState();
       renderAll();
@@ -2822,6 +2807,7 @@
           appState.currentPeriod = 1;
           appState.periodRemainingSec = appState.periodDurationSec;
           appState.totalGameElapsedSec = 0;
+          appState.starterIds = null;
           undoRecord = null;
           selectedCourtId = selectedBenchId = null;
           queueOut = []; queueIn = [];
@@ -2849,6 +2835,7 @@
           appState.currentPeriod = 1;
           appState.periodRemainingSec = appState.periodDurationSec;
           appState.totalGameElapsedSec = 0;
+          appState.starterIds = null;
           undoRecord = null;
           selectedCourtId = selectedBenchId = null;
           queueOut = []; queueIn = [];
@@ -2871,6 +2858,12 @@
     }
 
     /* ==================== FAIR PLAY METRICS & FORMATTING ==================== */
+
+    // Starters are locked in at first clock start; before that, the current lineup is the projected starting lineup.
+    function isStarter(player) {
+      if (Array.isArray(appState.starterIds)) return appState.starterIds.includes(player.id);
+      return appState.totalGameElapsedSec <= 0 && player.present && player.onCourt;
+    }
 
     function getFairPlayMetrics() {
       const presentPlayers = appState.players.filter(p => p.present);
@@ -2997,25 +2990,6 @@
       } else {
         queueBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition bg-orange-600 text-white shadow-sm';
         instantBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900';
-      }
-
-      // Dynamic Instruction Text
-      const instrTitle = document.getElementById('swap-instruction-title');
-      const instrSub = document.getElementById('swap-instruction-sub');
-      if (selectedCourtId) {
-        const p = appState.players.find(x => x.id === selectedCourtId);
-        instrTitle.textContent = `Selected #${p.number} ${p.name} to come OUT`;
-        instrSub.textContent = 'Now tap a player ON BENCH to complete the substitution.';
-      } else if (selectedBenchId) {
-        const p = appState.players.find(x => x.id === selectedBenchId);
-        instrTitle.textContent = `Selected #${p.number} ${p.name} to go IN`;
-        instrSub.textContent = `Now tap an active player ${appState.zoneLabel.toUpperCase()} to swap out.`;
-      } else if (appState.subMode === 'queue') {
-        instrTitle.textContent = 'Whistle Queue Mode: Select everyone coming in and out';
-        instrSub.textContent = 'Tap any number of bench and active players. Out and In counts must match to sub.';
-      } else {
-        instrTitle.textContent = 'Instant Swap Mode: Tap 1 Active + 1 Bench';
-        instrSub.textContent = 'Cards show Total Played, Current Stint/Wait, and Fair-Play balance.';
       }
 
       // Queue Action Banner
@@ -3184,7 +3158,7 @@
         return `
           <tr class="hover:bg-slate-50/80">
             <td class="py-3 px-4 font-mono font-bold text-slate-700">#${escapeHTML(p.number)}</td>
-            <td class="py-3 px-4 font-bold text-slate-900">${escapeHTML(p.name)}</td>
+            <td class="py-3 px-4 font-bold text-slate-900 whitespace-nowrap">${escapeHTML(p.name)}${isStarter(p) ? ' <span class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-orange-100 text-orange-800 align-middle">Starter</span>' : ''}</td>
             <td class="py-3 px-4">
               <span class="px-2 py-0.5 rounded-full text-xs font-bold ${p.onCourt ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'}">
                 ${p.onCourt ? appState.zoneLabel : 'Bench'}
@@ -3235,6 +3209,7 @@
       const lines = [
         `${appState.sportName} Playing Time Summary (Period ${appState.currentPeriod}/${appState.numPeriods})`,
         `Total Game Elapsed: ${formatTime(appState.totalGameElapsedSec)}`,
+        `Starters: ${appState.players.filter(isStarter).map(p => `#${p.number} ${p.name}`).join(', ') || 'None recorded'}`,
         `----------------------------------------`,
         ...presentPlayers.map(p => {
           const pct = appState.totalGameElapsedSec > 0 ? Math.round((p.totalSec / appState.totalGameElapsedSec) * 100) : 0;
@@ -3266,12 +3241,13 @@
         .filter(p => p.present)
         .sort((a, b) => b.totalSec - a.totalSec);
 
-      const headers = ['Jersey', 'Player Name', 'Sport', 'Status', 'Total Seconds', 'Total Time (MM:SS)', 'Percent Played'];
+      const headers = ['Jersey', 'Player Name', 'Started', 'Sport', 'Status', 'Total Seconds', 'Total Time (MM:SS)', 'Percent Played'];
       const rows = presentPlayers.map(p => {
         const pct = appState.totalGameElapsedSec > 0 ? Math.round((p.totalSec / appState.totalGameElapsedSec) * 100) : 0;
         return [
           csv(p.number),
           csv(p.name),
+          `"${isStarter(p) ? 'Yes' : 'No'}"`,
           `"${appState.sportName}"`,
           `"${p.onCourt ? appState.zoneLabel : 'Bench'}"`,
           Math.floor(p.totalSec),
