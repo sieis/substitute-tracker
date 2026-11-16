@@ -2148,6 +2148,10 @@
               <i data-lucide="users-round" class="w-3.5 h-3.5"></i>
               <span>Load Default Roster</span>
             </button>
+            <button onclick="confirmResetToDefaults()" class="w-full px-3 py-2.5 rounded-xl text-xs font-bold bg-white text-rose-700 hover:bg-rose-50 border border-rose-200 flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+              <span>Reset Everything to Defaults</span>
+            </button>
           </div>
         </div>
 
@@ -2342,6 +2346,7 @@
       subMode: 'instant', // 'instant' or 'queue'
       players: JSON.parse(JSON.stringify(SAMPLE_ROSTER))
     };
+    const DEFAULT_STATE = JSON.parse(JSON.stringify(appState));
 
     // Transient UI Selection State (not persisted across reloads)
     let selectedCourtId = null;
@@ -2861,6 +2866,25 @@
           saveState();
           renderAll();
           showToast('Default roster loaded!', 'emerald');
+        }
+      );
+    }
+
+    function confirmResetToDefaults() {
+      openConfirmModal(
+        'Reset Everything to Defaults?',
+        'This restores the default sport, settings, and roster, resets all timers, and clears starter and last-game starter history. This cannot be undone.',
+        () => {
+          appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
+          undoRecord = null;
+          selectedCourtId = selectedBenchId = null;
+          queueOut = []; queueIn = [];
+          try { localStorage.removeItem(HEADER_PREF_KEY); } catch (e) {}
+          setHeaderCollapsed(false);
+          saveState();
+          syncSettingsInputs();
+          renderAll();
+          showToast('All settings restored to defaults.', 'orange');
         }
       );
     }
