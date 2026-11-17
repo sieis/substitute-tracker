@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>BenchFlow · Smarter substitutions. Fairer playing time.</title>
+  <title>BenchFlow · Smart subs. Fair time.</title>
   <meta name="theme-color" content="#0a1120">
-  <meta name="description" content="Smarter substitutions. Fairer playing time. Track playing time and manage youth sports rotations from the sideline with BenchFlow.">
+  <meta name="description" content="Smart subs. Fair time. Track playing time and manage youth sports rotations from the sideline with BenchFlow.">
   <meta property="og:title" content="BenchFlow">
-  <meta property="og:description" content="Smarter substitutions. Fairer playing time.">
+  <meta property="og:description" content="Smart subs. Fair time.">
   <style>
 /*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
 @layer properties;
@@ -1969,6 +1969,8 @@
       gap: .5rem 1rem;
     }
     .lineup-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+    .lineup-tools { display: flex; align-items: center; gap: .5rem; }
+    .lineup-tools .mode-toggle button { padding-inline: .6rem; font-size: .8rem; }
     .lineup-toolbar h2 { font-size: 1.32rem; font-weight: 800; letter-spacing: -.035em; }
     #sub-mode-hint, #sub-preview-hint { color: var(--muted); font-size: .75rem; }
     .sub-preview {
@@ -2203,7 +2205,7 @@
         <span class="brand-mark" aria-hidden="true"><i data-lucide="arrow-left-right"></i></span>
         <div>
           <h1>Bench<span>Flow</span></h1>
-          <p>Smarter substitutions. Fairer playing time.</p>
+          <p>Smart subs. Fair time.</p>
         </div>
       </div>
       <nav aria-label="App views" class="app-nav">
@@ -2275,9 +2277,15 @@
           <h2 id="lineup-heading">Lineup</h2>
           <p id="sub-mode-hint"></p>
         </div>
-        <button type="button" id="undo-btn" class="quiet-button" onclick="undoSwap()" aria-label="Undo substitution" disabled>
-          <i data-lucide="rotate-ccw" aria-hidden="true"></i> Undo
-        </button>
+        <div class="lineup-tools">
+          <div class="mode-toggle" role="group" aria-label="Substitution mode">
+            <button type="button" onclick="setSubMode('instant')" data-sub-mode="instant" aria-pressed="true">Instant</button>
+            <button type="button" onclick="setSubMode('queue')" data-sub-mode="queue" aria-pressed="false">Whistle</button>
+          </div>
+          <button type="button" id="undo-btn" class="quiet-button" onclick="undoSwap()" aria-label="Undo substitution" disabled>
+            <i data-lucide="rotate-ccw" aria-hidden="true"></i> Undo
+          </button>
+        </div>
       </div>
 
       <div id="sub-preview" class="sub-preview" hidden>
@@ -2323,8 +2331,8 @@
         </div>
         <div class="settings-actions">
           <div class="mode-toggle" role="group" aria-label="Substitution mode">
-            <button type="button" onclick="setSubMode('instant')" id="mode-instant-btn" aria-pressed="true">Instant</button>
-            <button type="button" onclick="setSubMode('queue')" id="mode-queue-btn" aria-pressed="false">Whistle</button>
+            <button type="button" onclick="setSubMode('instant')" data-sub-mode="instant" aria-pressed="true">Instant</button>
+            <button type="button" onclick="setSubMode('queue')" data-sub-mode="queue" aria-pressed="false">Whistle</button>
           </div>
           <button type="button" id="wake-btn" class="quiet-button" onclick="toggleWake()" aria-pressed="false">Keep screen awake</button>
         </div>
@@ -3540,11 +3548,11 @@
       sanitizeSelections();
       const focusId = document.activeElement?.dataset?.player;
       document.getElementById("undo-btn").disabled = !undoRecord;
-      document.getElementById("mode-instant-btn").setAttribute("aria-pressed", appState.subMode === "instant");
-      document.getElementById("mode-queue-btn").setAttribute("aria-pressed", appState.subMode === "queue");
+      document.querySelectorAll('[data-sub-mode]').forEach(btn =>
+        btn.setAttribute('aria-pressed', btn.dataset.subMode === appState.subMode));
       document.getElementById('sub-mode-hint').textContent = appState.subMode === 'queue'
-        ? 'Whistle mode · Select players in and out, then apply at the whistle.'
-        : 'Instant mode · Tap one player from each side to swap.';
+        ? 'Queue subs, then apply at the whistle.'
+        : 'Tap one player from each side to swap.';
       const presentPlayers = appState.players.filter(p => p.present);
       const courtPlayers = presentPlayers
         .filter(p => p.onCourt)
