@@ -1,8 +1,8 @@
 {
-  "name": "fairshift",
+  "name": "benchflow",
   "version": "3.0.0",
   "private": true,
-  "description": "Track fair playing time and substitutions for youth sports.",
+  "description": "Smarter substitutions. Fairer playing time. Track youth sports rotations from the sideline.",
   "scripts": {
     "start": "npx serve ."
   }

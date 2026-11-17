@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>FairShift · Playing Time &amp; Sub Tracker</title>
-  <meta name="theme-color" content="#0d1d22">
-  <meta name="description" content="Track fair playing time and substitutions for youth sports, right from the sideline.">
-  <!-- All styles and icons are embedded; no network dependencies. -->
+  <title>BenchFlow · Smarter substitutions. Fairer playing time.</title>
+  <meta name="theme-color" content="#0a1120">
+  <meta name="description" content="Smarter substitutions. Fairer playing time. Track playing time and manage youth sports rotations from the sideline with BenchFlow.">
+  <meta property="og:title" content="BenchFlow">
+  <meta property="og:description" content="Smarter substitutions. Fairer playing time.">
   <style>
 /*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
 @layer properties;
@@ -1700,170 +1701,481 @@
 }
 
 
-    /* Custom scrollbar & mobile touch optimization */
-    body {
-      -webkit-tap-highlight-color: transparent;
-      overscroll-behavior-y: contain;
+    @font-face {
+      font-family: Inter;
+      src: url("fonts/inter-latin-wght-normal.woff2") format("woff2");
+      font-weight: 100 900;
+      font-display: swap;
     }
-    .tabular-nums {
+    @font-face {
+      font-family: "Barlow Condensed";
+      src: url("fonts/barlow-condensed-latin-700-normal.woff2") format("woff2");
+      font-weight: 700;
+      font-display: swap;
+    }
+
+    :root {
+      color-scheme: dark;
+      --ink: #0a1120;
+      --surface: #111c2f;
+      --card: #152237;
+      --raised: #1b2a42;
+      --line: #293a52;
+      --line-strong: #405570;
+      --text: #f2f6fc;
+      --muted: #a3b4cc;
+      --accent: #c6ff45;
+      --accent-hover: #dcff87;
+      --balance: #8fe7b1;
+      --attention: #ffd184;
+      --high: #ffaba9;
+      --incoming: #c6ff45;
+      --outgoing: #ffa88e;
+      --display-font: "Barlow Condensed", "Arial Narrow", sans-serif;
+      --action-height: 4.5rem;
+      --gutter: clamp(.75rem, 3vw, 1.75rem);
+      --color-slate-50: var(--card);
+      --color-slate-100: var(--raised);
+      --color-slate-200: var(--line);
+      --color-slate-300: var(--line-strong);
+      --color-slate-700: #253750;
+      --color-slate-800: var(--raised);
+      --color-slate-900: var(--ink);
+      --color-slate-950: #080e19;
+      --color-orange-50: #26351c;
+      --color-orange-100: #2f421e;
+      --color-orange-500: var(--accent);
+      --color-orange-600: var(--accent);
+      --color-orange-700: var(--accent-hover);
+      --color-emerald-50: #14392f;
+      --color-emerald-100: #164036;
+      --color-emerald-200: #386756;
+      --color-sky-100: #1b3851;
+      --color-sky-200: #285074;
+      --color-rose-50: #3c232b;
+      --color-rose-100: #512d36;
+      --color-rose-200: #78414d;
+    }
+
+    html { background: var(--ink); scroll-padding-top: 12rem; }
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: var(--ink);
+      color: var(--text);
+      font-family: Inter, system-ui, sans-serif;
+    }
+    button, summary { cursor: pointer; touch-action: manipulation; }
+    button, summary, input, select { min-height: 44px; }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    input { min-width: 0; }
+    [data-lucide] { display: inline-flex; flex-shrink: 0; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    ::selection { background: var(--accent); color: var(--ink); }
+    .page-shell {
+      width: min(100%, 72rem);
+      margin-inline: auto;
+      padding-left: max(var(--gutter), env(safe-area-inset-left));
+      padding-right: max(var(--gutter), env(safe-area-inset-right));
+    }
+
+    /* Brand and view navigation */
+    .masthead { border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top); }
+    .masthead-inner {
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .55rem 1.25rem;
+      padding-block: .75rem;
+    }
+    .brand { display: flex; align-items: center; gap: .75rem; }
+    .brand-mark {
+      display: grid;
+      width: 44px;
+      height: 44px;
+      flex: none;
+      place-items: center;
+      color: var(--ink);
+      background: var(--accent);
+      border-radius: 12px;
+    }
+    .brand-mark i, .icon-button i, .game-actions i { width: 19px; height: 19px; }
+    .brand h1 { font-size: 1.5rem; line-height: 1; font-weight: 850; letter-spacing: -.055em; }
+    .brand h1 span { color: var(--accent); }
+    .brand p { margin-top: .3rem; color: var(--muted); font-size: .75rem; }
+    .app-nav { display: flex; gap: .25rem; }
+    .app-nav button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .45rem;
+      padding-inline: .8rem;
+      border: 1px solid transparent;
+      border-radius: .6rem;
+      color: var(--muted);
+      font-size: .84rem;
+      font-weight: 650;
+    }
+    .app-nav button:hover, .app-nav button[aria-pressed="true"] { color: var(--text); background: var(--raised); }
+    .app-nav button[aria-pressed="true"] { color: var(--accent); border-color: var(--line); }
+    .app-nav i, .quiet-button i { width: 16px; height: 16px; }
+    #nav-queued-badge { padding-inline: .35em; background: var(--accent); color: var(--ink); border-radius: .3rem; }
+
+    /* Scoreboard stays in view while the roster scrolls. */
+    .scoreboard-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--ink);
+      padding-top: max(.75rem, env(safe-area-inset-top));
+      padding-bottom: .5rem;
+    }
+    .scoreboard {
+      position: relative;
+      isolation: isolate;
+      width: min(calc(100% - max(var(--gutter), env(safe-area-inset-left)) - max(var(--gutter), env(safe-area-inset-right))), calc(72rem - var(--gutter) * 2));
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(9rem, auto) minmax(0, 1fr);
+      align-items: center;
+      gap: .5rem 1.25rem;
+      padding: .85rem 1.25rem;
+      border: 1px solid var(--line-strong);
+      border-top: 2px solid var(--accent);
+      border-radius: 1rem;
+      background:
+        radial-gradient(ellipse at 50% 125%, #294326 0%, transparent 57%),
+        repeating-linear-gradient(90deg, transparent 0 55px, #ffffff07 55px 56px),
+        linear-gradient(120deg, #142238, #101a2b);
+    }
+    .game-context { grid-row: 1 / span 2; min-width: 0; }
+    .game-team { font-size: 1.1rem; font-weight: 800; overflow-wrap: anywhere; }
+    .game-sport, #period-display, #clock-status-label {
+      color: var(--muted);
+      font-size: .68rem;
+      font-weight: 750;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+    .game-target { margin-top: .55rem; color: var(--muted); font-size: .8rem; }
+    .game-target strong { margin-left: .25em; color: var(--text); font-variant-numeric: tabular-nums; }
+    .clock-face { grid-row: 1 / span 2; text-align: center; white-space: nowrap; }
+    #clock-display {
+      color: var(--accent);
+      font-family: var(--display-font);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(4rem, 9vw, 6.15rem);
+      line-height: .9;
+      letter-spacing: -.015em;
+    }
+    #clock-status-label { margin-top: .45rem; color: var(--text); }
+    #clock-status-label[data-state="running"] { color: var(--accent); }
+    #clock-status-label[data-state="ended"] { color: var(--attention); }
+    #clock-status-label::before {
+      content: "";
+      display: inline-block;
+      width: .45rem;
+      height: .45rem;
+      margin-right: .5rem;
+      border-radius: 50%;
+      background: currentColor;
+      vertical-align: .08em;
+    }
+
+    .clock-tools { grid-column: 3; display: flex; gap: .35rem; justify-self: end; align-self: start; }
+    .icon-button, .quiet-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .4rem;
+      border: 1px solid var(--line-strong);
+      border-radius: .6rem;
+      background: var(--surface);
+      color: var(--text);
+    }
+    .icon-button { width: 44px; }
+    .quiet-button { padding-inline: .8rem; font-size: .78rem; font-weight: 650; }
+    .quiet-button:hover:not(:disabled), .icon-button:hover, details[open] > .icon-button { background: var(--raised); }
+    #clock-options summary::-webkit-details-marker { display: none; }
+    .clock-panel {
+      position: absolute;
+      z-index: 1;
+      top: calc(100% + .25rem);
+      right: 0;
+      width: min(100%, 17rem);
+      padding: .55rem;
+      display: grid;
+      gap: .35rem;
+      border: 1px solid var(--line-strong);
+      border-radius: .8rem;
+      background: var(--surface);
+      box-shadow: 0 12px 28px #050a13c0;
+    }
+    .clock-adjust { display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: .3rem; }
+    .clock-panel button, .mode-toggle button {
+      padding-inline: .5rem;
+      background: var(--raised);
+      border-radius: .45rem;
+      font-size: .82rem;
+      font-weight: 700;
+    }
+    .clock-panel button:hover { background: var(--line); }
+
+    .game-actions {
+      grid-column: 3;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-self: end;
+      gap: .45rem;
+    }
+    .game-actions button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .35rem;
+      padding-inline: .75rem;
+      border: 1px solid var(--line-strong);
+      border-radius: .6rem;
+      background: var(--raised);
+      font-size: .84rem;
+      font-weight: 780;
+      white-space: nowrap;
+    }
+    .game-actions button:hover { background: var(--line); }
+    #clock-toggle-btn, #apply-sub-btn { color: var(--ink); background: var(--accent); border-color: var(--accent); }
+    #clock-toggle-btn:hover, #apply-sub-btn:hover { background: var(--accent-hover); }
+    #clock-toggle-btn[data-running="true"] { background: var(--attention); border-color: var(--attention); }
+    #clock-toggle-btn[data-running="true"]:hover { background: #ffe1ad; }
+
+    .compact-scoreboard .masthead { display: none; }
+    .compact-scoreboard .scoreboard { padding-block: .35rem; }
+    .compact-scoreboard #clock-display { font-size: 2rem; }
+    .compact-scoreboard .game-target { display: none; }
+    .compact-scoreboard .clock-tools { align-self: center; }
+    .compact-scoreboard .game-actions { align-self: center; }
+
+    /* Game lineup */
+    .workspace { padding-top: .75rem; padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)); }
+    .game-view { display: grid; gap: .9rem; }
+    .lineup-toolbar, .sub-preview {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem 1rem;
+    }
+    .lineup-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+    .lineup-toolbar h2 { font-size: 1.32rem; font-weight: 800; letter-spacing: -.035em; }
+    #sub-mode-hint, #sub-preview-hint { color: var(--muted); font-size: .75rem; }
+    .sub-preview {
+      justify-content: space-between;
+      padding: .65rem .85rem;
+      background: var(--surface);
+      border: 1px solid var(--line-strong);
+      border-radius: .8rem;
+    }
+    .sub-preview > div { flex: 1 1 14rem; min-width: 0; }
+    .sub-preview h3 { font-weight: 750; font-size: .9rem; }
+    .sub-preview-players { display: flex; flex-wrap: wrap; gap: .2rem 1rem; margin-block: .2rem; }
+    .sub-preview-players p { color: var(--text); font-size: .8rem; overflow-wrap: anywhere; }
+    .sub-preview-players strong { margin-right: .35em; text-transform: uppercase; font-size: .72rem; }
+    .sub-in { color: var(--incoming); }
+    .sub-out { color: var(--outgoing); }
+    .live-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(.45rem, 2.2vw, 1.5rem); align-items: start; }
+    .lineup-zone { background: var(--surface); border: 1px solid var(--line); border-radius: .9rem; }
+    .zone-heading {
+      min-height: 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: .3rem;
+      padding: .5rem clamp(.5rem, 2vw, 1rem);
+      border-bottom: 1px solid var(--line);
+    }
+    .zone-heading h3 { font-size: clamp(.76rem, 2.5vw, .88rem); font-weight: 800; letter-spacing: .055em; text-transform: uppercase; }
+    .court-zone h3 { color: var(--accent); }
+    .zone-count {
+      padding: .08rem .45rem;
+      border: 1px solid var(--line-strong);
+      border-radius: .4rem;
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 750;
+      white-space: nowrap;
       font-variant-numeric: tabular-nums;
     }
-    @keyframes pulse-border {
-      0%, 100% { border-color: rgba(226, 76, 60, 0.9); box-shadow: 0 0 0 3px rgba(226, 76, 60, 0.2); }
-      50% { border-color: rgba(226, 76, 60, 0.4); box-shadow: 0 0 0 1px rgba(226, 76, 60, 0.05); }
-    }
-    .selected-swap-card {
-      animation: pulse-border 1.6s infinite;
-    }
+    .zone-count[data-warning="true"], .lineup-warning { color: var(--attention); }
+    .lineup-warning { padding: .45rem .6rem; background: #322b27; font-size: .75rem; }
+    .lineup-warning button { text-decoration: underline; }
+    .player-list { display: grid; gap: .45rem; padding: clamp(.35rem, 1.8vw, .75rem); }
+    .empty-lineup { padding: 1rem .35rem; font-size: .8rem; color: var(--muted); }
 
-    * { -webkit-tap-highlight-color: transparent; }
-    body { min-height:100dvh; padding-bottom:env(safe-area-inset-bottom); }
-    header { padding-top:env(safe-area-inset-top); }
-    button { touch-action:manipulation; min-height:44px; }
-    button:disabled { opacity:.45; cursor:not-allowed; }
-    button:focus-visible,input:focus-visible,select:focus-visible { outline:3px solid #2f8f9d; outline-offset:2px; }
-    #confirm-modal { margin:auto; border:0; background:transparent; width:min(92vw,26rem); max-width:none; padding:0; }
-    #confirm-modal::backdrop { background:rgba(2,6,23,.75); }
-    #clock-display { font-size:clamp(1.6rem,5vw,2rem); }
-    [data-lucide] { flex-shrink:0; }
-    input { min-width:0; }
-    .player-card { display:block; }
-    .player-card [data-progress] { display:block; }
-    @media(max-width:639px){
-      header>div { padding:8px; }
-      header nav { margin-top:5px; padding-top:5px; }
-      header nav button { padding:5px 8px; font-size:12px; white-space:nowrap; }
-      header nav button i { display:none!important; }
-      header div:has(> #clock-toggle-btn) { width:100%; justify-content:space-between; gap:4px; padding:3px 5px; margin:0; }
-      header div:has(> #clock-toggle-btn) button { min-width:44px; }
-      header:not(.is-collapsed) #header-collapse-btn { order:-1; margin-left:auto; padding:.4rem; }
-      header:not(.is-collapsed) > div > div:first-child > .header-full-only:first-child { order:-2; }
-      .live-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; }
-      .live-grid>div>div:first-child { padding:9px 6px; gap:4px; }
-      .live-grid h2 { font-size:11px; }
-      #court-players-list,#bench-players-list { padding:5px; }
-      #roster-manage-list>div { flex-wrap:wrap; }
-      #view-roster form { flex-wrap:wrap; }
-      #view-roster form input:nth-child(2){flex:1; }
+    .player-card {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-areas:
+        "number name times"
+        "number tags times"
+        "progress progress progress";
+      align-items: center;
+      gap: .25rem .7rem;
+      padding: .65rem;
+      border: 1px solid var(--line-strong);
+      border-radius: .7rem;
+      background: var(--card);
+      text-align: left;
     }
-
-    /* ===== FairShift design layer ===== */
-    html { background:#eef3f2; }
-    body {
-      font-feature-settings:"cv11","ss01","ss03";
-      background:
-        radial-gradient(1200px 420px at 50% -120px, rgba(47,143,157,.10), transparent 70%),
-        linear-gradient(#f3f7f6, #eaf0ef);
-      background-attachment:fixed;
-      letter-spacing:-0.005em;
+    .player-card:hover { background: var(--raised); }
+    .player-card[aria-pressed="true"] { background: var(--selected-surface); border-color: var(--selection); box-shadow: inset 3px 0 var(--selection); }
+    .player-card.sub-in { --selection: var(--incoming); --selected-surface: #223424; }
+    .player-card.sub-out { --selection: var(--outgoing); --selected-surface: #382a31; }
+    .pc-num {
+      grid-area: number;
+      min-width: 2.35rem;
+      padding: .1em .3em;
+      border: 1px solid var(--line-strong);
+      border-radius: .45rem;
+      background: var(--surface);
+      color: var(--text);
+      font: 700 1.55rem/1.25 var(--display-font);
+      text-align: center;
     }
-    /* Header: deep pine ink with faint court lines and a coral baseline */
-    header {
-      background:
-        radial-gradient(600px 200px at 85% -40px, rgba(226,76,60,.18), transparent 70%),
-        repeating-linear-gradient(90deg, rgba(255,255,255,.025) 0 1px, transparent 1px 64px),
-        linear-gradient(180deg, #10262c, #0b1a1f) !important;
-      border-bottom:0 !important;
-      box-shadow:0 1px 0 rgba(255,255,255,.04) inset, 0 10px 30px -12px rgba(8,22,26,.55) !important;
+    .court-zone .pc-num { color: var(--accent); }
+    .pc-name {
+      grid-area: name;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+      overflow-wrap: anywhere;
+      color: var(--text);
+      font-size: .91rem;
+      font-weight: 750;
+      line-height: 1.2;
     }
-    header::after { content:""; position:absolute; left:0; right:0; bottom:0; height:3px;
-      background:linear-gradient(90deg, #e24c3c, #f59e4b 45%, #2f8f9d); }
-    header h1 { font-size:1.2rem; letter-spacing:-0.035em; }
-    /* Collapsed header: one slim row with period, clock and start/pause */
-    header.is-collapsed .header-full-only { display:none !important; }
-    header.is-collapsed > div { padding-top:.375rem; padding-bottom:.5rem; }
-    header.is-collapsed #clock-status-label { display:none; }
-    header.is-collapsed #clock-display { font-size:1.375rem; }
-    header.is-collapsed #clock-toggle-btn { padding:.5rem .75rem; }
-    header.is-collapsed > div > div:first-child { flex-wrap:nowrap; }
-    header.is-collapsed div:has(> #clock-toggle-btn) { width:auto !important; flex:1 1 auto; min-width:0; }
-    #sport-icon-badge { border-radius:14px; box-shadow:0 6px 18px -6px rgba(226,76,60,.65), inset 0 1px 0 rgba(255,255,255,.25); }
-    #header-sport-pill { background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.12); }
-    header div:has(> #clock-toggle-btn) {
-      background:rgba(4,12,14,.55) !important; border-color:rgba(255,255,255,.08) !important;
-      backdrop-filter:blur(6px); border-radius:18px;
+    .pc-tags { grid-area: tags; display: flex; flex-wrap: wrap; gap: .25rem; }
+    .pc-fair, .pc-tag {
+      padding: .08rem .35rem;
+      border-radius: .25rem;
+      font-size: .68rem;
+      font-weight: 700;
+      color: var(--fair-color, var(--muted));
+      background: var(--fair-surface, var(--raised));
     }
-    #clock-display { letter-spacing:-0.04em; text-shadow:0 0 18px rgba(255,255,255,.18); }
-    #clock-toggle-btn { border-radius:12px; letter-spacing:.04em; }
-    header nav { border-top-color:rgba(255,255,255,.07) !important; }
-    header nav .tab-btn { border-radius:999px; }
-    header nav .tab-btn.bg-orange-600 { box-shadow:0 6px 16px -6px rgba(226,76,60,.7); }
+    .pc-tag.sub-in, .pc-tag.sub-out { color: var(--selection); background: var(--ink); text-transform: uppercase; }
+    .pc-times { grid-area: times; display: flex; justify-content: space-between; gap: .75rem; color: var(--muted); }
+    .pc-time { display: grid; gap: .15rem; }
+    .pc-time:last-child { text-align: right; }
+    .pc-label { font-size: .62rem; font-weight: 650; letter-spacing: .055em; text-transform: uppercase; }
+    .pc-total, .pc-sec { font-size: 1.08rem; line-height: 1; font-weight: 760; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .pc-total { color: var(--text); }
+    .pc-sec.long-stint { color: var(--attention); }
+    .pc-progress { grid-area: progress; display: block; height: 4px; overflow: hidden; border-radius: 999px; background: var(--ink); }
+    .pc-progress span { display: block; height: 100%; border-radius: inherit; background: var(--fair-color, var(--muted)); }
+    .fair-low { --fair-color: var(--attention); --fair-surface: #3a3024; }
+    .fair-high { --fair-color: var(--high); --fair-surface: #422b37; }
+    .fair-balanced { --fair-color: var(--balance); --fair-surface: #1c382f; }
 
-    /* Surfaces */
-    main .bg-white.rounded-2xl {
-      border-color:rgba(16,38,44,.08) !important;
-      box-shadow:0 1px 2px rgba(16,38,44,.04), 0 12px 32px -18px rgba(16,38,44,.22) !important;
+    /* Setup, summary and dialogs share the same surfaces and contrast. */
+    .bg-white { background-color: var(--surface); }
+    .text-slate-900, .text-slate-800, .text-slate-200 { color: var(--text); }
+    .text-slate-700, .text-slate-600, .text-slate-500, .text-slate-400, .text-slate-300 { color: var(--muted); }
+    .text-slate-950, .bg-orange-600.text-white { color: var(--ink); }
+    .text-orange-800, .text-orange-700, .text-orange-600 { color: var(--accent); }
+    .text-emerald-700, .text-emerald-800 { color: var(--balance); }
+    .text-sky-800 { color: #b5dfff; }
+    .text-rose-700, .hover\:text-rose-600:hover { color: var(--high); }
+    .settings-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem .75rem; }
+    .coaching-settings { display: grid; gap: .65rem; }
+    .view-heading { font-size: 1.32rem; font-weight: 800; letter-spacing: -.035em; }
+    .settings-note, #save-status { font-size: .78rem; color: var(--muted); }
+    .settings-details summary { align-content: center; font-size: .86rem; font-weight: 700; }
+    .settings-details p { padding-bottom: .75rem; }
+    .balance-text { color: var(--balance); }
+    .low-text { color: var(--attention); }
+    .high-text { color: var(--high); }
+    .mode-toggle { display: inline-flex; gap: .25rem; padding: .2rem; background: var(--ink); border: 1px solid var(--line); border-radius: .65rem; }
+    .mode-toggle button { padding-inline: .75rem; color: var(--muted); }
+    .mode-toggle button[aria-pressed="true"] { background: var(--accent); color: var(--ink); }
+    #view-roster input, #view-roster select, #view-summary select { background: var(--ink); }
+    #view-roster input::placeholder { color: var(--muted); }
+    #view-roster [data-preset] { min-width: 0; }
+    #new-team-name { min-width: min(100%, 10rem); }
+    #roster-manage-list button[title] { min-width: 44px; }
+    #view-summary thead, #view-summary tbody td:nth-child(3) { white-space: nowrap; }
+    #view-summary th, #view-summary td { padding-inline: .7rem; }
+    #confirm-modal { margin: auto; border: 0; background: transparent; color: var(--text); width: min(92vw, 24rem); }
+    #confirm-modal::backdrop { background: #050a13bd; }
+    #toast-container { bottom: calc(1rem + env(safe-area-inset-bottom)); }
+    #toast-container > div { overflow-wrap: anywhere; background: var(--surface); color: var(--text); border-color: var(--line-strong); }
+    #toast-container > .bg-amber-500 { color: var(--attention); border-color: var(--attention); }
+
+    @media (max-width: 54rem) {
+      html { scroll-padding-top: 11rem; scroll-padding-bottom: calc(var(--action-height) + env(safe-area-inset-bottom)); }
+      .workspace { padding-bottom: calc(var(--action-height) + 1rem + env(safe-area-inset-bottom)); }
+      .scoreboard { isolation: auto; grid-template-columns: minmax(0, 1fr) minmax(5.5rem, auto) minmax(0, 1fr); gap: .4rem; padding-inline: .65rem; }
+      .game-actions {
+        position: fixed;
+        inset: auto 0 0;
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(0, 1fr);
+        padding: .5rem max(var(--gutter), env(safe-area-inset-right)) calc(.5rem + env(safe-area-inset-bottom)) max(var(--gutter), env(safe-area-inset-left));
+        border-top: 1px solid var(--line-strong);
+        background: var(--surface);
+        box-shadow: 0 -6px 18px #050a1380;
+      }
+      .game-actions button { min-height: 48px; padding-inline: .25rem; }
+      #toast-container { bottom: calc(var(--action-height) + env(safe-area-inset-bottom)); }
     }
-    #view-live > div:nth-of-type(3) button { border-radius:999px; border-color:rgba(16,38,44,.14); }
-
-    /* Court & bench column heads */
-    .live-grid > div:first-child > div:first-child { background:linear-gradient(135deg, #12423f, #0f2a2f) !important; }
-    .live-grid > div:last-child > div:first-child  { background:linear-gradient(135deg, #2a3a40, #1d2a2f) !important; }
-    .live-grid h2 { letter-spacing:.04em; }
-    @media (min-width:640px) { .live-grid h2 { font-size:.8rem; } }
-    @media (max-width:639px) {
-      #period-display { white-space:nowrap; font-size:13px; }
-      header div:has(> #clock-toggle-btn) > button:first-child { padding:2px 6px; }
-      header div:has(> #clock-toggle-btn) > div > div { min-width:68px; padding:0 2px; }
-      #clock-display { font-size:1.45rem; }
-      #clock-status-label { font-size:9px; letter-spacing:.06em; white-space:nowrap; }
-      #clock-toggle-btn { padding:8px 10px; gap:4px; font-size:13px; }
-      header div:has(> #clock-toggle-btn) > div > button { width:32px; }
+    @media (max-width: 40rem) {
+      .masthead-inner { padding-block: .65rem .4rem; }
+      .app-nav { width: 100%; }
+      .app-nav button { flex: 1; padding-inline: .3rem; }
+      .clock-tools { flex-direction: column; gap: .25rem; }
+      .game-team {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        font-size: .83rem;
+        line-height: 1.32;
+      }
+      .game-sport { font-size: .62rem; letter-spacing: .055em; }
+      .game-target { font-size: .68rem; margin-top: .35rem; }
+      .game-target strong { display: block; margin-left: 0; }
+      .player-card {
+        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-areas:
+          "number tags"
+          "name name"
+          "times times"
+          "progress progress";
+        gap: .45rem .3rem;
+        padding: .5rem;
+      }
+      .pc-tags { justify-content: flex-end; }
+      .pc-times { gap: .25rem; }
+      .pc-num { min-width: 2.1rem; font-size: 1.4rem; }
+      .pc-name { font-size: .88rem; }
+      #roster-manage-list > div { flex-wrap: wrap; }
     }
-    .live-grid > div > div:first-child { border-bottom:1px solid rgba(255,255,255,.06); }
-
-    /* Player cards */
-    .player-card { border-width:1.5px !important; border-radius:16px !important; }
-    .player-card.bg-white { background:linear-gradient(180deg,#fff,#fbfcfc); }
-    @media (hover:hover) {
-      .player-card:hover { transform:translateY(-1px); box-shadow:0 8px 20px -12px rgba(16,38,44,.35); }
+    @media (max-width: 25rem) {
+      .game-actions:has(#apply-sub-btn:not([hidden])) i { display: none; }
+      .game-actions button { font-size: .78rem; }
+      #period-display, #clock-status-label { font-size: .62rem; letter-spacing: .075em; }
     }
-    .player-card [data-total] { letter-spacing:-0.03em; }
-    .player-card > span:last-child { height:6px !important; background:#e7eeed !important; }
-    .player-card [data-progress] { border-radius:999px; }
-    /* Compact player card: one header line, two big times. Sizes scale with card width. */
-    .player-card { container-type:inline-size; padding:7px 9px 8px; border-radius:14px !important; }
-    .pc-head { display:flex; align-items:center; gap:clamp(3px,2.5cqi,7px); min-width:0; }
-    .pc-num { flex:none; display:inline-flex; align-items:center; justify-content:center; font-family:ui-monospace,monospace; font-weight:800;
-      min-width:clamp(20px,13cqi,28px); height:clamp(20px,13cqi,28px); padding:0 3px; border-radius:7px; font-size:clamp(10px,7cqi,14px); }
-    .pc-name { flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-      font-weight:800; color:#0f172a; font-size:clamp(11px,8.5cqi,16px); line-height:1.15; }
-    .pc-fair, .pc-tag { flex:none; white-space:nowrap; font-weight:800; border-radius:999px; line-height:1.3;
-      font-size:clamp(8px,5.5cqi,11px); padding:1px clamp(4px,3cqi,8px); }
-    .pc-tag { border-radius:5px; text-transform:uppercase; }
-    .pc-times { display:flex; justify-content:space-between; align-items:flex-end; gap:6px; margin-top:4px; }
-    .pc-time { display:flex; flex-direction:column; min-width:0; }
-    .pc-time-right { text-align:right; align-items:flex-end; }
-    .pc-label { font-size:clamp(8px,5.5cqi,10px); font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#94a3b8; line-height:1.1; }
-    .pc-total, .pc-sec { font-family:ui-monospace,monospace; font-weight:800; font-variant-numeric:tabular-nums; line-height:1.05; letter-spacing:-0.03em; white-space:nowrap; }
-    .pc-total { color:#0f172a; font-size:clamp(17px,13.5cqi,26px); }
-    .pc-sec { font-size:clamp(15px,11cqi,22px); }
-    .player-card > span:last-child { margin-top:6px; height:5px !important; }
-    /* Very narrow phones: START/PAUSE shows its icon only so the clock row fits */
-    @media (max-width:374px) { #clock-toggle-text { display:none; } #clock-toggle-btn { padding:.6rem .7rem; } }
-    /* Pills, badges and buttons never wrap onto a second line */
-    .rounded-full, button:not(.player-card), #header-sport-pill { white-space:nowrap; }
-
-    /* Forms */
-    main input, main select { border-color:rgba(16,38,44,.16) !important; background-color:#fbfdfd; }
-    .preset-btn { border-radius:16px !important; }
-    .preset-btn.border-orange-500 { box-shadow:0 0 0 4px rgba(226,76,60,.12); }
-
-    /* Summary table */
-    #view-summary thead tr { background:linear-gradient(135deg, #12423f, #0f2a2f) !important; }
-    #view-summary [id^="sum-"] { letter-spacing:-0.03em; }
-    @media (max-width:480px) { #view-summary th, #view-summary td { padding-left:.375rem; padding-right:.375rem; } #view-summary th:first-child, #view-summary td:first-child { padding-left:.75rem; } }
-
-    /* Modal + toasts */
-    #confirm-modal > div { border-radius:22px; box-shadow:0 30px 60px -20px rgba(8,22,26,.5); }
-    #confirm-modal::backdrop { background:rgba(8,22,26,.6); backdrop-filter:blur(3px); }
-    #toast-container > div { border-radius:999px; box-shadow:0 12px 30px -10px rgba(8,22,26,.45); }
-
-    ::selection { background:#e24c3c; color:#fff; }
-    @media(prefers-reduced-motion:reduce){ *,*::before,*::after { animation:none!important; transition:none!important; } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-900 font-sans min-h-screen flex flex-col selection:bg-orange-500 selection:text-white">
+<body>
 
   <!-- Toast Notification Banner (Replaces alert/confirm) -->
   <div id="toast-container" role="status" aria-live="polite" aria-atomic="false" class="fixed bottom-20 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none flex flex-col items-center gap-2 w-11/12 max-w-md"></div>
@@ -1885,192 +2197,139 @@
     </div>
   </dialog>
 
-  <!-- TOP SCOREBOARD HEADER -->
-  <header id="app-header" class="bg-slate-900 text-white sticky top-0 z-30 shadow-lg border-b border-slate-800">
-    <div class="max-w-6xl mx-auto px-3 sm:px-6 py-3">
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        
-        <!-- Brand & Active Sport Badge -->
-        <div class="header-full-only flex items-center gap-2.5">
-          <div id="sport-icon-badge" class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-md shadow-orange-500/20 text-white font-bold text-lg">
-            🏀
-          </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <h1 class="font-extrabold text-base sm:text-lg tracking-tight leading-none">Fair<span class="text-orange-400">Shift</span></h1>
-              <span id="header-sport-pill" class="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-800 text-orange-300 border border-slate-700">
-                Basketball • 5v5
-              </span>
-            </div>
-            <p id="header-fair-share-info" class="text-xs text-slate-400 mt-0.5 tabular-nums">
-              Target Fair Share: <span class="text-slate-200 font-semibold">0:00</span> / player
-            </p>
-          </div>
+  <header id="app-header" class="masthead">
+    <div class="page-shell masthead-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"><i data-lucide="arrow-left-right"></i></span>
+        <div>
+          <h1>Bench<span>Flow</span></h1>
+          <p>Smarter substitutions. Fairer playing time.</p>
         </div>
-
-        <!-- Scoreboard Game Clock Controls -->
-        <div class="flex items-center gap-2 sm:gap-3 bg-slate-950/90 border border-slate-800 rounded-2xl px-3 py-1.5 shadow-inner ml-auto sm:ml-0">
-          <!-- Period Switcher -->
-          <button onclick="cyclePeriod()" title="Tap to switch Period/Quarter" class="flex flex-col items-center justify-center px-2.5 py-1 rounded-xl bg-slate-800/90 hover:bg-slate-700 active:scale-95 transition border border-slate-700/80">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Period</span>
-            <span id="period-display" class="text-sm sm:text-base font-extrabold text-orange-400 leading-tight">Q1 / 4</span>
-          </button>
-
-          <!-- Main Digital Clock + +/- 1m quick adjust -->
-          <div class="flex items-center gap-1">
-            <button id="clock-minus-btn" onclick="adjustClock(-1)" title="Subtract time" class="header-full-only w-7 h-7 rounded-lg bg-slate-800/70 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs font-bold active:scale-95 transition">-1m</button>
-            <div id="clock-step-btn" role="button" tabindex="0" onclick="cycleClockStep()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();cycleClockStep();}" title="Tap to change the -/+ adjust step (1m / 10s / 1s)" aria-label="Change clock adjust step" class="px-2 text-center min-w-[88px] sm:min-w-[104px] cursor-pointer select-none">
-              <div id="clock-display" class="font-mono text-2xl sm:text-3xl font-extrabold tracking-tight tabular-nums text-white leading-none">
-                08:00
-              </div>
-              <div id="clock-status-label" class="text-[10px] font-bold uppercase tracking-widest text-amber-400 mt-0.5">
-                STOPPED
-              </div>
-            </div>
-            <button id="clock-plus-btn" onclick="adjustClock(1)" title="Add time" class="header-full-only w-7 h-7 rounded-lg bg-slate-800/70 hover:bg-slate-700 text-slate-300 flex items-center justify-center text-xs font-bold active:scale-95 transition">+1m</button>
-          </div>
-
-          <!-- Start / Pause Primary Action Button -->
-          <button id="clock-toggle-btn" onclick="toggleClock()" class="flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-extrabold text-sm bg-emerald-500 hover:bg-emerald-600 text-slate-950 shadow-md shadow-emerald-500/20 active:scale-95 transition">
-            <i id="clock-toggle-icon" data-lucide="play" class="w-4 h-4 fill-current"></i>
-            <span id="clock-toggle-text">START</span>
-          </button>
-
-          <!-- Reset Period Clock -->
-          <button onclick="confirmResetPeriod()" title="Reset Period Clock" class="header-full-only p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white active:scale-95 transition border border-slate-700">
-            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-          </button>
-        </div>
-
-        <!-- Collapse / Expand Header -->
-        <button id="header-collapse-btn" onclick="toggleHeaderCollapsed()" aria-expanded="true" title="Hide header" aria-label="Hide header" class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white active:scale-95 transition border border-slate-700">
-          <i id="header-collapse-icon" data-lucide="chevron-up" class="w-4 h-4"></i>
-        </button>
-
       </div>
-
-      <!-- Navigation Tabs -->
-      <nav class="header-full-only flex items-center gap-1.5 mt-3 pt-2.5 border-t border-slate-800/90 overflow-x-auto no-scrollbar">
-        <button onclick="switchTab('live')" id="tab-btn-live" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition bg-orange-600 text-white shadow-sm">
-          <i data-lucide="users" class="w-4 h-4"></i>
-          <span id="tab-live-label">Court & Bench</span>
-          <span id="nav-queued-badge" class="hidden ml-0.5 px-1.5 py-0.2 text-[11px] font-extrabold rounded-full bg-white text-orange-600">0</span>
+      <nav aria-label="App views" class="app-nav">
+        <button type="button" onclick="switchTab('live')" id="tab-btn-live" aria-controls="view-live" aria-pressed="true">
+          <i data-lucide="users" aria-hidden="true"></i> Game
+          <span id="nav-queued-badge" class="hidden"></span>
         </button>
-        <button onclick="switchTab('roster')" id="tab-btn-roster" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 transition">
-          <i data-lucide="clipboard-list" class="w-4 h-4"></i>
-          <span>Roster & Setup</span>
+        <button type="button" onclick="switchTab('roster')" id="tab-btn-roster" aria-controls="view-roster" aria-pressed="false">
+          <i data-lucide="sliders" aria-hidden="true"></i> Setup
         </button>
-        <button onclick="switchTab('summary')" id="tab-btn-summary" class="tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 transition">
-          <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
-          <span>Game Summary</span>
+        <button type="button" onclick="switchTab('summary')" id="tab-btn-summary" aria-controls="view-summary" aria-pressed="false">
+          <i data-lucide="bar-chart-3" aria-hidden="true"></i> Summary
         </button>
       </nav>
     </div>
   </header>
 
-  <!-- MAIN CONTENT WORKSPACE -->
-  <main class="flex-1 max-w-6xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-6 pb-28">
+  <div class="scoreboard-wrap">
+    <section class="page-shell scoreboard" aria-label="Game clock">
+      <div class="game-context">
+        <p id="header-team" class="game-team" hidden></p>
+        <p id="header-sport-pill" class="game-sport">Basketball · 5v5</p>
+        <p id="header-fair-share-info" class="game-target">Target per player <strong id="fair-share-value">00:00</strong></p>
+      </div>
 
-    <!-- ==================== TAB 1: LIVE COURT & BENCH BOARD ==================== -->
-    <section id="view-live" class="space-y-4">
+      <div class="clock-face">
+        <p id="period-display">Quarter 1 of 4</p>
+        <p id="clock-display" role="timer" aria-label="Time remaining">08:00</p>
+        <p id="clock-status-label" role="status">Ready</p>
+      </div>
 
-      <!-- Sub mode toggle & fair sub hint (one row) -->
-      <div class="bg-white rounded-2xl p-2 shadow-sm border border-slate-200/90 flex flex-nowrap items-center justify-between gap-2">
-        <div class="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200 shrink-0">
-          <button onclick="setSubMode('instant')" id="mode-instant-btn" class="px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow-sm">Instant</button>
-          <button onclick="setSubMode('queue')" id="mode-queue-btn" class="px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">Whistle</button>
-        </div>
-        <button onclick="suggestFairSwap()" title="Highlight longest-playing player & lowest-minutes bench player" class="px-3 py-2 rounded-xl text-xs font-bold bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200 flex items-center gap-1.5 whitespace-nowrap shrink-0 active:scale-95 transition">
-          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-          <span>Fair Sub</span>
+      <div class="clock-tools">
+        <details id="clock-options">
+          <summary class="icon-button" title="Clock options" aria-label="Clock options">
+            <i data-lucide="sliders" aria-hidden="true"></i>
+          </summary>
+          <div class="clock-panel">
+            <div class="clock-adjust">
+              <button type="button" id="clock-minus-btn" onclick="adjustClock(-1)" aria-label="Subtract 1 minute">−1m</button>
+              <button type="button" id="clock-step-btn" onclick="cycleClockStep()">Step <span id="clock-step-value">1m</span></button>
+              <button type="button" id="clock-plus-btn" onclick="adjustClock(1)" aria-label="Add 1 minute">+1m</button>
+            </div>
+            <button type="button" onclick="cyclePeriod()">Next Period</button>
+            <button type="button" onclick="confirmResetPeriod()">Reset Period Clock</button>
+          </div>
+        </details>
+        <button type="button" id="header-collapse-btn" class="icon-button" onclick="toggleHeaderCollapsed()" aria-controls="app-header" aria-expanded="true" title="Use compact scoreboard" aria-label="Use compact scoreboard">
+          <i id="header-collapse-icon" data-lucide="chevron-up" aria-hidden="true"></i>
         </button>
       </div>
 
-      <!-- Active Whistle Queue Banner (Visible whenever subs are queued) -->
-      <div id="queue-action-banner" class="hidden bg-slate-900 text-white rounded-2xl p-3.5 sm:p-4 shadow-lg border border-orange-500/50 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <span class="w-8 h-8 rounded-xl bg-orange-500 text-white font-extrabold flex items-center justify-center text-sm" id="queue-count-circle">0</span>
-          <div>
-            <h3 class="text-sm font-bold text-white">Queued Dead-Ball Substitutions</h3>
-            <p id="queue-pairs-preview" class="text-xs text-slate-300 mt-0.5">Select matching active & bench players to pair.</p>
-          </div>
+      <div class="game-actions" aria-label="Game controls" role="group">
+        <button type="button" id="clock-toggle-btn" onclick="toggleClock()">
+          <i id="clock-toggle-icon" data-lucide="play" aria-hidden="true"></i>
+          <span id="clock-toggle-text">Start</span>
+        </button>
+        <button type="button" id="suggest-sub-btn" onclick="suggestFairSwap()">
+          <i data-lucide="sparkles" aria-hidden="true"></i> Suggest Sub
+        </button>
+        <button type="button" id="apply-sub-btn" onclick="applyPendingSubs()" hidden>Apply Sub</button>
+      </div>
+    </section>
+  </div>
+
+  <main class="page-shell workspace">
+    <section id="view-live" class="game-view" aria-labelledby="lineup-heading" tabindex="-1">
+      <div class="lineup-toolbar">
+        <div>
+          <h2 id="lineup-heading">Lineup</h2>
+          <p id="sub-mode-hint"></p>
         </div>
-        <div class="flex items-center gap-2 ml-auto">
-          <button onclick="clearSubQueue()" class="px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
-            Clear
-          </button>
-          <button id="queue-exec-btn" onclick="executeQueuedSubs()" class="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold bg-orange-500 hover:bg-orange-600 text-white shadow-md shadow-orange-500/30 flex items-center gap-1.5 active:scale-95 transition">
-            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
-            <span>Sub In Queued (<span id="queue-exec-count">0</span>)</span>
-          </button>
-        </div>
+        <button type="button" id="undo-btn" class="quiet-button" onclick="undoSwap()" aria-label="Undo substitution" disabled>
+          <i data-lucide="rotate-ccw" aria-hidden="true"></i> Undo
+        </button>
       </div>
 
-      <div class="flex flex-wrap items-center gap-2"><button id="undo-btn" onclick="undoSwap()" class="px-3 py-2 rounded-xl text-xs font-bold bg-white border border-slate-300" disabled>Undo substitution</button><button id="wake-btn" onclick="toggleWake()" class="px-3 py-2 rounded-xl text-xs font-bold bg-white border border-slate-300" aria-pressed="false">Keep screen awake</button><span id="save-status" class="text-xs text-slate-600" role="status"></span></div>
-      <!-- Split Court & Bench Grid -->
-      <div class="grid grid-cols-2 lg:grid-cols-12 gap-2 sm:gap-6 items-start live-grid">
-        
-        <!-- LEFT / TOP: ON COURT (ACTIVE) -->
-        <div class="lg:col-span-6 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div class="bg-slate-900 text-white px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <h2 id="active-zone-title" class="font-extrabold text-sm sm:text-base tracking-tight uppercase">On Court (Active)</h2>
-            </div>
-            <span id="active-count-badge" class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 tabular-nums">
-              5 / 5
-            </span>
-          </div>
-
-          <!-- Warning if active count doesn't match target -->
-          <div id="lineup-count-warning" class="hidden bg-amber-50 border-b border-amber-200 px-4 py-2 text-xs font-semibold text-amber-800 flex items-center justify-between">
-            <span id="lineup-warning-text">Lineup has 4 players (Target: 5).</span>
-            <button class="text-[11px] underline cursor-pointer" onclick="switchTab('roster')">Adjust Roster</button>
-          </div>
-
-          <div id="last-starters-note" class="hidden bg-slate-50 border-b border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600"></div>
-
-          <div id="court-players-list" class="p-3 sm:p-4 space-y-1.5">
-            <!-- Active Player Cards Rendered Here -->
-          </div>
+      <div id="sub-preview" class="sub-preview" hidden>
+        <div role="status">
+          <h3 id="sub-preview-title"></h3>
+          <div id="sub-preview-players" class="sub-preview-players"></div>
+          <p id="sub-preview-hint"></p>
         </div>
-
-        <!-- RIGHT / BOTTOM: ON BENCH -->
-        <div class="lg:col-span-6 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div class="bg-slate-800 text-white px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
-              <h2 class="font-extrabold text-sm sm:text-base tracking-tight uppercase">On Bench (Ready)</h2>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-[11px] text-slate-300 hidden sm:inline">Sorted by least played</span>
-              <span id="bench-count-badge" class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-slate-700 text-slate-200 tabular-nums">
-                0
-              </span>
-            </div>
-          </div>
-
-          <div id="bench-players-list" class="p-3 sm:p-4 space-y-1.5">
-            <!-- Bench Player Cards Rendered Here -->
-          </div>
-        </div>
-
+        <button type="button" id="clear-subs-btn" class="quiet-button" onclick="clearSubQueue()">Clear</button>
       </div>
 
-      <!-- Fair Play Legend Footer -->
-      <div class="bg-white rounded-2xl px-4 py-3 border border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
-        <span class="font-bold text-slate-800">Fair Play Time Legend:</span>
-        <div class="flex flex-wrap items-center gap-4">
-          <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Needs Minutes (&lt;85% avg)</span>
-          <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-sky-500 inline-block"></span> Balanced (85%–115% avg)</span>
-          <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span> High Minutes (&gt;115% avg)</span>
-        </div>
-      </div>
+      <div class="live-grid">
+        <section class="lineup-zone court-zone" aria-labelledby="active-zone-title">
+          <div class="zone-heading">
+            <h3 id="active-zone-title">On Court</h3>
+            <span id="active-count-badge" class="zone-count">5 / 5</span>
+          </div>
+          <div id="lineup-count-warning" class="lineup-warning" hidden>
+            <p id="lineup-warning-text"></p>
+            <button type="button" onclick="switchTab('roster')">Adjust lineup</button>
+          </div>
+          <div id="court-players-list" class="player-list"></div>
+        </section>
 
+        <section class="lineup-zone bench-zone" aria-labelledby="bench-zone-title">
+          <div class="zone-heading">
+            <h3 id="bench-zone-title">On Bench</h3>
+            <span id="bench-count-badge" class="zone-count">0</span>
+          </div>
+          <div id="bench-players-list" class="player-list"></div>
+        </section>
+      </div>
     </section>
 
     <!-- ==================== TAB 2: ROSTER & SPORT SETUP ==================== -->
-    <section id="view-roster" class="hidden space-y-5">
+    <section id="view-roster" class="space-y-5" aria-labelledby="setup-heading" tabindex="-1" hidden>
+      <h2 id="setup-heading" class="view-heading">Roster &amp; Setup</h2>
+
+      <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 coaching-settings">
+        <div>
+          <h2 class="text-base font-extrabold">Game Controls</h2>
+          <p class="settings-note">Instant swaps two players as soon as both are selected. Whistle queues pairs until you apply them.</p>
+        </div>
+        <div class="settings-actions">
+          <div class="mode-toggle" role="group" aria-label="Substitution mode">
+            <button type="button" onclick="setSubMode('instant')" id="mode-instant-btn" aria-pressed="true">Instant</button>
+            <button type="button" onclick="setSubMode('queue')" id="mode-queue-btn" aria-pressed="false">Whistle</button>
+          </div>
+          <button type="button" id="wake-btn" class="quiet-button" onclick="toggleWake()" aria-pressed="false">Keep screen awake</button>
+        </div>
+      </div>
+
 
       <!-- Saved Teams (save slots per sport) -->
       <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3">
@@ -2210,10 +2469,20 @@
         </div>
 
       </div>
+      <details class="bg-white rounded-2xl px-4 border border-slate-200 settings-details">
+        <summary>Playing time indicators</summary>
+        <p class="settings-note">
+          Cards show <strong class="balance-text">Balanced</strong> at 85%–115% of the team’s average played time.
+          <strong class="low-text">Needs min</strong> is below that range and <strong class="high-text">High min</strong> is above it.
+          Cards show Even until the average reaches 15 seconds. The bar tracks progress toward the full-game target.
+        </p>
+      </details>
+      <p id="save-status" role="status">Game data is saved on this device.</p>
     </section>
 
     <!-- ==================== TAB 3: POST-GAME / LIVE SUMMARY ==================== -->
-    <section id="view-summary" class="hidden space-y-4">
+    <section id="view-summary" class="space-y-4" aria-labelledby="summary-heading" tabindex="-1" hidden>
+      <h2 id="summary-heading" class="view-heading">Game Summary</h2>
       
       <!-- Summary KPI Cards -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -2271,7 +2540,7 @@
                 <th class="py-3 px-4 font-bold">Player</th>
                 <th class="py-3 px-4 font-bold">Status</th>
                 <th class="py-3 px-4 font-bold">Total Time</th>
-                <th class="py-3 px-4 font-bold">Fair Share</th>
+                <th class="py-3 px-4 font-bold">Balance</th>
                 <th class="py-3 px-4 font-bold">% Played</th>
                 <th class="py-3 px-4 font-bold">Current Stint / Wait</th>
               </tr>
@@ -2290,12 +2559,13 @@
   <!-- APPLICATION LOGIC -->
   <script>
     /**
-     * FairShift — Youth Sports Playing Time & Substitution Tracker
+     * BenchFlow — Youth Sports Playing Time & Substitution Tracker
      * Self-contained state management with localStorage persistence.
      */
 
     const ICONS = {"play": "<path d=\"m8 5 12 7-12 7z\"/>", "pause": "<path d=\"M9 5v14M15 5v14\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "users": "<circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5\"/>", "clipboard-list": "<rect x=\"5\" y=\"5\" width=\"14\" height=\"16\" rx=\"2\"/><path d=\"M9 5V3h6v2M9 10h6M9 14h6M9 18h6\"/>", "bar-chart-3": "<path d=\"M4 3v17h17M9 16v-5m5 5V8m5 8V4\"/>", "arrow-left-right": "<path d=\"M3 8h17l-4-4m4 4-4 4M21 16H4l4-4m-4 4 4 4\"/>", "sparkles": "<path d=\"m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z\"/>", "check-circle-2": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"m8 12 3 3 5-6\"/>", "alert-triangle": "<path d=\"M12 3 2 21h20zM12 9v5m0 3h.01\"/>", "rotate-ccw": "<path d=\"M3 11a9 9 0 1 1 3 7M3 4v7h7\"/>", "refresh-cw": "<path d=\"M3 11a9 9 0 0 1 15-6l3 3m0-5v5h-5M21 13a9 9 0 0 1-15 6l-3-3m0 5v-5h5\"/>", "shirt": "<path d=\"m8 3-6 4 3 5 3-1v10h8V11l3 1 3-5-6-4a4 4 0 0 1-8 0z\"/>", "sliders": "<path d=\"M4 6h16M4 12h16M4 18h16\"/><circle cx=\"8\" cy=\"6\" r=\"2\" fill=\"currentColor\"/><circle cx=\"16\" cy=\"12\" r=\"2\" fill=\"currentColor\"/><circle cx=\"10\" cy=\"18\" r=\"2\" fill=\"currentColor\"/>", "copy": "<rect x=\"8\" y=\"8\" width=\"12\" height=\"12\" rx=\"2\"/><path d=\"M16 8V4H4v12h4\"/>", "download": "<path d=\"M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5\"/>", "trash-2": "<path d=\"M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7m4-7v7\"/>", "chevron-up": "<path d=\"m6 15 6-6 6 6\"/>", "chevron-down": "<path d=\"m6 9 6 6 6-6\"/>", "pencil": "<path d=\"M4 20h4L19 9l-4-4L4 16zM13 7l4 4\"/>", "users-round": "<circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5\"/>"};
-    const lucide = {createIcons(){document.querySelectorAll('[data-lucide]').forEach(el=>{const name=el.getAttribute('data-lucide');if(el.dataset.renderedIcon===name)return;el.dataset.renderedIcon=name;el.setAttribute('aria-hidden','true');el.style.display='inline-flex';el.innerHTML=`<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]||''}</svg>`;});}};
+    const lucide = {createIcons(){document.querySelectorAll('[data-lucide]').forEach(el=>{const name=el.getAttribute('data-lucide');if(el.dataset.renderedIcon===name)return;el.dataset.renderedIcon=name;el.setAttribute('aria-hidden','true');el.innerHTML=`<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]||''}</svg>`;});}};
+    // Keep the existing keys so saved games, teams and display preferences carry over.
     const STORAGE_KEY = 'courtside_pro_state_v1';
 
     const SPORT_PRESETS = {
@@ -2388,10 +2658,9 @@
 
     const HEADER_PREF_KEY = 'fairshift_header_collapsed';
     function setHeaderCollapsed(collapsed) {
-      const header = document.getElementById('app-header');
-      header.classList.toggle('is-collapsed', collapsed);
+      document.body.classList.toggle('compact-scoreboard', collapsed);
       const btn = document.getElementById('header-collapse-btn');
-      const label = collapsed ? 'Show full header' : 'Hide header';
+      const label = collapsed ? 'Expand scoreboard' : 'Use compact scoreboard';
       btn.title = label; btn.setAttribute('aria-label', label);
       btn.setAttribute('aria-expanded', String(!collapsed));
       const icon = document.getElementById('header-collapse-icon');
@@ -2399,7 +2668,7 @@
       lucide.createIcons();
     }
     function toggleHeaderCollapsed() {
-      const collapsed = !document.getElementById('app-header').classList.contains('is-collapsed');
+      const collapsed = !document.body.classList.contains('compact-scoreboard');
       setHeaderCollapsed(collapsed);
       try { localStorage.setItem(HEADER_PREF_KEY, collapsed ? '1' : '0'); } catch (e) {}
     }
@@ -2409,6 +2678,12 @@
       loadState();
       if (appState.teamId && !getActiveTeam()) appState.teamId = null;
       try { if (localStorage.getItem(HEADER_PREF_KEY) === '1') setHeaderCollapsed(true); } catch (e) {}
+      const clockOptions = document.getElementById('clock-options');
+      clockOptions.addEventListener('keydown', event => {
+        if (event.key !== 'Escape' || !clockOptions.open) return;
+        clockOptions.open = false;
+        clockOptions.querySelector('summary').focus();
+      });
       // Always start paused on page load for safety
       appState.isRunning = false;
       queueOut = Array.isArray(appState.queueOut) ? appState.queueOut : [];
@@ -2433,9 +2708,15 @@
         syncActiveTeam();
         localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
         lastSaved = performance.now();
-        document.getElementById("save-status").textContent = "Saved on this device";
+        const status = document.getElementById('save-status');
+        if (status.textContent !== 'Game data is saved on this device.') {
+          status.textContent = 'Game data is saved on this device.';
+        }
       } catch (e) {
-        document.getElementById('save-status').textContent = 'Not saved — storage unavailable';
+        const status = document.getElementById('save-status');
+        const message = 'Game data could not be saved on this device.';
+        if (status.textContent !== message) showToast(message, 'amber');
+        status.textContent = message;
       }
     }
 
@@ -2605,6 +2886,20 @@
       return true;
     }
 
+    function applyPendingSubs() {
+      sanitizeSelections();
+      if (appState.subMode === 'queue') {
+        executeQueuedSubs();
+        return;
+      }
+      if (!selectedCourtId || !selectedBenchId) return;
+      executeSingleSwap(selectedCourtId, selectedBenchId);
+      selectedCourtId = null;
+      selectedBenchId = null;
+      saveState();
+      renderLiveBoard();
+    }
+
     function executeQueuedSubs() {
       sanitizeSelections();
       if (!queueOut.length && !queueIn.length) return;
@@ -2639,6 +2934,8 @@
     }
 
     function suggestFairSwap() {
+      reconcileClock();
+      sanitizeSelections();
       const present = appState.players.filter(p => p.present);
       const reserved = new Set([...queueOut, ...queueIn]);
       const onCourt = present.filter(p => p.onCourt && !reserved.has(p.id));
@@ -2662,9 +2959,8 @@
         selectedCourtId = mostPlayed.id;
         selectedBenchId = leastPlayed.id;
       }
-      document.getElementById("suggest-apply")?.remove();
       renderLiveBoard();
-      showToast(`Suggested: #${leastPlayed.number} ${leastPlayed.name} IN for #${mostPlayed.number} ${mostPlayed.name}`, 'indigo');
+      document.getElementById('sub-preview').scrollIntoView({ block: 'nearest' });
     }
 
     /* ==================== SPORT & ROSTER MANAGEMENT ==================== */
@@ -3070,7 +3366,7 @@
       const el = document.getElementById('team-slots');
       const teams = savedTeams.filter(t => t.sportId === appState.sportId);
       const others = savedTeams.length - teams.length;
-      const otherNote = others ? `<div class="sm:col-span-2 lg:col-span-3 text-[11px] text-slate-400">${others} team${others === 1 ? '' : 's'} saved under other sports. Pick that sport above to see ${others === 1 ? 'it' : 'them'}.</div>` : '';
+      const otherNote = others ? `<div class="sm:col-span-2 lg:col-span-3 text-[11px] text-slate-400">${others} team${others === 1 ? '' : 's'} saved under other sports. Select that sport in Setup to see ${others === 1 ? 'it' : 'them'}.</div>` : '';
       if (!teams.length) {
         el.innerHTML = `<div class="sm:col-span-2 lg:col-span-3 py-3 text-center text-sm text-slate-400">No ${escapeHTML(appState.sportName)} teams saved yet. Name one below to create a slot.</div>${otherNote}`;
         return;
@@ -3122,17 +3418,11 @@
     }
 
     function getFairnessStatus(playerTotalSec, avgSec) {
-      if (avgSec < 15) {
-        return { label: 'Even', short: 'Even', badgeClass: 'bg-slate-100 text-slate-700', barClass: 'bg-sky-500' };
-      }
+      if (avgSec < 15) return { label: 'Even', short: 'Even', className: 'fair-even' };
       const ratio = playerTotalSec / avgSec;
-      if (ratio < 0.85) {
-        return { label: 'Needs Mins', short: 'Low', badgeClass: 'bg-emerald-100 text-emerald-800 border border-emerald-200', barClass: 'bg-emerald-500' };
-      }
-      if (ratio > 1.15) {
-        return { label: 'High Mins', short: 'High', badgeClass: 'bg-amber-100 text-amber-800 border border-amber-200', barClass: 'bg-amber-500' };
-      }
-      return { label: 'Balanced', short: 'OK', badgeClass: 'bg-sky-100 text-sky-800 border border-sky-200', barClass: 'bg-sky-500' };
+      if (ratio < 0.85) return { label: 'Needs minutes', short: 'Needs min', className: 'fair-low' };
+      if (ratio > 1.15) return { label: 'High minutes', short: 'High min', className: 'fair-high' };
+      return { label: 'Balanced', short: 'Balanced', className: 'fair-balanced' };
     }
 
     function formatTime(totalSeconds) {
@@ -3154,40 +3444,96 @@
 
     function renderHeaderClock() {
       const { targetShareSec } = getFairPlayMetrics();
-      document.getElementById('sport-icon-badge').textContent = appState.sportIcon;
       const matchup = `${appState.activeTarget}v${appState.activeTarget}`;
-      const activeTeam = getActiveTeam();
-      const sportLabel = activeTeam ? activeTeam.name : appState.sportName;
-      document.getElementById('header-sport-pill').textContent = sportLabel.includes(matchup) ? sportLabel : `${sportLabel} • ${matchup}`;
-      document.getElementById('header-fair-share-info').innerHTML = `Target Fair Share: <span class="text-slate-200 font-semibold">${formatTime(targetShareSec)}</span> / player`;
+      const teamName = getActiveTeam()?.name;
+      const teamLabel = document.getElementById('header-team');
+      teamLabel.textContent = teamName || '';
+      teamLabel.title = teamName || '';
+      teamLabel.hidden = !teamName;
+      document.getElementById('header-sport-pill').textContent = appState.sportName.endsWith(matchup)
+        ? appState.sportName
+        : `${appState.sportName} · ${matchup}`;
+      document.getElementById('fair-share-value').textContent = formatTime(targetShareSec);
 
-      const presetObj = SPORT_PRESETS[appState.sportId];
-      const prefix = presetObj ? presetObj.periodPrefix : 'P';
-      document.getElementById('period-display').textContent = `${prefix}${appState.currentPeriod} / ${appState.numPeriods}`;
+      const periodUnit = { 2: 'Half', 4: 'Quarter' }[appState.numPeriods] || 'Period';
+      document.getElementById('period-display').textContent = `${periodUnit} ${appState.currentPeriod} of ${appState.numPeriods}`;
       document.getElementById('clock-display').textContent = formatTime(Math.ceil(appState.periodRemainingSec));
 
       const statusLabel = document.getElementById('clock-status-label');
       const toggleBtn = document.getElementById('clock-toggle-btn');
       const toggleIcon = document.getElementById('clock-toggle-icon');
       const toggleText = document.getElementById('clock-toggle-text');
-
+      let status = 'Ready';
+      let state = 'ready';
       if (appState.isRunning) {
-        statusLabel.textContent = 'LIVE • RUNNING';
-        statusLabel.className = 'text-[10px] font-bold uppercase tracking-widest text-emerald-400 mt-0.5';
-        toggleBtn.className = 'flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-extrabold text-sm bg-amber-400 hover:bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 active:scale-95 transition';
-        toggleIcon.setAttribute('data-lucide', 'pause');
-        toggleText.textContent = 'PAUSE';
-      } else {
-        statusLabel.textContent = appState.periodRemainingSec === 0 ? 'PERIOD END' : 'STOPPED';
-        statusLabel.className = 'text-[10px] font-bold uppercase tracking-widest text-amber-400 mt-0.5';
-        toggleBtn.className = 'flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-extrabold text-sm bg-emerald-500 hover:bg-emerald-600 text-slate-950 shadow-md shadow-emerald-500/20 active:scale-95 transition';
-        toggleIcon.setAttribute('data-lucide', 'play');
-        toggleText.textContent = 'START';
+        status = 'Game live';
+        state = 'running';
+      } else if (appState.periodRemainingSec === 0) {
+        status = 'Period ended';
+        state = 'ended';
+      } else if (appState.periodRemainingSec < appState.periodDurationSec || Array.isArray(appState.starterIds)) {
+        status = 'Paused';
+        state = 'paused';
       }
-      const stepTxt = stepLabel(appState.clockStep || 60);
-      document.getElementById('clock-minus-btn').textContent = `-${stepTxt}`;
-      document.getElementById('clock-plus-btn').textContent = `+${stepTxt}`;
+      if (statusLabel.textContent !== status) statusLabel.textContent = status;
+      statusLabel.dataset.state = state;
+      toggleBtn.dataset.running = appState.isRunning;
+      toggleIcon.setAttribute('data-lucide', appState.isRunning ? 'pause' : 'play');
+      toggleText.textContent = appState.isRunning ? 'Pause' : 'Start';
+
+      const step = appState.clockStep || 60;
+      const stepTxt = stepLabel(step);
+      const spokenStep = { 60: '1 minute', 10: '10 seconds', 1: '1 second' }[step];
+      const minus = document.getElementById('clock-minus-btn');
+      const plus = document.getElementById('clock-plus-btn');
+      minus.textContent = `−${stepTxt}`;
+      minus.setAttribute('aria-label', `Subtract ${spokenStep}`);
+      plus.textContent = `+${stepTxt}`;
+      plus.setAttribute('aria-label', `Add ${spokenStep}`);
+      document.getElementById('clock-step-value').textContent = stepTxt;
       lucide.createIcons();
+    }
+
+    function renderSubPreview() {
+      const queued = appState.subMode === 'queue';
+      const inIds = queued ? queueIn : [selectedBenchId].filter(Boolean);
+      const outIds = queued ? queueOut : [selectedCourtId].filter(Boolean);
+      const hasSelections = inIds.length > 0 || outIds.length > 0;
+      const canApply = hasSelections && inIds.length === outIds.length;
+      const preview = document.getElementById('sub-preview');
+      const apply = document.getElementById('apply-sub-btn');
+      const suggest = document.getElementById('suggest-sub-btn');
+      const clear = document.getElementById('clear-subs-btn');
+      const navBadge = document.getElementById('nav-queued-badge');
+      const hasQueue = hasSelections && queued;
+
+      navBadge.classList.toggle('hidden', !hasQueue);
+      const queueCount = Math.max(inIds.length, outIds.length);
+      navBadge.textContent = hasQueue ? queueCount : '';
+      if (hasQueue) navBadge.setAttribute('aria-label', `${queueCount} queued`);
+      suggest.hidden = currentTab !== 'live';
+      if (currentTab === 'live' && (
+        (!canApply && document.activeElement === apply) ||
+        (!hasSelections && document.activeElement === clear)
+      )) suggest.focus({ preventScroll: true });
+      apply.hidden = currentTab !== 'live' || !canApply;
+      apply.textContent = inIds.length > 1 ? `Apply ${inIds.length} Subs` : 'Apply Sub';
+      preview.hidden = !hasSelections;
+      if (!hasSelections) return;
+
+      document.getElementById('sub-preview-title').textContent = queued ? 'Whistle queue' : 'Substitution preview';
+      const names = ids => ids.map(id => {
+        const player = appState.players.find(p => p.id === id);
+        return `#${escapeHTML(player.number)} ${escapeHTML(player.name)}`;
+      }).join(', ') || '—';
+      document.getElementById('sub-preview-players').innerHTML =
+        `<p><strong class="sub-in">In${queued ? ` (${inIds.length})` : ''}</strong> ${names(inIds)}</p>` +
+        `<p><strong class="sub-out">Out${queued ? ` (${outIds.length})` : ''}</strong> ${names(outIds)}</p>`;
+      const needed = Math.abs(outIds.length - inIds.length);
+      const direction = outIds.length > inIds.length ? 'in' : 'out';
+      document.getElementById('sub-preview-hint').textContent = canApply
+        ? (queued ? 'Apply the substitutions when play stops.' : 'Apply to swap these players.')
+        : `Select ${needed} player${needed === 1 ? '' : 's'} to come ${direction}.`;
     }
 
     function renderLiveBoard() {
@@ -3196,6 +3542,9 @@
       document.getElementById("undo-btn").disabled = !undoRecord;
       document.getElementById("mode-instant-btn").setAttribute("aria-pressed", appState.subMode === "instant");
       document.getElementById("mode-queue-btn").setAttribute("aria-pressed", appState.subMode === "queue");
+      document.getElementById('sub-mode-hint').textContent = appState.subMode === 'queue'
+        ? 'Whistle mode · Select players in and out, then apply at the whistle.'
+        : 'Instant mode · Tap one player from each side to swap.';
       const presentPlayers = appState.players.filter(p => p.present);
       const courtPlayers = presentPlayers
         .filter(p => p.onCourt)
@@ -3206,63 +3555,22 @@
 
       const { avgSec, targetShareSec } = getFairPlayMetrics();
 
-      // Zone Headers & Counts
-      document.getElementById('active-zone-title').textContent = `${appState.zoneLabel} (Active)`;
-      document.getElementById('tab-live-label').textContent = `${appState.zoneLabel.replace(/^On /, '')} & Bench`;
+      document.getElementById('active-zone-title').textContent = appState.zoneLabel;
       const countBadge = document.getElementById('active-count-badge');
       countBadge.textContent = `${courtPlayers.length} / ${appState.activeTarget}`;
-      if (courtPlayers.length === appState.activeTarget) {
-        countBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 tabular-nums';
-        document.getElementById('lineup-count-warning').classList.add('hidden');
-      } else {
-        countBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-500/30 text-amber-200 border border-amber-400/50 tabular-nums';
-        document.getElementById('lineup-count-warning').classList.remove('hidden');
-        document.getElementById('lineup-warning-text').textContent = `Active lineup has ${courtPlayers.length} players (Target: ${appState.activeTarget}).`;
+      const lineupMismatch = courtPlayers.length !== appState.activeTarget;
+      countBadge.dataset.warning = lineupMismatch;
+      document.getElementById('lineup-count-warning').hidden = !lineupMismatch;
+      if (lineupMismatch) {
+        document.getElementById('lineup-warning-text').textContent = `Lineup has ${courtPlayers.length} of ${appState.activeTarget} players.`;
       }
-
       document.getElementById('bench-count-badge').textContent = benchPlayers.length;
-
-      const lastNote = document.getElementById('last-starters-note');
-      const lastStarters = appState.players.filter(wasLastStarter);
-      lastNote.classList.toggle('hidden', lastStarters.length === 0);
-      if (lastStarters.length) lastNote.innerHTML = `<span class="px-1 rounded bg-slate-200 text-slate-700 uppercase text-[10px] font-extrabold">Last</span> started last game: ${lastStarters.map(p => `#${escapeHTML(p.number)} ${escapeHTML(p.name)}`).join(', ')}`;
-
-      // Sub Mode Buttons
-      const instantBtn = document.getElementById('mode-instant-btn');
-      const queueBtn = document.getElementById('mode-queue-btn');
-      if (appState.subMode === 'instant') {
-        instantBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition bg-white text-slate-900 shadow-sm';
-        queueBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900';
-      } else {
-        queueBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition bg-orange-600 text-white shadow-sm';
-        instantBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900';
-      }
-
-      // Queue Action Banner
-      const queueBanner = document.getElementById('queue-action-banner');
-      const navBadge = document.getElementById('nav-queued-badge');
-      if (queueOut.length || queueIn.length) {
-        const matched = queueOut.length === queueIn.length;
-        const n = Math.max(queueOut.length, queueIn.length);
-        queueBanner.classList.remove('hidden');
-        navBadge.classList.remove('hidden');
-        navBadge.textContent = n;
-        document.getElementById('queue-count-circle').textContent = n;
-        document.getElementById('queue-exec-count').textContent = matched ? queueOut.length : `${queueOut.length}/${queueIn.length}`;
-        document.getElementById('queue-exec-btn').disabled = !matched;
-        const names = ids => ids.map(id => { const p = appState.players.find(x => x.id === id); return p ? `#${p.number} ${p.name}` : ''; }).join(', ') || '—';
-        document.getElementById('queue-pairs-preview').textContent =
-          `IN (${queueIn.length}): ${names(queueIn)}  •  OUT (${queueOut.length}): ${names(queueOut)}` +
-          (matched ? '' : `  •  Select ${queueOut.length > queueIn.length ? queueOut.length - queueIn.length + ' more IN' : queueIn.length - queueOut.length + ' more OUT'} to match.`);
-      } else {
-        queueBanner.classList.add('hidden');
-        navBadge.classList.add('hidden');
-      }
+      renderSubPreview();
 
       // Render Court Cards
       const courtListEl = document.getElementById('court-players-list');
       if (courtPlayers.length === 0) {
-        courtListEl.innerHTML = `<div class="text-center py-8 text-sm text-slate-400">No active players assigned. Go to Roster & Setup to add players.</div>`;
+        courtListEl.innerHTML = `<p class="empty-lineup">No active players. Add players in Setup.</p>`;
       } else {
         courtListEl.innerHTML = courtPlayers.map(p => buildPlayerCardHTML(p, true, avgSec, targetShareSec)).join('');
       }
@@ -3270,60 +3578,51 @@
       // Render Bench Cards
       const benchListEl = document.getElementById('bench-players-list');
       if (benchPlayers.length === 0) {
-        benchListEl.innerHTML = `<div class="text-center py-8 text-sm text-slate-400">No players on the bench.</div>`;
+        benchListEl.innerHTML = `<p class="empty-lineup">No players on the bench.</p>`;
       } else {
         benchListEl.innerHTML = benchPlayers.map(p => buildPlayerCardHTML(p, false, avgSec, targetShareSec)).join('');
       }
 
-      lucide.createIcons();
-      fitCardNames();
       if (focusId) document.querySelector(`[data-player="${focusId}"]`)?.focus({preventScroll:true});
     }
 
     function buildPlayerCardHTML(player, isCourt, avgSec, targetShareSec) {
-      const isSelected = (isCourt && selectedCourtId === player.id) || (!isCourt && selectedBenchId === player.id);
+      const isSelected = (isCourt ? selectedCourtId : selectedBenchId) === player.id;
       const queuedIdx = (isCourt ? queueOut : queueIn).indexOf(player.id);
       const isQueued = queuedIdx !== -1;
-
+      const pending = isSelected || isQueued;
+      const direction = isCourt ? 'out' : 'in';
+      const selectionClass = pending ? `sub-${direction}` : '';
+      const selectionLabel = isQueued ? `${direction} ${queuedIdx + 1}` : direction;
       const fair = getFairnessStatus(player.totalSec, avgSec);
       const progressPct = targetShareSec > 0 ? Math.min(100, Math.round((player.totalSec / targetShareSec) * 100)) : 0;
-
-      let borderClasses = 'border-slate-200 hover:border-slate-300 bg-white';
-      if (isSelected) {
-        borderClasses = 'border-orange-500 bg-orange-50/60 selected-swap-card';
-      } else if (isQueued) {
-        borderClasses = 'border-indigo-500 bg-indigo-50/60 ring-2 ring-indigo-500/20';
-      }
-
-      const secondaryTimeLabel = isCourt ? 'Stint' : 'Wait';
-      const secondaryTimeValue = isCourt ? formatTime(player.stintSec) : formatTime(player.benchSec);
-      const secondaryHighlight = isCourt && player.stintSec >= 240 ? 'text-amber-600' : 'text-slate-700';
+      const longStint = isCourt && player.stintSec >= 240;
+      const name = escapeHTML(player.name);
 
       return `
-        <button type="button" data-player="${player.id}" onclick="handlePlayerCardTap('${player.id}')" aria-pressed="${isSelected || isQueued}"
-             class="player-card w-full text-left cursor-pointer select-none rounded-2xl border-2 transition-all active:scale-[0.99] shadow-xs ${borderClasses}">
-          <span class="pc-head">
-            <span class="pc-num ${isCourt ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-800 border border-slate-200'}">${escapeHTML(player.number)}</span>
-            <span class="pc-name">${escapeHTML(player.name)}</span>
-            ${wasLastStarter(player) ? '<span class="pc-tag bg-slate-200 text-slate-700" title="Started last game">Last</span>' : ''}
-            ${isQueued ? `<span class="pc-tag bg-indigo-600 text-white">${isCourt ? 'Out' : 'In'} ${queuedIdx + 1}</span>` : ''}
-            ${isSelected ? `<span class="pc-tag bg-orange-600 text-white">${isCourt ? 'Out' : 'In'}</span>` : ''}
-            <span data-fair class="pc-fair ${fair.badgeClass}" title="${fair.label}">${fair.short}</span>
+        <button type="button" data-player="${player.id}" onclick="handlePlayerCardTap('${player.id}')"
+            aria-pressed="${pending}" class="player-card ${selectionClass}">
+          <span class="pc-num">${escapeHTML(player.number)}</span>
+          <span class="pc-name" title="${name}">${name}</span>
+          <span class="pc-tags">
+            ${pending ? `<span class="pc-tag ${selectionClass}">${selectionLabel}</span>` : ''}
+            <span data-fair class="pc-fair ${fair.className}" title="${fair.label}">${fair.short}</span>
+            ${wasLastStarter(player) ? '<span class="pc-tag" title="Started last game">Last starter</span>' : ''}
           </span>
           <span class="pc-times">
             <span class="pc-time">
               <span class="pc-label">Played</span>
               <span data-total class="pc-total">${formatTime(player.totalSec)}</span>
             </span>
-            <span class="pc-time pc-time-right">
-              <span class="pc-label">${secondaryTimeLabel}</span>
-              <span data-stint class="pc-sec ${secondaryHighlight}">${secondaryTimeValue}</span>
+            <span class="pc-time">
+              <span class="pc-label">${isCourt ? 'Stint' : 'Wait'}</span>
+              <span data-stint class="pc-sec${longStint ? ' long-stint' : ''}">${formatTime(isCourt ? player.stintSec : player.benchSec)}</span>
             </span>
           </span>
-          <!-- Fair Share Progress Bar -->
-          <span class="block w-full bg-slate-100 rounded-full overflow-hidden">
-            <span data-progress role="progressbar" aria-label="Fair share progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${progressPct}" class="block h-full ${fair.barClass} transition-all duration-300" style="width: ${progressPct}%"></span>
+          <span class="pc-progress" aria-hidden="true">
+            <span data-progress class="${fair.className}" style="width: ${progressPct}%"></span>
           </span>
+          <span data-progress-label class="sr-only">Full-game target progress: ${progressPct}%</span>
         </button>
       `;
     }
@@ -3365,7 +3664,7 @@
             </button>
 
             <!-- Delete Player -->
-            <button onclick="removePlayer('${p.id}')" title="Remove Player" class="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition">
+            <button onclick="removePlayer('${p.id}')" title="Remove Player" aria-label="Remove ${escapeHTML(p.name)}" class="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition">
               <i data-lucide="trash-2" class="w-4 h-4"></i>
             </button>
           </div>
@@ -3414,7 +3713,7 @@
             </td>
             <td class="py-3 px-4 font-mono font-extrabold text-slate-900 tabular-nums">${formatTime(p.totalSec)}</td>
             <td class="py-3 px-4">
-              <span class="px-2 py-0.5 rounded-full text-xs font-bold ${fair.badgeClass}">${fair.label}</span>
+              <span class="pc-fair ${fair.className}">${fair.label}</span>
             </td>
             <td class="py-3 px-4 font-semibold text-slate-600 tabular-nums">${pctPlayed}%</td>
             <td class="py-3 px-4 font-mono text-xs text-slate-600 tabular-nums">
@@ -3428,24 +3727,22 @@
     /* ==================== NAVIGATION, EXPORT & UI HELPERS ==================== */
 
     function switchTab(tabName) {
-      requestAnimationFrame(fitCardNames);
       currentTab = tabName;
-      ['live', 'roster', 'summary'].forEach(t => {
-        const view = document.getElementById(`view-${t}`);
-        const btn = document.getElementById(`tab-btn-${t}`);
-        btn.setAttribute("aria-pressed", t === tabName);
-        if (t === tabName) {
-          view.classList.remove('hidden');
-          btn.className = 'tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition bg-orange-600 text-white shadow-sm';
-        } else {
-          view.classList.add('hidden');
-          btn.className = 'tab-btn flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-800 transition';
-        }
+      const view = document.getElementById(`view-${tabName}`);
+      ['live', 'roster', 'summary'].forEach(tab => {
+        document.getElementById(`view-${tab}`).hidden = tab !== tabName;
+        document.getElementById(`tab-btn-${tab}`).setAttribute('aria-pressed', tab === tabName);
       });
-
-      if (tabName === 'live') renderLiveBoard();
-      if (tabName === 'roster') renderRosterManagement();
-      if (tabName === 'summary') renderSummary();
+      document.getElementById('clock-options').open = false;
+      if (tabName === 'live') {
+        renderLiveBoard();
+      } else {
+        renderSubPreview();
+        if (tabName === 'roster') renderRosterManagement();
+        if (tabName === 'summary') renderSummary();
+      }
+      window.scrollTo(0, 0);
+      view.focus({ preventScroll: true });
     }
 
     async function copySummaryToClipboard() {
@@ -3590,30 +3887,27 @@
       undoRecord=null; selectedCourtId=selectedBenchId=null; sanitizeSelections(); saveState(); renderAll(); showToast('Last substitution undone; playing times corrected.', 'slate');
     }
     function updateLiveTimes() {
-      const {avgSec,targetShareSec}=getFairPlayMetrics();
-      document.querySelectorAll('[data-player]').forEach(card=>{
-        const p=appState.players.find(p=>p.id===card.dataset.player); if(!p)return;
-        const fair=getFairnessStatus(p.totalSec,avgSec), pct=targetShareSec?Math.min(100,Math.round(p.totalSec/targetShareSec*100)):0;
-        const total=card.querySelector('[data-total]'), stint=card.querySelector('[data-stint]'), badge=card.querySelector('[data-fair]'), bar=card.querySelector('[data-progress]');
-        total.textContent=formatTime(p.totalSec); stint.textContent=formatTime(p.onCourt?p.stintSec:p.benchSec);
-        stint.className='pc-sec '+(p.onCourt&&p.stintSec>=240?'text-amber-600':'text-slate-700');
-        badge.textContent=fair.short; badge.title=fair.label; badge.className='pc-fair '+fair.badgeClass;
-        bar.className='block h-full transition-all duration-300 '+fair.barClass; bar.style.width=pct+'%'; bar.setAttribute('aria-valuenow',pct);
-      });
-      fitCardNames();
-    }
-    // Shrink each player name until it fits on its card's single header line.
-    function fitCardNames() {
-      document.querySelectorAll('.pc-name').forEach(el => {
-        el.style.fontSize = '';
-        let size = parseFloat(getComputedStyle(el).fontSize);
-        while (el.scrollWidth > el.clientWidth + 0.5 && size > 10) {
-          size -= 0.5;
-          el.style.fontSize = size + 'px';
-        }
+      const { avgSec, targetShareSec } = getFairPlayMetrics();
+      document.querySelectorAll('[data-player]').forEach(card => {
+        const player = appState.players.find(p => p.id === card.dataset.player);
+        if (!player) return;
+        const fair = getFairnessStatus(player.totalSec, avgSec);
+        const pct = targetShareSec > 0 ? Math.min(100, Math.round(player.totalSec / targetShareSec * 100)) : 0;
+        const stint = card.querySelector('[data-stint]');
+        const badge = card.querySelector('[data-fair]');
+        const bar = card.querySelector('[data-progress]');
+
+        card.querySelector('[data-total]').textContent = formatTime(player.totalSec);
+        stint.textContent = formatTime(player.onCourt ? player.stintSec : player.benchSec);
+        stint.classList.toggle('long-stint', player.onCourt && player.stintSec >= 240);
+        badge.textContent = fair.short;
+        badge.title = fair.label;
+        badge.className = `pc-fair ${fair.className}`;
+        bar.className = fair.className;
+        bar.style.width = `${pct}%`;
+        card.querySelector('[data-progress-label]').textContent = `Full-game target progress: ${pct}%`;
       });
     }
-    window.addEventListener('resize', () => fitCardNames());
     async function acquireWake(){
       if(!wakeWanted || document.hidden || !('wakeLock' in navigator)) return;
       try { wakeLock=await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release',()=>{wakeLock=null; updateWakeButton();}); } catch { wakeWanted=false; showToast('Screen wake lock unavailable.', 'amber'); } updateWakeButton();
