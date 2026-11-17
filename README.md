@@ -1,6 +1,8 @@
-# FairShift
+# BenchFlow
 
-Playing time and substitution tracker for youth sports, built for a coach holding a phone on the sideline. One self-contained `index.html`: no build step, no dependencies, works offline.
+**Smarter substitutions. Fairer playing time.**
+
+BenchFlow tracks playing time and substitutions for youth sports from the sideline. Open `index.html` from the repository to run it offline with the bundled fonts. The app has no build step or runtime dependencies.
 
 ## Presets
 
@@ -19,14 +21,14 @@ Active spots, minutes per period and number of periods can be edited on the Rost
 
 **Saved Teams**: coaching more than one team? Each sport keeps its own save slots. Type a team name and tap **Save Current Roster** to store what is on screen, or **New Blank Team** to start an empty one. Tap a slot to load that team's roster, settings and last-game starters. Edits to the loaded team save to its slot automatically. Switching teams mid-game asks first, since it resets the clock. Teams live in the browser alongside the game state; no account or database.
 
-**Court / Field & Bench**
+**Game**
 - **Instant**: tap an active player and a bench player to swap them.
-- **Whistle**: tap any number of bench players going in and active players coming out, in any order. The sub button unlocks once both counts match; players are paired in the order tapped.
-- **Fair Sub** suggests the longest-playing player out and the least-played bench player in.
-- Cards show number, name and fair-play status on one line (Low, OK, High; Even before play starts), then total time played and current stint or bench wait in large type, and a bar toward the fair share. Long names shrink to fit. The bench is sorted by least played.
-- **Undo** reverses the last substitution. **Keep screen awake** holds the screen on where supported.
-- The chevron in the header collapses it to one slim row (period, clock, start/pause) so more of the page fits on a phone. Tap it again to bring back the tabs and clock controls. The choice is remembered.
-- The header clock has start/pause, −/+ adjust, period advance and period reset. Tap the clock to switch the adjust step between 1 minute, 10 seconds and 1 second.
+- **Whistle**: tap any number of bench players going in and active players coming out, in any order. **Apply Sub** appears once both counts match. BenchFlow pairs players in the order tapped.
+- **Suggest Sub** previews the longest-playing active player coming out and the least-played bench player coming in. Tap **Apply Sub** to make the swap, or **Clear** to dismiss it. Whistle mode adds suggestions to the queue.
+- Cards show jersey number, name, total played, current stint or bench wait, and playing-time balance. The progress bar tracks the full-game target. On the bench, players with the least playing time appear first.
+- **Undo** reverses the last substitution. Open **Setup** to choose Instant or Whistle mode and to keep the screen awake where supported.
+- On phones, **Start/Pause** and **Suggest Sub** stay at the bottom of the screen. Use the chevron to compact or expand the scoreboard. BenchFlow remembers the display preference.
+- **Clock options** contains time adjustment, period advance, and period reset. Tap **Step** to cycle between 1 minute, 10 seconds, and 1 second.
 
 **Game Summary**: totals, average, spread and per-player share, sortable. Copy as text or download a CSV.
 
