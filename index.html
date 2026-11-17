@@ -2071,7 +2071,30 @@
 
     <!-- ==================== TAB 2: ROSTER & SPORT SETUP ==================== -->
     <section id="view-roster" class="hidden space-y-5">
-      
+
+      <!-- Saved Teams (save slots per sport) -->
+      <div class="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+          <div>
+            <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+              <i data-lucide="users" class="w-4 h-4 text-orange-600"></i>
+              <span id="teams-heading">Saved Teams</span>
+            </h2>
+            <p class="text-xs text-slate-500">Tap a team to load its roster. Changes to the loaded team save automatically.</p>
+          </div>
+        </div>
+        <div id="team-slots" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2"></div>
+        <form onsubmit="event.preventDefault(); createTeam(event.submitter?.value || 'current')" class="flex flex-wrap gap-2">
+          <input id="new-team-name" aria-label="Team name" type="text" maxlength="40" required placeholder="Team name" class="flex-1 min-w-[180px] px-3.5 py-2.5 rounded-xl border border-slate-300 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-orange-500" />
+          <button type="submit" value="current" class="px-3 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition">
+            <i data-lucide="plus" class="w-4 h-4"></i><span>Save Current Roster</span>
+          </button>
+          <button type="submit" value="blank" class="px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 active:scale-95 transition">
+            <i data-lucide="plus" class="w-4 h-4"></i><span>New Blank Team</span>
+          </button>
+        </form>
+      </div>
+
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
         
         <!-- Sport & Clock Settings Card -->
@@ -2271,7 +2294,7 @@
      * Self-contained state management with localStorage persistence.
      */
 
-    const ICONS = {"play": "<path d=\"m8 5 12 7-12 7z\"/>", "pause": "<path d=\"M9 5v14M15 5v14\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "users": "<circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5\"/>", "clipboard-list": "<rect x=\"5\" y=\"5\" width=\"14\" height=\"16\" rx=\"2\"/><path d=\"M9 5V3h6v2M9 10h6M9 14h6M9 18h6\"/>", "bar-chart-3": "<path d=\"M4 3v17h17M9 16v-5m5 5V8m5 8V4\"/>", "arrow-left-right": "<path d=\"M3 8h17l-4-4m4 4-4 4M21 16H4l4-4m-4 4 4 4\"/>", "sparkles": "<path d=\"m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z\"/>", "check-circle-2": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"m8 12 3 3 5-6\"/>", "alert-triangle": "<path d=\"M12 3 2 21h20zM12 9v5m0 3h.01\"/>", "rotate-ccw": "<path d=\"M3 11a9 9 0 1 1 3 7M3 4v7h7\"/>", "refresh-cw": "<path d=\"M3 11a9 9 0 0 1 15-6l3 3m0-5v5h-5M21 13a9 9 0 0 1-15 6l-3-3m0 5v-5h5\"/>", "shirt": "<path d=\"m8 3-6 4 3 5 3-1v10h8V11l3 1 3-5-6-4a4 4 0 0 1-8 0z\"/>", "sliders": "<path d=\"M4 6h16M4 12h16M4 18h16\"/><circle cx=\"8\" cy=\"6\" r=\"2\" fill=\"currentColor\"/><circle cx=\"16\" cy=\"12\" r=\"2\" fill=\"currentColor\"/><circle cx=\"10\" cy=\"18\" r=\"2\" fill=\"currentColor\"/>", "copy": "<rect x=\"8\" y=\"8\" width=\"12\" height=\"12\" rx=\"2\"/><path d=\"M16 8V4H4v12h4\"/>", "download": "<path d=\"M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5\"/>", "trash-2": "<path d=\"M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7m4-7v7\"/>", "chevron-up": "<path d=\"m6 15 6-6 6 6\"/>", "chevron-down": "<path d=\"m6 9 6 6 6-6\"/>", "users-round": "<circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5\"/>"};
+    const ICONS = {"play": "<path d=\"m8 5 12 7-12 7z\"/>", "pause": "<path d=\"M9 5v14M15 5v14\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "users": "<circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5\"/>", "clipboard-list": "<rect x=\"5\" y=\"5\" width=\"14\" height=\"16\" rx=\"2\"/><path d=\"M9 5V3h6v2M9 10h6M9 14h6M9 18h6\"/>", "bar-chart-3": "<path d=\"M4 3v17h17M9 16v-5m5 5V8m5 8V4\"/>", "arrow-left-right": "<path d=\"M3 8h17l-4-4m4 4-4 4M21 16H4l4-4m-4 4 4 4\"/>", "sparkles": "<path d=\"m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z\"/>", "check-circle-2": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"m8 12 3 3 5-6\"/>", "alert-triangle": "<path d=\"M12 3 2 21h20zM12 9v5m0 3h.01\"/>", "rotate-ccw": "<path d=\"M3 11a9 9 0 1 1 3 7M3 4v7h7\"/>", "refresh-cw": "<path d=\"M3 11a9 9 0 0 1 15-6l3 3m0-5v5h-5M21 13a9 9 0 0 1-15 6l-3-3m0 5v-5h5\"/>", "shirt": "<path d=\"m8 3-6 4 3 5 3-1v10h8V11l3 1 3-5-6-4a4 4 0 0 1-8 0z\"/>", "sliders": "<path d=\"M4 6h16M4 12h16M4 18h16\"/><circle cx=\"8\" cy=\"6\" r=\"2\" fill=\"currentColor\"/><circle cx=\"16\" cy=\"12\" r=\"2\" fill=\"currentColor\"/><circle cx=\"10\" cy=\"18\" r=\"2\" fill=\"currentColor\"/>", "copy": "<rect x=\"8\" y=\"8\" width=\"12\" height=\"12\" rx=\"2\"/><path d=\"M16 8V4H4v12h4\"/>", "download": "<path d=\"M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5\"/>", "trash-2": "<path d=\"M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7m4-7v7\"/>", "chevron-up": "<path d=\"m6 15 6-6 6 6\"/>", "chevron-down": "<path d=\"m6 9 6 6 6-6\"/>", "pencil": "<path d=\"M4 20h4L19 9l-4-4L4 16zM13 7l4 4\"/>", "users-round": "<circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 5\"/>"};
     const lucide = {createIcons(){document.querySelectorAll('[data-lucide]').forEach(el=>{const name=el.getAttribute('data-lucide');if(el.dataset.renderedIcon===name)return;el.dataset.renderedIcon=name;el.setAttribute('aria-hidden','true');el.style.display='inline-flex';el.innerHTML=`<svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]||''}</svg>`;});}};
     const STORAGE_KEY = 'courtside_pro_state_v1';
 
@@ -2382,7 +2405,9 @@
     }
 
     function initApp() {
+      loadTeams();
       loadState();
+      if (appState.teamId && !getActiveTeam()) appState.teamId = null;
       try { if (localStorage.getItem(HEADER_PREF_KEY) === '1') setHeaderCollapsed(true); } catch (e) {}
       // Always start paused on page load for safety
       appState.isRunning = false;
@@ -2405,6 +2430,7 @@
         appState.queueOut = queueOut;
         appState.queueIn = queueIn;
         appState.undoRecord = undoRecord;
+        syncActiveTeam();
         localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
         lastSaved = performance.now();
         document.getElementById("save-status").textContent = "Saved on this device";
@@ -2422,6 +2448,7 @@
           if (![parsed.periodDurationSec,parsed.periodRemainingSec,parsed.totalGameElapsedSec,parsed.activeTarget,parsed.numPeriods,parsed.currentPeriod].every(v=>Number.isFinite(v)&&v>=0) || parsed.activeTarget<1 || parsed.numPeriods<1 || parsed.periodDurationSec<1) throw Error("Invalid clock");
           if (!Array.isArray(parsed.starterIds) || !parsed.starterIds.every(id => typeof id === "string")) parsed.starterIds = null;
           if (!Array.isArray(parsed.lastStarterIds) || !parsed.lastStarterIds.every(id => typeof id === "string")) parsed.lastStarterIds = null;
+          if (typeof parsed.teamId !== "string") parsed.teamId = null;
           appState = { ...appState, ...parsed, isRunning: false };
         }
       } catch (e) {
@@ -2650,6 +2677,8 @@
       if (appState.totalGameElapsedSec > 0 || appState.isRunning) { showToast("Reset game timers before changing sports.", "amber"); return; }
       undoRecord = null;
       appState.isRunning = false;
+      const leftTeam = getActiveTeam();
+      if (leftTeam && leftTeam.sportId !== preset.id) appState.teamId = null;
       appState.sportId = preset.id;
       appState.sportName = preset.name;
       appState.sportIcon = preset.icon;
@@ -2852,6 +2881,7 @@
           undoRecord = null;
           selectedCourtId = selectedBenchId = null;
           queueOut = []; queueIn = [];
+          appState.teamId = null;
           appState.players = JSON.parse(JSON.stringify(SAMPLE_ROSTER));
           // Adjust active count to match current sport
           let activeAssigned = 0;
@@ -2873,7 +2903,7 @@
     function confirmResetToDefaults() {
       openConfirmModal(
         'Reset Everything to Defaults?',
-        'This restores the default sport, settings, and roster, resets all timers, and clears starter and last-game starter history. This cannot be undone.',
+        'This restores the default sport, settings, and roster, resets all timers, and clears starter and last-game starter history. Saved teams are kept. This cannot be undone.',
         () => {
           appState = JSON.parse(JSON.stringify(DEFAULT_STATE));
           undoRecord = null;
@@ -2887,6 +2917,176 @@
           showToast('All settings restored to defaults.', 'orange');
         }
       );
+    }
+
+    /* ==================== SAVED TEAMS (save slots per sport) ==================== */
+
+    const TEAMS_KEY = 'fairshift_teams_v1';
+    const SAFE_ID = /^[a-zA-Z0-9_-]+$/;
+    let savedTeams = [];
+
+    function loadTeams() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(TEAMS_KEY) || '[]');
+        if (!Array.isArray(parsed)) return;
+        savedTeams = parsed.filter(t => t && typeof t.id === 'string' && SAFE_ID.test(t.id)
+          && typeof t.name === 'string' && SPORT_PRESETS[t.sportId]
+          && [t.activeTarget, t.periodDurationSec, t.numPeriods].every(v => Number.isFinite(v) && v >= 1)
+          && Array.isArray(t.players) && t.players.every(p => p && typeof p.id === 'string' && SAFE_ID.test(p.id) && typeof p.name === 'string' && typeof p.number === 'string'));
+        savedTeams.forEach(t => { if (!Array.isArray(t.lastStarterIds)) t.lastStarterIds = null; });
+      } catch (e) { console.warn('Could not load saved teams:', e); }
+    }
+
+    function writeTeams() {
+      try { localStorage.setItem(TEAMS_KEY, JSON.stringify(savedTeams)); } catch (e) {}
+    }
+
+    function getActiveTeam() {
+      return appState.teamId ? savedTeams.find(t => t.id === appState.teamId) || null : null;
+    }
+
+    function teamSnapshot() {
+      return {
+        activeTarget: appState.activeTarget,
+        periodDurationSec: appState.periodDurationSec,
+        numPeriods: appState.numPeriods,
+        lastStarterIds: Array.isArray(appState.lastStarterIds) ? appState.lastStarterIds : null,
+        players: appState.players.map(p => ({ id: p.id, number: p.number, name: p.name, present: p.present !== false, onCourt: !!p.onCourt }))
+      };
+    }
+
+    // Keeps the loaded team's slot in step with roster and settings edits. Writes only when something changed.
+    function syncActiveTeam() {
+      const team = getActiveTeam();
+      if (!team) return;
+      const before = JSON.stringify(team);
+      Object.assign(team, teamSnapshot());
+      if (JSON.stringify(team) !== before) writeTeams();
+    }
+
+    function gameInProgress() {
+      reconcileClock();
+      return appState.isRunning || appState.totalGameElapsedSec > 0;
+    }
+
+    function clearGameState() {
+      if (Array.isArray(appState.starterIds) && appState.starterIds.length) appState.lastStarterIds = appState.starterIds;
+      appState.starterIds = null;
+      appState.isRunning = false;
+      appState.currentPeriod = 1;
+      appState.totalGameElapsedSec = 0;
+      undoRecord = null;
+      selectedCourtId = selectedBenchId = null;
+      queueOut = []; queueIn = [];
+    }
+
+    function loadTeam(teamId) {
+      const team = savedTeams.find(t => t.id === teamId);
+      if (!team || team.id === appState.teamId) return;
+      const apply = () => {
+        clearGameState();
+        syncActiveTeam(); // keep the outgoing team's last starters
+        const preset = SPORT_PRESETS[team.sportId];
+        Object.assign(appState, {
+          teamId: team.id,
+          sportId: preset.id,
+          sportName: preset.name,
+          sportIcon: preset.icon,
+          zoneLabel: preset.zoneLabel,
+          activeTarget: team.activeTarget,
+          periodDurationSec: team.periodDurationSec,
+          numPeriods: team.numPeriods,
+          periodRemainingSec: team.periodDurationSec,
+          lastStarterIds: team.lastStarterIds,
+          starterIds: null
+        });
+        let active = 0;
+        appState.players = team.players.map(p => {
+          const present = p.present !== false;
+          const onCourt = present && !!p.onCourt && active < team.activeTarget;
+          if (onCourt) active++;
+          return { id: p.id, number: p.number, name: p.name, present, onCourt, totalSec: 0, stintSec: 0, benchSec: 0 };
+        });
+        appState.players.forEach(p => { if (p.present && !p.onCourt && active < team.activeTarget) { p.onCourt = true; active++; } });
+        syncSettingsInputs();
+        saveState();
+        renderAll();
+        showToast(`Loaded ${team.name} (${team.players.length} players).`, 'emerald');
+      };
+      if (gameInProgress()) {
+        openConfirmModal('Switch Teams?', `Loading ${team.name} resets the current game clock and player timers.`, apply);
+      } else apply();
+    }
+
+    function createTeam(mode) {
+      const input = document.getElementById('new-team-name');
+      const name = input.value.trim().slice(0, 40);
+      if (!name) return;
+      if (savedTeams.some(t => t.sportId === appState.sportId && t.name.toLowerCase() === name.toLowerCase())) {
+        showToast(`A ${appState.sportName} team named ${name} already exists.`, 'amber'); return;
+      }
+      if (mode === 'blank') {
+        if (gameInProgress()) { showToast('Reset game timers before starting a new team.', 'amber'); return; }
+        clearGameState();
+        appState.players = [];
+        appState.lastStarterIds = null;
+        appState.periodRemainingSec = appState.periodDurationSec;
+      }
+      const team = { id: 't_' + (globalThis.crypto?.randomUUID?.() || Date.now() + '_' + Math.random().toString(36).slice(2, 8)), name, sportId: appState.sportId, ...teamSnapshot() };
+      savedTeams.push(team);
+      appState.teamId = team.id;
+      writeTeams();
+      input.value = '';
+      saveState();
+      renderAll();
+      showToast(mode === 'blank' ? `Created ${name}. Add players below.` : `Saved roster as ${name}.`, 'emerald');
+    }
+
+    function renameTeam(teamId) {
+      const team = savedTeams.find(t => t.id === teamId);
+      if (!team) return;
+      const name = (prompt('Rename team', team.name) || '').trim().slice(0, 40);
+      if (!name || name === team.name) return;
+      team.name = name;
+      writeTeams();
+      renderAll();
+    }
+
+    function deleteTeam(teamId) {
+      const team = savedTeams.find(t => t.id === teamId);
+      if (!team) return;
+      openConfirmModal('Delete Team?', `Delete the saved team ${team.name}? The roster currently on screen stays until you change it.`, () => {
+        savedTeams = savedTeams.filter(t => t.id !== teamId);
+        if (appState.teamId === teamId) appState.teamId = null;
+        writeTeams();
+        saveState();
+        renderAll();
+        showToast(`Deleted ${team.name}.`, 'slate');
+      });
+    }
+
+    function renderTeamSlots() {
+      document.getElementById('teams-heading').textContent = `${appState.sportName} Teams`;
+      const el = document.getElementById('team-slots');
+      const teams = savedTeams.filter(t => t.sportId === appState.sportId);
+      const others = savedTeams.length - teams.length;
+      const otherNote = others ? `<div class="sm:col-span-2 lg:col-span-3 text-[11px] text-slate-400">${others} team${others === 1 ? '' : 's'} saved under other sports. Pick that sport above to see ${others === 1 ? 'it' : 'them'}.</div>` : '';
+      if (!teams.length) {
+        el.innerHTML = `<div class="sm:col-span-2 lg:col-span-3 py-3 text-center text-sm text-slate-400">No ${escapeHTML(appState.sportName)} teams saved yet. Name one below to create a slot.</div>${otherNote}`;
+        return;
+      }
+      el.innerHTML = teams.map(t => {
+        const active = t.id === appState.teamId;
+        return `
+        <div class="flex items-center rounded-xl border-2 transition ${active ? 'border-orange-500 bg-orange-50/70' : 'border-slate-200 hover:border-slate-300'}">
+          <button onclick="loadTeam('${t.id}')" class="flex-1 min-w-0 text-left p-2.5" ${active ? 'aria-current="true"' : ''}>
+            <div class="text-sm font-extrabold text-slate-900 truncate">${escapeHTML(t.name)}</div>
+            <div class="text-[11px] text-slate-500">${t.players.length} player${t.players.length === 1 ? '' : 's'}${active ? ' • <span class="font-bold text-orange-700">Loaded</span>' : ''}</div>
+          </button>
+          <button onclick="renameTeam('${t.id}')" title="Rename team" aria-label="Rename ${escapeHTML(t.name)}" class="p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"><i data-lucide="pencil" class="w-4 h-4"></i></button>
+          <button onclick="deleteTeam('${t.id}')" title="Delete team" aria-label="Delete ${escapeHTML(t.name)}" class="p-2 mr-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+        </div>`;
+      }).join('') + otherNote;
     }
 
     /* ==================== FAIR PLAY METRICS & FORMATTING ==================== */
@@ -2956,7 +3156,9 @@
       const { targetShareSec } = getFairPlayMetrics();
       document.getElementById('sport-icon-badge').textContent = appState.sportIcon;
       const matchup = `${appState.activeTarget}v${appState.activeTarget}`;
-      document.getElementById('header-sport-pill').textContent = appState.sportName.includes(matchup) ? appState.sportName : `${appState.sportName} • ${matchup}`;
+      const activeTeam = getActiveTeam();
+      const sportLabel = activeTeam ? activeTeam.name : appState.sportName;
+      document.getElementById('header-sport-pill').textContent = sportLabel.includes(matchup) ? sportLabel : `${sportLabel} • ${matchup}`;
       document.getElementById('header-fair-share-info').innerHTML = `Target Fair Share: <span class="text-slate-200 font-semibold">${formatTime(targetShareSec)}</span> / player`;
 
       const presetObj = SPORT_PRESETS[appState.sportId];
@@ -3127,6 +3329,7 @@
     }
 
     function renderRosterManagement() {
+      renderTeamSlots();
       const presentCount = appState.players.filter(p => p.present).length;
       document.getElementById('roster-present-summary').textContent = `${presentCount} Present / ${appState.players.length} Total`;
 
@@ -3252,7 +3455,7 @@
         .sort((a, b) => b.totalSec - a.totalSec);
 
       const lines = [
-        `${appState.sportName} Playing Time Summary (Period ${appState.currentPeriod}/${appState.numPeriods})`,
+        `${getActiveTeam() ? getActiveTeam().name + ' · ' : ''}${appState.sportName} Playing Time Summary (Period ${appState.currentPeriod}/${appState.numPeriods})`,
         `Total Game Elapsed: ${formatTime(appState.totalGameElapsedSec)}`,
         `Starters: ${appState.players.filter(isStarter).map(p => `#${p.number} ${p.name}`).join(', ') || 'None recorded'}`,
         `----------------------------------------`,
@@ -3307,7 +3510,8 @@
       const link = document.createElement('a');
       const dateStr = new Date().toISOString().slice(0, 10);
       link.href = url;
-      link.download = `playing-time-${appState.sportId}-${dateStr}.csv`;
+      const teamSlug = (getActiveTeam()?.name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      link.download = `playing-time-${teamSlug ? teamSlug + '-' : ''}${appState.sportId}-${dateStr}.csv`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
