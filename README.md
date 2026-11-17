@@ -1,6 +1,6 @@
 # BenchFlow
 
-**Smarter substitutions. Fairer playing time.**
+**Smart subs. Fair time.**
 
 BenchFlow tracks playing time and substitutions for youth sports from the sideline. Open `index.html` from the repository to run it offline with the bundled fonts. The app has no build step or runtime dependencies.
 
