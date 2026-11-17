@@ -17,6 +17,8 @@ Active spots, minutes per period and number of periods can be edited on the Rost
 
 **Roster & Setup**: add players one at a time or paste a comma-separated list (`Ben, Caleb, 12 Jed`). A leading number sets the jersey; players without one are numbered from 1, skipping numbers already taken. Mark players present or absent and set who starts. **Load Default Roster** restores the 9-player basketball roster (Ben, Caleb, Tristan, Noah, Gauge, Lawson, Myers, Jed, Jack).
 
+**Saved Teams**: coaching more than one team? Each sport keeps its own save slots. Type a team name and tap **Save Current Roster** to store what is on screen, or **New Blank Team** to start an empty one. Tap a slot to load that team's roster, settings and last-game starters. Edits to the loaded team save to its slot automatically. Switching teams mid-game asks first, since it resets the clock. Teams live in the browser alongside the game state; no account or database.
+
 **Court / Field & Bench**
 - **Instant**: tap an active player and a bench player to swap them.
 - **Whistle**: tap any number of bench players going in and active players coming out, in any order. The sub button unlocks once both counts match; players are paired in the order tapped.
